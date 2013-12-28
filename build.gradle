@@ -13,6 +13,10 @@ buildscript {
 
 apply plugin: 'forge'
 
+dependencies {
+	compile('net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT')
+}
+
 version = "1.5.8"
 group= "redgear.core" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "RedGearCore"
