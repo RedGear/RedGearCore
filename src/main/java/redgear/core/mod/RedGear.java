@@ -34,7 +34,7 @@ public class RedGear {
 	
 	public static final String GeocraftID = "RedGear|Geocraft";
 	public static final String GeocraftName = "Geocraft";
-	public static final String GeocraftVersion = "1.2.2";
+	public static final String GeocraftVersion = "2.0.0";
 	public static final String GeocraftDepend = reqCore;
 	
 	

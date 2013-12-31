@@ -11,7 +11,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.ForgeDirection;
 import redgear.core.compat.Mods;
-//import redgear.snowfall.ItemSnowShovel;
 
 public class SnowfallHooks
 {
@@ -124,7 +123,7 @@ public class SnowfallHooks
     {
         ItemStack heldItem = player.getHeldItem();
 
-        /*if (Mods.Snowfall.isIn() && heldItem != null && heldItem.getItem() instanceof ItemSnowShovel && !world.isRemote && world.getGameRules().getGameRuleBooleanValue("doTileDrops"))
+        if (Mods.Snowfall.isIn() && heldItem != null && heldItem.getItem() instanceof ISnowShovel && !world.isRemote && world.getGameRules().getGameRuleBooleanValue("doTileDrops"))
         {
             float f = 0.7F;
             double d0 = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
@@ -150,8 +149,12 @@ public class SnowfallHooks
             return true;
         }
         else
-        {*/
+        {
             return false;
-        //}
+        }
+    }
+    
+    public interface ISnowShovel{
+    	
     }
 }

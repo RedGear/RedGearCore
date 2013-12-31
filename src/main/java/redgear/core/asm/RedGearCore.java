@@ -6,7 +6,6 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.oredict.OreDictionary;
 import redgear.core.mod.ModUtils;
-import redgear.core.mod.RedGear;
 import redgear.core.render.CoreIconRegistry;
 import redgear.core.tile.TileEntitySmart;
 import redgear.core.util.CoreFuelHandler;
@@ -30,13 +29,15 @@ public class RedGearCore extends DummyModContainer{
     {
         super(new ModMetadata());
         ModMetadata meta = getMetadata();
-        meta.modId = RedGear.CoreID;
-        meta.name = RedGear.CoreName;
-        meta.version = RedGear.CoreVersion;
+        meta.modId = "RedGear|Core";
+        meta.name = "Red Gear Core";
+        meta.version = coreVersion;
         meta.authorList = Arrays.asList(new String[] {"Blackhole", "Enosphorous"});
         meta.url = "";
         meta.description = "";
     }
+    
+    private static final String coreVersion = "@CoreVersion@";
 
     @Override
     public boolean registerBus(EventBus bus, LoadController controller){

@@ -14,16 +14,36 @@ buildscript {
 
 apply plugin: 'forge'
 
+ext.configFile = file "build.properties"
+
+configFile.withReader {
+	def prop = new Properties()
+	prop.load(it)
+	ext.config = new ConfigSlurper().parse prop
+}
+
 dependencies {
 	compile('net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT')
 }
 
-version = "1.5.8"
+version = config.core_version //1.5.8
 group= "redgear.core" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "RedGearCore"
 
 minecraft {
-	version = "1.6.4-9.11.1.964"
+	version = config.minecraft_version + "-" + config.forge_version // "1.6.4-9.11.1.964"
+	
+	replaceIn "asm/RedGearCore.java"
+		replace "@CoreVersion@", project.version
+	
+	replaceIn "network/RedGearNetwork.java"
+		replace "@NetworkVersion@", config.network_version//project.netversion
+}
+
+jar{
+	manifest{
+		attributes 'FMLCorePlugin': 'redgear.core.asm.RedGearCoreLoadingPlugin', 'FMLCorePluginContainsFMLMod': 'true'
+	}
 }
 
 processResources

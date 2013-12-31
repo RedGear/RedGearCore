@@ -34,6 +34,7 @@ public abstract class ModUtils{
 	public final String modId;
 	public final String modName;
 	public final String modVersion;
+	public final String modDepend;
 	
 	public ModUtils(int blockIdDefault, int itemIdDefault){
     	this.blockIdDefault = blockIdDefault;
@@ -42,6 +43,7 @@ public abstract class ModUtils{
     	String modId = "Unknown";
     	String modName = "Unknown";
     	String modVersion = "Unknown";
+    	String modDepend = "Unknown";
     	 
     	
     	for(Annotation a : this.getClass().getDeclaredAnnotations())
@@ -50,12 +52,14 @@ public abstract class ModUtils{
     			modId = m.modid();
     			modName = m.name();
     			modVersion = m.version();
+    			modDepend = m.dependencies();
     			break;
     		}
     	
     	this.modId = modId;
     	this.modName = modName;
     	this.modVersion = modVersion;
+    	this.modDepend = modDepend;
     	
     	addPlugin(new CoreLocalization());
     }
