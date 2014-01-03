@@ -1,0 +1,3 @@
+[submodule "src/main/java/thaumcraft/api"]
+	path = src/main/java/thaumcraft/api
+	url = https://github.com/Azanor/thaumcraft-api
