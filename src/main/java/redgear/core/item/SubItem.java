@@ -10,11 +10,9 @@ public class SubItem
     /** Icon index in the icons table. */
 	protected Icon itemIcon;
 	protected final String name;
-	protected final String displayName;
 
-    public SubItem(String name, String displayName){
+    public SubItem(String name){
         this.name = name;
-        this.displayName = displayName;
     }
     
     /**
