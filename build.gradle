@@ -26,6 +26,11 @@ dependencies {
 	compile('net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT')
 }
 
+task jarSources(type:Jar){
+	from sourceSets.main.allSource
+	classifier = 'source'
+}
+
 version = config.core_version //1.5.8
 group= "redgear.core" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "RedGearCore"
@@ -37,7 +42,7 @@ minecraft {
 		replace "@CoreVersion@", project.version
 	
 	replaceIn "network/RedGearNetwork.java"
-		replace "@NetworkVersion@", config.network_version//project.netversion
+		replace "@NetworkVersion@", config.network_version
 }
 
 jar{

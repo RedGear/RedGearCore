@@ -26,6 +26,7 @@ public class MetaItemBucket extends MetaItem {
 		super(par1, name);
         this.maxStackSize = 1;
         this.setCreativeTab(CreativeTabs.tabMisc);
+        setContainerItem(Item.bucketEmpty);
         MinecraftForge.EVENT_BUS.register(this);
     }
 	
