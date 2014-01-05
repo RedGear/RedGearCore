@@ -8,7 +8,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import redgear.core.asm.RedGearCore;
-import redgear.core.asm.RedGearCoreLoadingPlugin;
 import redgear.core.mod.FileHelper;
 import redgear.core.util.StringHelper;
 
@@ -105,7 +104,7 @@ public class ModConfigHelper
     }
     
     public static void printItemRegistry(){
-		File output = new File(RedGearCoreLoadingPlugin.mcLocation, "Red Gear ItemRegistry.txt");
+		File output = new File(RedGearCore.mcLocation, "Red Gear ItemRegistry.txt");
 		ArrayList<String> lines = new ArrayList<String>();
 		String name = "";
 		

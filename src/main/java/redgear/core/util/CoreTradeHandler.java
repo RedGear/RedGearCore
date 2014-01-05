@@ -8,6 +8,7 @@ import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
 import cpw.mods.fml.common.registry.VillagerRegistry;
 import cpw.mods.fml.common.registry.VillagerRegistry.IVillageTradeHandler;
@@ -16,8 +17,9 @@ public class CoreTradeHandler implements IVillageTradeHandler{
 
 	private static CoreTradeHandler instance;
 	
-	public ArrayListMultimap <Integer, MerchantRecipe> villagerRecipes = ArrayListMultimap. <Integer, MerchantRecipe> create();
+	public Multimap <Integer, MerchantRecipe> villagerRecipes = ArrayListMultimap. <Integer, MerchantRecipe> create();
 
+	@Override
     public void manipulateTradesForVillager(EntityVillager villager, MerchantRecipeList recipeList, Random random) {
         for (MerchantRecipe recipe : villagerRecipes.get(villager.getProfession()))
         	recipeList.add(recipe);
@@ -52,7 +54,7 @@ public class CoreTradeHandler implements IVillageTradeHandler{
      * @param buy_item - The ItemStack being bought.
      */
     public static void addTradeRecipe(int ID, ItemStack sell_item, ItemStack sell_item_2, ItemStack buy_item){
-    	instance.villagerRecipes.put(ID, new MerchantRecipe(sell_item, sell_item_2, buy_item));
+    	init().villagerRecipes.put(ID, new MerchantRecipe(sell_item, sell_item_2, buy_item));
     }
     
     /**

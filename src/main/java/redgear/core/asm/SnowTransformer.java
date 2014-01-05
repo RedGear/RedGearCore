@@ -43,7 +43,7 @@ public class SnowTransformer implements IClassTransformer
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes)
     {
-        if (transformedName.equals("net.minecraft.world.World") && RedGearCoreLoadingPlugin.util.getBoolean("SnowOnIce"))
+        if (transformedName.equals("net.minecraft.world.World") && RedGearCore.util.getBoolean("SnowOnIce"))
         {
             ClassReader reader = new ClassReader(bytes);
             ClassNode node = new ClassNode();
@@ -65,7 +65,7 @@ public class SnowTransformer implements IClassTransformer
             return writer.toByteArray();
         }
 
-        if (transformedName.equals("net.minecraft.item.ItemSnow") && RedGearCoreLoadingPlugin.util.getBoolean("SnowLayerStackFix"))
+        if (transformedName.equals("net.minecraft.item.ItemSnow") && RedGearCore.util.getBoolean("SnowLayerStackFix"))
         {
             ClassReader reader = new ClassReader(bytes);
             ClassNode node = new ClassNode();
@@ -118,7 +118,7 @@ public class SnowTransformer implements IClassTransformer
             return writer.toByteArray();
         }
 
-        if (transformedName.equals("net.minecraft.block.BlockSnowBlock") && RedGearCoreLoadingPlugin.util.getBoolean("SnowfallShovelHook"))
+        if (transformedName.equals("net.minecraft.block.BlockSnowBlock") && RedGearCore.util.getBoolean("SnowfallShovelHook"))
         {
             ClassReader reader = new ClassReader(bytes);
             ClassNode node = new ClassNode();
@@ -159,7 +159,7 @@ public class SnowTransformer implements IClassTransformer
             return writer.toByteArray();
         }
 
-        if (transformedName.equals("net.minecraft.block.BlockSnow") && (RedGearCoreLoadingPlugin.util.getBoolean("SnowGrowthAndDecay") || RedGearCoreLoadingPlugin.util.getBoolean("SnowPlaceOnSolidSide") || RedGearCoreLoadingPlugin.util.getBoolean("SnowfallShovelHook")))
+        if (transformedName.equals("net.minecraft.block.BlockSnow") && (RedGearCore.util.getBoolean("SnowGrowthAndDecay") || RedGearCore.util.getBoolean("SnowPlaceOnSolidSide") || RedGearCore.util.getBoolean("SnowfallShovelHook")))
         {
             ClassReader reader = new ClassReader(bytes);
             ClassNode node = new ClassNode();
@@ -212,13 +212,13 @@ public class SnowTransformer implements IClassTransformer
 
             for (MethodNode method : node.methods){
             	String mappedName = FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(name, method.name, method.desc);
-                if ("func_71847_b".equals(mappedName) && RedGearCoreLoadingPlugin.util.getBoolean("SnowGrowthAndDecay"))
+                if ("func_71847_b".equals(mappedName) && RedGearCore.util.getBoolean("SnowGrowthAndDecay"))
                 	method.instructions = updateTick;
 
-                if ("func_71893_a".equals(mappedName) && RedGearCoreLoadingPlugin.util.getBoolean("SnowfallShovelHook"))
+                if ("func_71893_a".equals(mappedName) && RedGearCore.util.getBoolean("SnowfallShovelHook"))
                 	method.instructions.insertBefore(method.instructions.getFirst(), harvestBlock);
 
-                if ("func_71930_b".equals(mappedName) && RedGearCoreLoadingPlugin.util.getBoolean("SnowPlaceOnSolidSide"))
+                if ("func_71930_b".equals(mappedName) && RedGearCore.util.getBoolean("SnowPlaceOnSolidSide"))
                 	method.instructions = canPlaceBlockAt;
             }
 

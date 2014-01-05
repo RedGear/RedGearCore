@@ -10,7 +10,7 @@ public class CoreFuelHandler implements IFuelHandler {
 	
 	private static CoreFuelHandler instance;
 	
-	private static HashMap<SimpleItem, Integer> items = new HashMap<SimpleItem, Integer>();
+	private HashMap<SimpleItem, Integer> items = new HashMap<SimpleItem, Integer>();
 	
 	private CoreFuelHandler(){}
 	
@@ -23,7 +23,7 @@ public class CoreFuelHandler implements IFuelHandler {
 	}
 	
 	public static void addFuel(SimpleItem fuel, int burnTime){
-		items.put(fuel, burnTime);
+		init().items.put(fuel, burnTime);
 	}
 	
 	public static void addFuel(ItemStack fuel, int burnTime){

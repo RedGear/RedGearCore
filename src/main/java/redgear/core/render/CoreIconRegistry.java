@@ -57,17 +57,17 @@ public class CoreIconRegistry{
 	 * @param name The FULL path of the icon, IE: assets/mod_name/textures/gui/button
 	 */
 	public static void addIcon(String name){
-		instance.icons.put(name, null);
+		init().icons.put(name, null);
 	}
 	
 	public static Icon getIcon(String name){
-		return instance.icons.get(name);
+		return init().icons.get(name);
 	}
 	
 	public static void addFluid(String iconName, Fluid fluid){
 		addIcon(iconName + flow);
 		addIcon(iconName + still);
-		instance.fluids.put(fluid, iconName);
+		init().fluids.put(fluid, iconName);
 	}
 	
 }

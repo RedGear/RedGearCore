@@ -20,7 +20,7 @@ public class FiniteWaterTransformer implements IClassTransformer
 {
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes){
-        if (transformedName.equals("net.minecraft.block.BlockFlowing") && RedGearCoreLoadingPlugin.util.getBoolean("FiniteWater", false))
+        if (transformedName.equals("net.minecraft.block.BlockFlowing") && RedGearCore.util.getBoolean("FiniteWater", false))
         {
             ClassReader reader = new ClassReader(bytes);
             ClassNode node = new ClassNode();

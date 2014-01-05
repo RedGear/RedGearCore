@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import redgear.core.asm.RedGearCoreLoadingPlugin;
+import redgear.core.asm.RedGearCore;
 import redgear.core.util.StringHelper;
 import cpw.mods.fml.common.FMLLog;
 
@@ -29,7 +29,7 @@ public class CoreModUtils {
      * @param blockIdDefault
      */
     public CoreModUtils(String modId, int itemIdDefault, int blockIdDefault){
-        this(StringHelper.parseConfigFile(new File(RedGearCoreLoadingPlugin.mcLocation, "config"), modId), Logger.getLogger(modId), itemIdDefault, blockIdDefault);
+        this(StringHelper.parseConfigFile(new File(RedGearCore.mcLocation, "config"), modId), Logger.getLogger(modId), itemIdDefault, blockIdDefault);
     }
 
     /**

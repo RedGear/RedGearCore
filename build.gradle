@@ -40,16 +40,13 @@ minecraft {
 	
 	replaceIn "asm/RedGearCore.java"
 		replace "@CoreVersion@", project.version
-	
-	replaceIn "network/RedGearNetwork.java"
-		replace "@NetworkVersion@", config.network_version
 }
 
 jar{
 	from sourceSets.main.allSource 
 	
 	manifest{
-		attributes 'FMLCorePlugin': 'redgear.core.asm.RedGearCoreLoadingPlugin', 'FMLCorePluginContainsFMLMod': 'true'
+		attributes 'FMLCorePlugin': 'redgear.core.asm.RedGearCore', 'FMLCorePluginContainsFMLMod': 'true'
 	}
 }
 
