@@ -26,11 +26,6 @@ dependencies {
 	compile('net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT')
 }
 
-/*task jarSources(type:Jar){
-	from sourceSets.main.allSource
-	classifier = 'source'
-}*/
-
 version = config.core_version //1.5.8
 group= "redgear.core" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "RedGearCore"
@@ -46,7 +41,7 @@ jar{
 	from sourceSets.main.allSource 
 	
 	manifest{
-		attributes 'FMLCorePlugin': 'redgear.core.asm.RedGearCore', 'FMLCorePluginContainsFMLMod': 'true'
+		attributes 'FMLCorePlugin': 'redgear.core.asm.CoreLoadingPlugin', 'FMLCorePluginContainsFMLMod': 'true'
 	}
 }
 
