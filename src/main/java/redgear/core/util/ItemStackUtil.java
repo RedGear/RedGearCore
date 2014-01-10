@@ -35,6 +35,10 @@ public class ItemStackUtil
             world.spawnEntityInWorld(entityitem);
         }
     }
+    
+    public static boolean areStacksEqualWithSizeAndTags(ItemStack first, ItemStack second){
+    	return areStacksEqualWithTags(first, second) && first.stackSize == second.stackSize;
+    }
 
     /**
      * Compares two ItemStacks. Unlike the default ItemStack.equals()
@@ -44,13 +48,20 @@ public class ItemStackUtil
      * @param second
      * @return True if the item ID and Metas are the same OR if the ID's are the same and at least one has a wildcard meta
      */
+    public static boolean areStacksEqualWithTags(ItemStack first, ItemStack second){
+        return areStacksEqual(first, second) && ItemStack.areItemStackTagsEqual(first, second);
+    }
+    
+    public static boolean areStacksEqualWithSize(ItemStack first, ItemStack second){
+    	return areStacksEqual(first, second) && first.stackSize == second.stackSize;
+    }
+    
     public static boolean areStacksEqual(ItemStack first, ItemStack second){
-        return ((!(first == null || second == null))
-                && first.itemID == second.itemID
-                && (first.getItemDamage() == OreDictionary.WILDCARD_VALUE
-                    || second.getItemDamage() == OreDictionary.WILDCARD_VALUE
-                    || first.getItemDamage() == second.getItemDamage())
-                && ItemStack.areItemStackTagsEqual(first, second));
+    	return new SimpleItem(first).equals(second);
+    }
+    
+    public static int hashStack(ItemStack stack){
+    	return new SimpleItem(stack).hashCode();
     }
 
     /**

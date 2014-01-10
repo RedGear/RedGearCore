@@ -9,9 +9,11 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import redgear.core.api.item.ISimpleItem;
+import redgear.core.api.world.ILocation;
 import redgear.core.util.SimpleItem;
 
-public class Location{
+public class Location implements ILocation{
 	public int x;
 	public int y;
 	public int z;
@@ -22,8 +24,8 @@ public class Location{
 		this.z = z;
 	}
 	
-	public Location(Location loc){
-		this(loc.x, loc.y, loc.z);
+	public Location(ILocation loc){
+		this(loc.getX(), loc.getY(), loc.getZ());
 	}
 	
 	public Location(TileEntity tile){
@@ -34,15 +36,38 @@ public class Location{
 		this(pos.blockX, pos.blockY, pos.blockZ);
 	}
 	
+	@Override
+	public int getX(){
+		return x;
+	}
+	
+	@Override
+	public int getY(){
+		return y;
+	}
+	
+	@Override
+	public int getZ(){
+		return z;
+	}
+	
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#copy()
+	 */
+	@Override
 	public Location copy(){
 		return new Location(this);
 	}
 	
-	public boolean check(IBlockAccess world, SimpleItem block, boolean oreDict){
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#check(net.minecraft.world.IBlockAccess, redgear.core.util.ISimpleItem, boolean)
+	 */
+	@Override
+	public boolean check(IBlockAccess world, ISimpleItem block, boolean oreDict){
 		if(block == null)
 			return true;
 		
-		if(block.id == 0 && isAir(world)) //Special case for air-type blocks.
+		if(block.getId() == 0 && isAir(world)) //Special case for air-type blocks.
 			return true;
 		
 		if(block.equals(new SimpleItem(world, this), oreDict))
@@ -51,55 +76,103 @@ public class Location{
 		return false;
 	}
 	
-	public boolean check(IBlockAccess world, SimpleItem block){
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#check(net.minecraft.world.IBlockAccess, redgear.core.util.ISimpleItem)
+	 */
+	@Override
+	public boolean check(IBlockAccess world, ISimpleItem block){
 		return check(world, block, true);
 	}
 	
-	public boolean check(IBlockAccess world, SimpleItem block, boolean oreDict, Location relative){
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#check(net.minecraft.world.IBlockAccess, redgear.core.util.ISimpleItem, boolean, redgear.core.world.Location)
+	 */
+	@Override
+	public boolean check(IBlockAccess world, ISimpleItem block, boolean oreDict, ILocation relative){
 		return copy().translate(relative).check(world, block, true);
 	}
 	
-	public boolean check(IBlockAccess world, SimpleItem block, Location relative){
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#check(net.minecraft.world.IBlockAccess, redgear.core.util.ISimpleItem, redgear.core.world.Location)
+	 */
+	@Override
+	public boolean check(IBlockAccess world, ISimpleItem block, ILocation relative){
 		return check(world, block, true, relative);
 	}
 	
-	public boolean check(IBlockAccess world, Collection<SimpleItem> blocks, boolean oreDict){
-		for(SimpleItem block : blocks)
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#check(net.minecraft.world.IBlockAccess, java.util.Collection, boolean)
+	 */
+	@Override
+	public boolean check(IBlockAccess world, Collection<ISimpleItem> blocks, boolean oreDict){
+		for(ISimpleItem block : blocks)
 			if(check(world, block, oreDict))
 				return true;
 		return false;
 	}
 	
-	public boolean check(IBlockAccess world, Collection<SimpleItem> blocks){
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#check(net.minecraft.world.IBlockAccess, java.util.Collection)
+	 */
+	@Override
+	public boolean check(IBlockAccess world, Collection<ISimpleItem> blocks){
 		return check(world, blocks, true);
 	}
 	
-	public boolean check(IBlockAccess world, Collection<SimpleItem> blocks, Location relative){
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#check(net.minecraft.world.IBlockAccess, java.util.Collection, redgear.core.world.Location)
+	 */
+	@Override
+	public boolean check(IBlockAccess world, Collection<ISimpleItem> blocks, ILocation relative){
 		return check(world, blocks, true, relative);
 	}
 	
-	public boolean check(IBlockAccess world, Collection<SimpleItem> blocks, boolean oreDict, Location relative){
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#check(net.minecraft.world.IBlockAccess, java.util.Collection, boolean, redgear.core.world.Location)
+	 */
+	@Override
+	public boolean check(IBlockAccess world, Collection<ISimpleItem> blocks, boolean oreDict, ILocation relative){
 		return copy().translate(relative).check(world, blocks, oreDict);
 	}
 	
-	public boolean check(IBlockAccess world, Class classes, Location relative){
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#check(net.minecraft.world.IBlockAccess, java.lang.Class, redgear.core.world.Location)
+	 */
+	@Override
+	public boolean check(IBlockAccess world, Class<? extends TileEntity> classes, ILocation relative){
 		return copy().translate(relative).check(world,  classes);
 	}
 	
-	public boolean check(IBlockAccess world, Class type){
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#check(net.minecraft.world.IBlockAccess, java.lang.Class)
+	 */
+	@Override
+	public boolean check(IBlockAccess world, Class<? extends TileEntity> type){
 		return type.isInstance(getTile(world));
 	}
 	
-	public void placeBlock(World world, SimpleItem item){
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#placeBlock(net.minecraft.world.World, redgear.core.util.ISimpleItem)
+	 */
+	@Override
+	public void placeBlock(World world, ISimpleItem item){
 		if(item != null && item.isValid() && item.isBlock())
-			world.setBlock(x, y, z, item.id, item.meta, 2);
+			world.setBlock(x, y, z, item.getId(), item.getMeta(), 2);
 	}
 	
-	public void placeBlock(World world, SimpleItem item, Location relative){
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#placeBlock(net.minecraft.world.World, redgear.core.util.ISimpleItem, redgear.core.world.Location)
+	 */
+	@Override
+	public void placeBlock(World world, ISimpleItem item, ILocation relative){
 		copy().translate(relative).placeBlock(world, item);
 	}
 	
-	public boolean placeBlock(World world, SimpleItem item, SimpleItem target, boolean oreDict){
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#placeBlock(net.minecraft.world.World, redgear.core.util.ISimpleItem, redgear.core.util.ISimpleItem, boolean)
+	 */
+	@Override
+	public boolean placeBlock(World world, ISimpleItem item, ISimpleItem target, boolean oreDict){
 		if(check(world, target, oreDict)){
 			placeBlock(world, item);
 			return true;
@@ -108,62 +181,109 @@ public class Location{
 			return false;
 	}
 	
-	public boolean placeBlock(World world, SimpleItem item, SimpleItem target){
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#placeBlock(net.minecraft.world.World, redgear.core.util.ISimpleItem, redgear.core.util.ISimpleItem)
+	 */
+	@Override
+	public boolean placeBlock(World world, ISimpleItem item, ISimpleItem target){
 		return placeBlock(world, item, target, true);
 	}
 	
-	public boolean placeBlock(World world, SimpleItem item, SimpleItem target, boolean oreDict, Location reletive){
-		return copy().translate(reletive).placeBlock(world, item, target);
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#placeBlock(net.minecraft.world.World, redgear.core.util.ISimpleItem, redgear.core.util.ISimpleItem, boolean, redgear.core.world.Location)
+	 */
+	@Override
+	public boolean placeBlock(World world, ISimpleItem item, ISimpleItem target, boolean oreDict, ILocation relative){
+		return copy().translate(relative).placeBlock(world, item, target);
 	}
 	
-	public boolean placeBlock(World world, SimpleItem item, SimpleItem target, Location reletive){
-		return placeBlock(world, item, target, true, reletive);
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#placeBlock(net.minecraft.world.World, redgear.core.util.ISimpleItem, redgear.core.util.ISimpleItem, redgear.core.world.Location)
+	 */
+	@Override
+	public boolean placeBlock(World world, ISimpleItem item, ISimpleItem target, ILocation relative){
+		return placeBlock(world, item, target, true, relative);
 	}
 	
-	public boolean placeBlock(World world, SimpleItem item, Collection<SimpleItem> targets, boolean oreDict){
-		for(SimpleItem it : targets)
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#placeBlock(net.minecraft.world.World, redgear.core.util.ISimpleItem, java.util.Collection, boolean)
+	 */
+	@Override
+	public boolean placeBlock(World world, ISimpleItem item, Collection<ISimpleItem> targets, boolean oreDict){
+		for(ISimpleItem it : targets)
 			if(placeBlock(world, item, it, oreDict))
 				return true;
 		return false;
 	}
 	
-	public boolean placeBlock(World world, SimpleItem item, Collection<SimpleItem> targets){
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#placeBlock(net.minecraft.world.World, redgear.core.util.ISimpleItem, java.util.Collection)
+	 */
+	@Override
+	public boolean placeBlock(World world, ISimpleItem item, Collection<ISimpleItem> targets){
 		return placeBlock(world, item, targets, true);
 	}
 	
-	public boolean placeBlock(World world, SimpleItem item, Collection<SimpleItem> targets, Location reletive){
-		return placeBlock(world, item, targets, true, reletive);
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#placeBlock(net.minecraft.world.World, redgear.core.util.ISimpleItem, java.util.Collection, redgear.core.world.Location)
+	 */
+	@Override
+	public boolean placeBlock(World world, ISimpleItem item, Collection<ISimpleItem> targets, ILocation relative){
+		return placeBlock(world, item, targets, true, relative);
 	}
 	
-	public boolean placeBlock(World world, SimpleItem item, Collection<SimpleItem> targets, boolean oreDict, Location reletive){
-		return copy().translate(reletive).placeBlock(world, item, targets, oreDict);
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#placeBlock(net.minecraft.world.World, redgear.core.util.ISimpleItem, java.util.Collection, boolean, redgear.core.world.Location)
+	 */
+	@Override
+	public boolean placeBlock(World world, ISimpleItem item, Collection<ISimpleItem> targets, boolean oreDict, ILocation relative){
+		return copy().translate(relative).placeBlock(world, item, targets, oreDict);
 	}
 	
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#getBlockId(net.minecraft.world.IBlockAccess)
+	 */
+	@Override
 	public int getBlockId(IBlockAccess world){
 		return world.getBlockId(x, y, z);
 	}
 	
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#getBlockMeta(net.minecraft.world.IBlockAccess)
+	 */
+	@Override
 	public int getBlockMeta(IBlockAccess world){
 		return world.getBlockMetadata(x, y, z);
 	}
 	
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#getTile(net.minecraft.world.IBlockAccess)
+	 */
+	@Override
 	public TileEntity getTile(IBlockAccess world){
 		return world.getBlockTileEntity(x, y, z);
 	}
 	
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#getBlockMaterial(net.minecraft.world.IBlockAccess)
+	 */
+	@Override
 	public Material getBlockMaterial(IBlockAccess world){
 		return world.getBlockMaterial(x, y, z);
 	}
 	
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#isAir(net.minecraft.world.IBlockAccess)
+	 */
+	@Override
 	public boolean isAir(IBlockAccess world){
 		return world.isAirBlock(x, y, z);
 	}
 	
-	/**
-	 * Rotates the map along a given axis
-	 * @param direction ForgeDirection about which to rotate
-	 * @param degrees Integer of clockwise 90 degree turns IE: 0 nothing, 1 clockwise once, 2 reversed, 3 counter clockwise. 
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#rotate(net.minecraftforge.common.ForgeDirection, int)
 	 */
+	@Override
 	public Location rotate(ForgeDirection direction, int degrees){
 		degrees = Math.abs(degrees) % 4;// should ensure that degrees must be 0, 1, 2, or 3 and nothing else
 		
@@ -195,6 +315,10 @@ public class Location{
 		return this;
 	}
 	
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#reflect(net.minecraftforge.common.ForgeDirection)
+	 */
+	@Override
 	public Location reflect(ForgeDirection direction){
 		switch(direction){
 		case DOWN:
@@ -215,7 +339,7 @@ public class Location{
 		return this;
 	}
 	
-	public Location rotateX(int degrees){
+	private Location rotateX(int degrees){
 		if(degrees > 0)
 			rotateX(--degrees);
 		int temp = -z;
@@ -225,7 +349,7 @@ public class Location{
 		return this;
 	}
 	
-	public Location rotateY(int degrees){
+	private Location rotateY(int degrees){
 		if(degrees > 0)
 			rotateY(--degrees);
 		int temp = -x;
@@ -235,7 +359,7 @@ public class Location{
 		return this;
 	}
 	
-	public Location rotateZ(int degrees){
+	private Location rotateZ(int degrees){
 		if(degrees > 0)
 			rotateZ(--degrees);
 		int temp = -y;
@@ -245,40 +369,59 @@ public class Location{
 		return this;
 	}
 	
-	public Location reflectX(){
+	private Location reflectX(){
 		x = -x;
 		return this;
 	}
 	
-	public Location reflectY(){
+	private Location reflectY(){
 		y = -y;
 		return this;
 	}
 	
-	public Location reflectZ(){
+	private Location reflectZ(){
 		z = -z;
 		return this;
 	}
 	
-	public Location translate(Location other){
-		this.x += other.x;
-		this.y += other.y;
-		this.z += other.z;
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#translate(redgear.core.world.Location)
+	 */
+	@Override
+	public ILocation translate(ILocation other){
+		this.x += other.getX();
+		this.y += other.getY();
+		this.z += other.getZ();
 		return this;
 	}
 	
-	public Location translaste(int direction, int amount){
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#translaste(int, int)
+	 */
+	@Override
+	public ILocation translate(int direction, int amount){
 		return translate(ForgeDirection.getOrientation(direction), amount);
 	}
 	
-	public Location translate(int x, int y, int z){
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#translate(int, int, int)
+	 */
+	@Override
+	public ILocation translate(int x, int y, int z){
 		return translate(new Location(x, y, z));
 	}
 	
-	public Location translate(ForgeDirection direction, int amount){
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#translate(net.minecraftforge.common.ForgeDirection, int)
+	 */
+	@Override
+	public ILocation translate(ForgeDirection direction, int amount){
 		return translate(direction.offsetX * amount, direction.offsetY * amount, direction.offsetZ * amount);
 	}
 	
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#hashCode()
+	 */
 	@Override
 	public int hashCode(){
 		return hash(hash(hash(1, x), y), z);
@@ -288,6 +431,9 @@ public class Location{
 		return (seed * 31) + value;
 	}
 	
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj){
 		if(obj instanceof Location)
@@ -296,17 +442,36 @@ public class Location{
 			return false;
 	}
 	
-	public boolean equals(Location other){
-		return x == other.x && y == other.y && z == other.z;
+	/* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#equals(redgear.core.world.Location)
+	 */
+	@Override
+	public boolean equals(ILocation other){
+		return x == other.getX() && y == other.getY() && z == other.getZ();
 	}
 	
-    public void writeToNBT(NBTTagCompound tag){
+    /* (non-Javadoc)
+	 * @see redgear.core.world.ILocation#writeToNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+    @Override
+	public void writeToNBT(NBTTagCompound tag){
         tag.setInteger("x", x);
         tag.setInteger("y", y);
         tag.setInteger("z", z);
     }
+    
+    @Override
+   	public void writeToNBT(NBTTagCompound tag, String name){
+       	NBTTagCompound subTag = new NBTTagCompound();
+       	writeToNBT(subTag);
+       	tag.setTag(name, subTag);
+       }
 
     public Location (NBTTagCompound tag){
         this(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z"));
+    }
+    
+    public Location(NBTTagCompound tag, String name){
+    	this(tag.getCompoundTag(name));
     }
 }

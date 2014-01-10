@@ -8,21 +8,22 @@ import java.util.Map.Entry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.ForgeDirection;
+import redgear.core.api.item.ISimpleItem;
 import redgear.core.util.SimpleItem;
 
 public class MultiBlockMap {
 
-	private HashMap<Location, Collection<SimpleItem>> points;
+	private HashMap<Location, Collection<ISimpleItem>> points;
 	
 	public MultiBlockMap(){
 		this(1);
 	}
 	
 	public MultiBlockMap(int size){
-		points = new HashMap<Location, Collection<SimpleItem>>(size);
+		points = new HashMap<Location, Collection<ISimpleItem>>(size);
 	}
 	
-	public void addLocation(Location loc, Collection<SimpleItem> items){
+	public void addLocation(Location loc, Collection<ISimpleItem> items){
 		points.put(loc, items);
 	}
 	
@@ -30,13 +31,13 @@ public class MultiBlockMap {
 		addLocation(x, y, z, new SimpleItem(stack));
 	}
 	
-	public void addLocation(int x, int y, int z, SimpleItem stack){
-		HashSet<SimpleItem>temp = new HashSet<SimpleItem>(1);
+	public void addLocation(int x, int y, int z, ISimpleItem stack){
+		HashSet<ISimpleItem>temp = new HashSet<ISimpleItem>(1);
 		temp.add(stack);
 		addLocation(x, y, z, temp);
 	}
 	
-	public void addLocation(int x, int y, int z, Collection<SimpleItem> stack){
+	public void addLocation(int x, int y, int z, Collection<ISimpleItem> stack){
 		addLocation(new Location(x, y, z), stack);
 	}
 	
@@ -45,7 +46,7 @@ public class MultiBlockMap {
 	}
 	
 	public boolean check(IBlockAccess world, Location other){
-		for(Entry<Location, Collection<SimpleItem>> bit : points.entrySet())
+		for(Entry<Location, Collection<ISimpleItem>> bit : points.entrySet())
 			if(!bit.getKey().check(world, bit.getValue(), other))
 				return false; //if one is wrong, don't bother continuing
 		return true;
@@ -57,12 +58,12 @@ public class MultiBlockMap {
 	 * @param degrees Integer of clockwise 90 degree turns IE: 0 nothing, 1 clockwise once, 2 reversed, 3 counter clockwise. 
 	 */
 	public void rotate(ForgeDirection direction, int degrees){
-		for(Entry<Location, Collection<SimpleItem>> bit : points.entrySet())
+		for(Entry<Location, Collection<ISimpleItem>> bit : points.entrySet())
 			bit.getKey().rotate(direction, degrees);
 	}
 	
 	public void reflect(ForgeDirection direction){
-		for(Entry<Location, Collection<SimpleItem>> bit : points.entrySet())
+		for(Entry<Location, Collection<ISimpleItem>> bit : points.entrySet())
 			bit.getKey().reflect(direction);
 	}
 	
@@ -71,7 +72,7 @@ public class MultiBlockMap {
 	}
 	
 	public void translate(Location other){
-		for(Entry<Location, Collection<SimpleItem>> bit : points.entrySet())
+		for(Entry<Location, Collection<ISimpleItem>> bit : points.entrySet())
 			bit.getKey().translate(other);
 	}
 	

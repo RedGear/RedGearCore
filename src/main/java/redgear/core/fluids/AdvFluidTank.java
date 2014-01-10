@@ -1,6 +1,8 @@
 package redgear.core.fluids;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -39,12 +41,24 @@ public class AdvFluidTank extends FluidTank {
     	return this;
     }
     
+    public AdvFluidTank addFluidMapFluids(Collection<Fluid> fluids){
+    	for(Fluid addFluid : fluids)
+    		addFluidMap(addFluid);
+    	return this;
+    }
+    
     public AdvFluidTank addFluidMap(Fluid addFluid){
     	if(fluidMap == null)
     		fluidMap = new ArrayList<Integer>(1);
     	
     	if(addFluid != null)
     		fluidMap.add(addFluid.getID());
+    	return this;
+    }
+    
+    public AdvFluidTank addFluidMapIds(Collection<Integer> fluidIds){
+    	for(Integer fluidId : fluidIds)
+    		addFluidMap(fluidId);
     	return this;
     }
     

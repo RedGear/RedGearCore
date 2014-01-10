@@ -6,14 +6,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.oredict.OreDictionary;
+import redgear.core.api.item.ISimpleItem;
 import redgear.core.world.Location;
 
 /**
- * The SimpleItem class is similar to ItemStack, but is designed to be simpler, smaller, and is designed to be used in Hash-based data structures. 
+ * The SimpleItem class is similar to ItemStack, but is designed to be simpler, 
+ * smaller, and is safe to be used in Hash-based data structures. 
  * @author Blackhole
  *
  */
-public class SimpleItem {
+public class SimpleItem implements ISimpleItem {
 	public final int id;
 	public final int meta;
 	
@@ -46,75 +48,99 @@ public class SimpleItem {
 		this(world, loc.x, loc.y, loc.z);
 	}
 	
-	/**
-	 * @return True if the Block or Item represented can be found in the Block or Item lists. 
+	@Override
+	public int getId(){
+		return id;
+	}
+	
+	@Override
+	public int getMeta(){
+		return meta;
+	}
+	
+	/* (non-Javadoc)
+	 * @see redgear.core.util.ISimpleItem#isValid()
 	 */
+	@Override
 	public boolean isValid(){
 		return (isBlock() && Block.blocksList[id] != null) || (isItem() && Item.itemsList[id] != null);
 	}
 	
-	/**
-	 * @return True if the id is within the block ID range.
+	/* (non-Javadoc)
+	 * @see redgear.core.util.ISimpleItem#isBlock()
 	 */
+	@Override
 	public boolean isBlock(){
 		return id > 0 && id < Block.blocksList.length;
 	}
 	
-	/**
-	 * @return True if the id is within the item ID range and NOT in the block range.
+	/* (non-Javadoc)
+	 * @see redgear.core.util.ISimpleItem#isItem()
 	 */
+	@Override
 	public boolean isItem(){
 		return id >= Block.blocksList.length && id < Item.itemsList.length;
 	}
 	
-	/**
-	 * @return The Block represented, or null if it can't be found.
+	/* (non-Javadoc)
+	 * @see redgear.core.util.ISimpleItem#getBlock()
 	 */
+	@Override
 	public Block getBlock(){
 		return isBlock() ? Block.blocksList[id] : null;
 	}
 	
-	/**
-	 * @return The Item represented, or null if it can't be found. Will return the Item form of a Block.
+	/* (non-Javadoc)
+	 * @see redgear.core.util.ISimpleItem#getItem()
 	 */
+	@Override
 	public Item getItem(){
 		return isValid() ? Item.itemsList[id] : null;
 	}
 	
-	/**
-	 * @return New ItemStack reference with size of 1. Item may or may not exist.
+	/* (non-Javadoc)
+	 * @see redgear.core.util.ISimpleItem#getStack()
 	 */
+	@Override
 	public ItemStack getStack(){
 		return getStack(1);
 	}
 	
-	/**
-	 * @return New ItemStack reference with given size. Item may or may not exist.
+	/* (non-Javadoc)
+	 * @see redgear.core.util.ISimpleItem#getStack(int)
 	 */
+	@Override
 	public ItemStack getStack(int amount){
 		return new ItemStack(id, amount, meta);
 	}
 	
-	/**
-	 * @return The Ore Dictionary name this stack is registered with, or "Unknown" if it's not. 
+	/* (non-Javadoc)
+	 * @see redgear.core.util.ISimpleItem#oreName()
 	 */
+	@Override
 	public String oreName(){
 		return OreDictionary.getOreName(OreDictionary.getOreID(getStack()));
 	}
 	
-	/**
-	 * @return true if this stack is in the Ore Dictionary, false if it's not. 
+	/* (non-Javadoc)
+	 * @see redgear.core.util.ISimpleItem#isInOreDict()
 	 */
+	@Override
 	public boolean isInOreDict(){
 		return !oreName().equals("Unknown");
 	}
 	
-	/**
-	 * @return The display name of the stack or "Unknown" if the item doesn't exist. 
+	/* (non-Javadoc)
+	 * @see redgear.core.util.ISimpleItem#getName()
 	 */
+	@Override
 	public String getName(){
 		return isValid() ? getStack().getDisplayName() : isInOreDict() ? oreName() : "Unknown";
 	}
+	
+	/* (non-Javadoc)
+	 * @see redgear.core.util.ISimpleItem#hashCode()
+	 */
 	
 	@Override
 	public int hashCode(){
@@ -125,36 +151,35 @@ public class SimpleItem {
 		return (seed * 31) + value;
 	}
 	
-	/**
-	 * Legal data types are SimpleItem, ItemStack, Block, and Item
-	 * @return True if the id and meta or oreDict match.
-	 */
+	
+	
 	@Override
 	public boolean equals(Object obj){
-		if(obj instanceof SimpleItem)
-			return equals((SimpleItem) obj);
+		return equals(obj, true);
+	}
+	
+	@Override
+	public boolean equals(Object obj, boolean oreDict){
+		if(obj instanceof ISimpleItem)
+			return equals((ISimpleItem) obj, oreDict);
 		
 		if(obj instanceof ItemStack)
-			return equals(new SimpleItem((ItemStack) obj));
+			return equals(new SimpleItem((ItemStack) obj), oreDict);
 		
 		if(obj instanceof Block)
-			return equals(new SimpleItem((Block) obj));
+			return equals(new SimpleItem((Block) obj), oreDict);
 		
 		if(obj instanceof Item)
-			return equals(new SimpleItem((Item) obj));
+			return equals(new SimpleItem((Item) obj), oreDict);
 		
 		return false;
 	}
-	
-	public boolean equals(SimpleItem item){
-		return equals(item, true);
-	}
 
-	public boolean equals(SimpleItem other, boolean oreDict){
+	public boolean equals(ISimpleItem other, boolean oreDict){
 		if(other == null)
 			return false;
 		
-		if(id == other.id && (meta == OreDictionary.WILDCARD_VALUE || other.meta == OreDictionary.WILDCARD_VALUE || meta == other.meta))
+		if(id == other.getId() && (meta == OreDictionary.WILDCARD_VALUE || other.getMeta() == OreDictionary.WILDCARD_VALUE || meta == other.getMeta()))
 			return true;
 		
 		int oreId = OreDictionary.getOreID(getStack());
@@ -165,6 +190,10 @@ public class SimpleItem {
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * @see redgear.core.util.ISimpleItem#writeToNBT(net.minecraft.nbt.NBTTagCompound)
+	 */
+	@Override
 	public void writeToNBT(NBTTagCompound tag){
 		tag.setInteger("id", id);
 		tag.setInteger("meta", meta);
@@ -175,7 +204,11 @@ public class SimpleItem {
         meta = tag.getInteger("meta");
     }
     
-    public void writeToNBT(NBTTagCompound tag, String name){
+    /* (non-Javadoc)
+	 * @see redgear.core.util.ISimpleItem#writeToNBT(net.minecraft.nbt.NBTTagCompound, java.lang.String)
+	 */
+    @Override
+	public void writeToNBT(NBTTagCompound tag, String name){
     	NBTTagCompound subTag = new NBTTagCompound();
     	writeToNBT(subTag);
     	tag.setTag(name, subTag);

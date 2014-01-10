@@ -3,6 +3,7 @@ package redgear.core.thermal;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import redgear.core.api.world.ILocation;
 import redgear.core.tile.TileEntityMachine;
 import redgear.core.world.Location;
 
@@ -31,7 +32,7 @@ public abstract class TileEntityThermalMachine extends TileEntityMachine impleme
 	}
 	
 	private void shareHeat(ForgeDirection direct){
-		Location otherLoc = new Location(this).translate(direct, 1);
+		ILocation otherLoc = new Location(this).translate(direct, 1);
 		TileEntity otherTile = otherLoc.getTile(worldObj);
 		
 		if(otherTile != null && otherTile instanceof IThermal){
