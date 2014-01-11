@@ -45,78 +45,162 @@ public class AdvFluidTank extends FluidTank {
 		super(stack, capacity);
 	}
 
+	/**
+	 * Maps a collection of fluids to one transfer rule.
+	 * 
+	 * @param fluids Fluids to give this rule.
+	 * @param direct Direction these fluids are allowed to move.
+	 * @return this object.
+	 */
 	public AdvFluidTank addFluidMapFluids(Collection<Fluid> fluids, TransferRule direct) {
 		for (Fluid addFluid : fluids)
 			addFluidMap(addFluid, direct);
 		return this;
 	}
 
+	/**
+	 * Maps a fluid to a transfer rule.
+	 * 
+	 * @param addFluid Fluid to give this rule.
+	 * @param direct Direction this fluid is allowed to move.
+	 * @return this object.
+	 */
 	public AdvFluidTank addFluidMap(Fluid addFluid, TransferRule direct) {
 		addFluidMap(addFluid == null ? -1 : addFluid.getID(), direct);
 		return this;
 	}
 
+	/**
+	 * Maps a collection of fluid IDs to one transfer rule.
+	 * 
+	 * @param fluids Fluids to give this rule.
+	 * @param direct Direction these fluids are allowed to move.
+	 * @return this object.
+	 */
 	public AdvFluidTank addFluidMapIds(Collection<Integer> fluidIds, TransferRule direct) {
 		for (Integer fluidId : fluidIds)
 			addFluidMap(fluidId, direct);
 		return this;
 	}
 
+	/**
+	 * Maps a fluid id to a transfer rule.
+	 * 
+	 * @param addFluid ID of the fluid to give this rule. (-1 to refer to all
+	 * fluids with no explicit mapping).
+	 * @param direct Direction this fluid is allowed to move.
+	 * @return this object.
+	 */
 	public AdvFluidTank addFluidMap(int addFluidId, TransferRule direct) {
 		fluidMap.put(addFluidId, direct);
 		return this;
 	}
 
+	/**
+	 * @return True if this tank is full
+	 */
 	public boolean isFull() {
 		return fluid != null && getFluid().amount == capacity;
 	}
 
+	/**
+	 * @return true if this tank contains no fluid
+	 */
 	public boolean isEmpty() {
 		return fluid == null || fluid.amount == 0;
 	}
 
-	public boolean contains(Fluid other) {
+	/**
+	 * @return Amount of empty space in this tank.
+	 */
+	public int getSpace() {
+		return capacity - getFluidAmount();
+	}
+
+	/**
+	 * @return Shortcut for amount of fluid in this tank.
+	 */
+	public int getAmount() {
+		return getFluidAmount();
+	}
+
+	/**
+	 * @param other FluidStack to try to add
+	 * @return True if other could be FULLY added to this tank with the fill()
+	 * method.
+	 */
+	public boolean canFill(FluidStack other) {
+		return other != null && canFill(other.getFluid()) && canFill(other.amount);
+	}
+
+	/**
+	 * @param other Fluid to try to add
+	 * @return True if this tank could have this fluid added. Does not check if
+	 * tank is full.
+	 */
+	public boolean canFill(Fluid other) {
+		return other == null || isEmpty() ? true : fluid.fluidID == other.getID();
+	}
+
+	/**
+	 * @param amount Amount of fluid to try to add
+	 * @return True if there is enough room in this tank to put this much fluid.
+	 */
+	public boolean canFill(int amount) {
+		return getSpace() >= amount;
+	}
+
+	/**
+	 * @param other FluidStack to try to add
+	 * @return True if other could be FULLY added to this tank with the fill()
+	 * method.
+	 */
+	public boolean canDrain(FluidStack other) {
+		return other != null && canDrain(other.getFluid()) && canDrain(other.amount);
+	}
+
+	/**
+	 * @param other Fluid to try to add
+	 * @return True if this tank could have this fluid removed; AKA it contains
+	 * some of this fluid.
+	 */
+	public boolean canDrain(Fluid other) {
 		return other == null || isEmpty() ? false : fluid.fluidID == other.getID();
 	}
 
-	public boolean contains(FluidStack other) {
-		return other == null || isEmpty() ? false : fluid.containsFluid(other);
+	/**
+	 * @param amount Amount to try and remove
+	 * @return true if this tank contains at least this much fluid.
+	 */
+	public boolean canDrain(int amount) {
+		return getAmount() >= amount;
 	}
 
-	public boolean canFill(FluidStack other) {
-		return other != null && canExcept(other.fluidID) && contains(other) && getSpace() > other.amount;
-	}
-
-	public boolean canExcept(FluidStack stack) {
-		return canExcept(stack.fluidID);
-	}
-
-	public boolean canExcept(Fluid fluid) {
-		return canExcept(fluid.getID());
-	}
-
-	public boolean canExcept(int fluidId) {
+	/**
+	 * @param fluidId Fluid ID to try to add
+	 * @return True if this tank could accept this type of fluid through the
+	 * fillWithMap() method
+	 */
+	public boolean canAccept(int fluidId) {
 		TransferRule direct = getRule(fluidId);
 		return direct == TransferRule.INPUT || direct == TransferRule.BOTH;
 	}
 
-	public boolean canEmpty(int amount) {
-		return canEject(fluid.fluidID) && getAmount() > amount;
-	}
-
+	/**
+	 * @param fluidId Fluid ID to try and remove
+	 * @return True if this fluid could be removed through the drainWithMap()
+	 * method
+	 */
 	public boolean canEject(int fluidId) {
 		TransferRule direct = getRule(fluidId);
 		return direct == TransferRule.OUTPUT || direct == TransferRule.BOTH;
 	}
 
-	public int getSpace() {
-		return capacity - getFluidAmount();
-	}
-
-	public int getAmount() {
-		return getFluidAmount();
-	}
-
+	/**
+	 * @param fluidId Fluid ID to get rule for
+	 * @return The TransferRule for this fluid, or the value of default fluid,
+	 * or TransferRule.NEITHER if not found.
+	 */
 	private TransferRule getRule(int fluidId) {
 		TransferRule temp = fluidMap.get(fluidId);
 
@@ -129,38 +213,77 @@ public class AdvFluidTank extends FluidTank {
 		return temp;
 	}
 
-	@Override
-	public int fill(FluidStack resource, boolean doFill) {
-		if (canExcept(resource))
+	/**
+	 * Fills this tank with as much of the FluidStack as possible, using the
+	 * fluidMappings
+	 * 
+	 * @param resource FluidStack to fill
+	 * @param doFill True means the action will be done, false means it will
+	 * only be simulated.
+	 * @return amount of fluid accepted, or would have been moved.
+	 */
+	public int fillWithMap(FluidStack resource, boolean doFill) {
+		if (canAccept(resource.fluidID))
 			return super.fill(resource, doFill);
 		else
 			return 0;
 	}
 
-	@Override
-	public FluidStack drain(int maxDrain, boolean doDrain) {
-		if (canEject(maxDrain))
+	/**
+	 * Drains this tank with up to the amount in maxDrain, using the
+	 * fluidMappings
+	 * 
+	 * @param maxDrain Maximum amount of fluid to try and drain
+	 * @param doDrain if true fluid will be removed, false means it will only be
+	 * simulated
+	 * @return FluidStack representing the fluid drained or would have been
+	 * drained. Null if no fluid would be drained.
+	 */
+	public FluidStack drainWithMap(int maxDrain, boolean doDrain) {
+		if (canEject(fluid.fluidID))
 			return super.drain(maxDrain, doDrain);
 		else
 			return null;
 	}
 
 	/**
-	 * Fills the tank while ignoring any pressure, side or liquid mappings.
+	 * Drains this tank with up to the amount in maxDrain, using the
+	 * fluidMappings
 	 * 
-	 * @param resource
-	 * @param doFill
-	 * @return
+	 * @param maxDrain Maximum amount of fluid to try and drain
+	 * @param doDrain if true fluid will be removed, false means it will only be
+	 * simulated
+	 * @return FluidStack representing the fluid drained or would have been
+	 * drained.
 	 */
-	public int fillOverride(FluidStack resource, boolean doFill) {
-		return super.fill(resource, doFill);
+	public FluidStack drainWithMap(FluidStack resource, boolean doDrain) {
+		FluidStack drained = null;
+		if (canDrain(resource.getFluid()))
+			drained = drain(resource.amount, doDrain);
+		if (drained == null)
+			drained = new FluidStack(resource.fluidID, 0);
+		return drained;
 	}
 
+	/**
+	 * Creates a fluid gauge used by GUIs and attaches it to this tank.
+	 * 
+	 * @param x Top of the tank in the GUI
+	 * @param y Left of the tank in the GUI
+	 * @param width x + width is the Right of the tank in the GUI
+	 * @param height y + height is the Bottom of the tank in the GUI
+	 * @param tankId The ID of this tank inside it's parent TileEntity.
+	 * @return This object
+	 */
 	public AdvFluidTank addLiquidGauge(int x, int y, int width, int height, int tankId) {
 		guage = new LiquidGauge(capacity, x, y, width, height, tankId);
 		return this;
 	}
 
+	/**
+	 * @return The LiquidGauge representing this tank, or null if no gauge was
+	 * created.
+	 */
 	public LiquidGauge getLiquidGauge() {
 		return guage;
 	}

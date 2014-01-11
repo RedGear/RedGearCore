@@ -17,7 +17,7 @@ import redgear.core.fluids.AdvFluidTank;
 import redgear.core.inventory.InvSlot;
 import redgear.core.tile.TileEntityGeneric;
 import redgear.core.tile.TileEntityInventory;
-import redgear.core.tile.TileEntityInventoryAndTank;
+import redgear.core.tile.TileEntityTank;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -39,8 +39,8 @@ public class ContainerGeneric extends Container
         if(myTile instanceof TileEntityInventory)
         	addSlots((TileEntityInventory) myTile);
         
-        if(myTile instanceof TileEntityInventoryAndTank)
-        	addTanks((TileEntityInventoryAndTank) myTile);
+        if(myTile instanceof TileEntityTank)
+        	addTanks((TileEntityTank) myTile);
         
         if(myTile instanceof TileEntityGeneric){
         	addProgressBars((TileEntityGeneric) myTile);
@@ -58,7 +58,7 @@ public class ContainerGeneric extends Container
     		addSlotToContainer(slot); 
     }
     
-    protected void addTanks(TileEntityInventoryAndTank tile){
+    protected void addTanks(TileEntityTank tile){
     	for(LiquidGauge gauge : tile.getLiquidGauges()){
     		liquidGauges.add(gauge);
     		dataMap.add("tankId" + gauge.tankId);
@@ -131,8 +131,8 @@ public class ContainerGeneric extends Container
     	super.detectAndSendChanges();
 
     	
-    	if(!liquidGauges.isEmpty() && myTile instanceof TileEntityInventoryAndTank){
-    			TileEntityInventoryAndTank tankTile = (TileEntityInventoryAndTank) myTile;
+    	if(!liquidGauges.isEmpty() && myTile instanceof TileEntityTank){
+    			TileEntityTank tankTile = (TileEntityTank) myTile;
     			
     			for(LiquidGauge gauge : liquidGauges){
     				AdvFluidTank tileTank = tankTile.getTank(gauge.tankId);

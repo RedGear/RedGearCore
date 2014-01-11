@@ -9,7 +9,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import redgear.core.fluids.AdvFluidTank;
 
 
-public abstract class TileEntityMachine extends TileEntityInventoryAndTank {
+public abstract class TileEntityMachine extends TileEntityTank {
 
 	private final int idleRate;
 	private int idle = 0;
