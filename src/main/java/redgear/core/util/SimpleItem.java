@@ -58,6 +58,11 @@ public class SimpleItem implements ISimpleItem {
 		return meta;
 	}
 	
+	@Override
+	public ISimpleItem copy(){
+		return new SimpleItem(this.id, this.meta);
+	}
+	
 	/* (non-Javadoc)
 	 * @see redgear.core.util.ISimpleItem#isValid()
 	 */

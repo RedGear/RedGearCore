@@ -1,6 +1,7 @@
 package redgear.core.tile;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,7 +18,7 @@ import redgear.core.render.LiquidGauge;
 
 public abstract class TileEntityInventoryAndTank extends TileEntityInventory implements IFluidHandler
 {
-	private ArrayList<AdvFluidTank> tanks = new ArrayList<AdvFluidTank>();
+	private List<AdvFluidTank> tanks = new ArrayList<AdvFluidTank>();
 
     /**
      * Adds the given LiquidTank to this tile
@@ -50,7 +51,7 @@ public abstract class TileEntityInventoryAndTank extends TileEntityInventory imp
     	int filled = 0;
     	
     	for(AdvFluidTank tank : tanks){
-    		filled = tank.fill(from, resource, doFill);
+    		filled = tank.fill(resource, doFill);
     		
     		if(filled > 0){
     			if(doFill)
@@ -67,12 +68,14 @@ public abstract class TileEntityInventoryAndTank extends TileEntityInventory imp
     	FluidStack removed = null;
     	
     	for(AdvFluidTank tank : tanks){
-    		removed = tank.drain(from, resource, doDrain);
-    		
-    		if(removed.amount > 0){
-    			if(doDrain)
-    				onInventoryChanged();
-    			return removed;
+    		if(tank.contains(resource.getFluid())){
+	    		removed = tank.drain(resource.amount, doDrain);
+	    		
+	    		if(removed.amount > 0){
+	    			if(doDrain)
+	    				onInventoryChanged();
+	    			return removed;
+	    		}
     		}
     	}
     	
@@ -84,7 +87,7 @@ public abstract class TileEntityInventoryAndTank extends TileEntityInventory imp
     	FluidStack removed = null;
     	
     	for(AdvFluidTank tank : tanks){
-    		removed = tank.drain(from, maxDrain, doDrain);
+    		removed = tank.drain(maxDrain, doDrain);
     		
     		if(removed != null && removed.amount > 0){
     			if(doDrain)
@@ -210,14 +213,14 @@ public abstract class TileEntityInventoryAndTank extends TileEntityInventory imp
 		FluidStack testStack = new FluidStack(fluid, 1);
 
 		for(AdvFluidTank tank : tanks){
-			if(testStack != null && tank.fill(from, testStack, false) > 0)
+			if(testStack != null && tank.fill(testStack, false) > 0)
 				return true;
 		}
 		return false;
 	}
 	
 	public boolean canFill(ForgeDirection from, FluidStack contents, AdvFluidTank tank){
-		return tank.fill(from, contents, false) == contents.amount;
+		return tank.fill(contents, false) == contents.amount;
 	}
 	
 	public boolean canFill(FluidStack contents, AdvFluidTank tank){
@@ -226,10 +229,8 @@ public abstract class TileEntityInventoryAndTank extends TileEntityInventory imp
 
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid) {
-		FluidStack testStack = new FluidStack(fluid, 1);
-
 		for(AdvFluidTank tank : tanks){
-			if(testStack != null && tank.drain(from, testStack, false).amount > 0)
+			if(tank.canEject(fluid.getID()))
 				return true;
 		}
 		return false;

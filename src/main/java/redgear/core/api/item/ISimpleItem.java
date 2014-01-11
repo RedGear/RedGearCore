@@ -22,6 +22,11 @@ public interface ISimpleItem {
 	 * @return The Meta value
 	 */
 	public int getMeta();
+	
+	/**
+	 * @return A new SimpleItem with the same id and meta as this.
+	 */
+	public ISimpleItem copy();
 
 	/**
 	 * @return True if the Block or Item represented can be found in the Block or Item lists. 
