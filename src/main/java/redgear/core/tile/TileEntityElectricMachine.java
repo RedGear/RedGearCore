@@ -1,5 +1,6 @@
 package redgear.core.tile;
 
+import redgear.core.asm.RedGearCore;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.api.UniversalClass;
@@ -11,7 +12,7 @@ public abstract class TileEntityElectricMachine extends TileEntityMachine implem
 	private long power = 0;
 	private final long maxPower;
 
-	public TileEntityElectricMachine(int idleRate, int powerCapacity) {
+	public TileEntityElectricMachine(int idleRate, long powerCapacity) {
 		super(idleRate);
 		maxPower = powerCapacity;
 	}
@@ -25,7 +26,8 @@ public abstract class TileEntityElectricMachine extends TileEntityMachine implem
 	 * @return true if there is enough power, false if there is not
 	 */
 	@Override
-	protected final boolean tryUseEnergy(int energyUse) {
+	protected final boolean tryUseEnergy(long energyUse) {
+		RedGearCore.instance.logDebug("Tring to use: " + energyUse + "joules");
 		if (power > energyUse) {
 			power -= energyUse;
 			return true;
@@ -40,7 +42,7 @@ public abstract class TileEntityElectricMachine extends TileEntityMachine implem
 	 * 
 	 * @return
 	 */
-	protected final double getEnergyAmount() {
+	protected final long getEnergyAmount() {
 		return power;
 	}
 
@@ -90,6 +92,8 @@ public abstract class TileEntityElectricMachine extends TileEntityMachine implem
 
 		if (doReceive)
 			power += allowed;
+		
+		RedGearCore.instance.logDebug("Max Power: ", maxPower, " Accepting: ", allowed, " joules");
 
 		return allowed;
 	}

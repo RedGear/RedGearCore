@@ -6,7 +6,7 @@ public abstract class TileEntityFreeMachine extends TileEntityMachine{
 		super(idleRate);
 	}
 	@Override
-	protected boolean tryUseEnergy(int energy) {
+	protected boolean tryUseEnergy(long energy) {
 		return true;
 	}
 

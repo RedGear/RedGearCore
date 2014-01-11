@@ -55,7 +55,7 @@ public abstract class TileEntityThermalMachine extends TileEntityMachine impleme
 	 * @param energy Amount of energy needed to work
 	 * @return true if there is enough power, false if there is not
 	 */
-	protected boolean tryUseEnergy(int energy){
+	protected boolean tryUseEnergy(long energy){
 		if(energy <= heat){
 			heat -= energy;
 			return true;
