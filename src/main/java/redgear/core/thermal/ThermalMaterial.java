@@ -6,7 +6,7 @@ import net.minecraft.block.material.Material;
 
 public class ThermalMaterial {
 	
-	private static HashMap<Material, Integer> materialMap = new HashMap<Material, Integer>();
+	private static final HashMap<Material, Integer> materialMap = new HashMap<Material, Integer>();
 	private static final int ice = 30;
 	private static final int metal = 20;
 	private static final int water = 10;

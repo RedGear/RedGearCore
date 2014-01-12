@@ -5,7 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.IBlockAccess;
-import redgear.core.api.reflection.ReflectionHelper;
+import redgear.core.api.util.ReflectionHelper;
 import redgear.core.api.world.ILocation;
 import cpw.mods.fml.common.Loader;
 

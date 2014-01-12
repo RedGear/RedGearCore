@@ -3,7 +3,7 @@ package redgear.core.api.world;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
-import redgear.core.api.reflection.ReflectionHelper;
+import redgear.core.api.util.ReflectionHelper;
 import cpw.mods.fml.common.Loader;
 
 /**

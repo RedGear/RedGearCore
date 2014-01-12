@@ -10,22 +10,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import redgear.core.api.item.ISimpleItem;
 
-public interface ILocation {
-	
-	/**
-	 * @return The X coord saved by this location
-	 */
-	public int getX();
-	
-	/**
-	 * @return The Y coord saved by this location
-	 */
-	public int getY();
-	
-	/**
-	 * @return The Z coord saved by this location
-	 */
-	public int getZ();
+public interface ILocation extends IPoint{
 
 	/**
 	 * @return A new location with the same coordinates.
@@ -284,7 +269,7 @@ public interface ILocation {
 	 * @param other Another Location
 	 * @return true if this location's x, y and z match other's x, y and z
 	 */
-	public boolean equals(ILocation other);
+	public boolean equals(IPoint other);
 	/**
 	 * Saves this location to the tag.
 	 * @param tag NBTTagCompound to save this location to.

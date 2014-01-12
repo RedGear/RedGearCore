@@ -1,9 +1,12 @@
-package redgear.core.api.reflection;
+package redgear.core.api.util;
 
 import java.lang.reflect.InvocationTargetException;
 
 public class ReflectionHelper {
 
+	/**
+	 * Just a shortcut for Class.forName(name)
+	 */
 	public static Class<?> getClass(String name) throws ClassNotFoundException {
 		return Class.forName(name);
 	}

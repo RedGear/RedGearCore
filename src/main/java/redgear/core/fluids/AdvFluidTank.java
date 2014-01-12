@@ -240,7 +240,7 @@ public class AdvFluidTank extends FluidTank {
 	 * drained. Null if no fluid would be drained.
 	 */
 	public FluidStack drainWithMap(int maxDrain, boolean doDrain) {
-		if (canEject(fluid.fluidID))
+		if (!isEmpty() && canEject(fluid.fluidID))
 			return super.drain(maxDrain, doDrain);
 		else
 			return null;
