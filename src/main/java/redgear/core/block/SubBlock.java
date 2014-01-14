@@ -11,15 +11,9 @@ public class SubBlock {
 	/** Icon index in the icons table. */
     protected Icon blockIcon;
     public final String name;
-    public final String displayName;
     
     public SubBlock(String name){
-    	this(name, name);
-    }
-
-    public SubBlock(String name, String displayName){
         this.name = name;
-        this.displayName = displayName;
     }
 
     @SideOnly(Side.CLIENT)

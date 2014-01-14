@@ -25,8 +25,8 @@ public class SubTile extends SubBlock implements IHasTile{
     	return guiId;
     }
     
-    public SubTile(String name, String displayName, Class <? extends TileEntity > tile, int guiId){
-    	super(name, displayName);
+    public SubTile(String name, Class <? extends TileEntity > tile, int guiId){
+    	super(name);
 
         if (guiId < 0)
             hasGui = false;
@@ -38,16 +38,8 @@ public class SubTile extends SubBlock implements IHasTile{
         this.tile = tile;
     }
 
-    public SubTile(String name, String displayName, Class <? extends TileEntity > tile){
-        this(name, displayName, tile, -1);
-    }
-
-    public SubTile(String name, Class <? extends TileEntity > tile, int guiId){
-        this(name, name, tile, guiId);
-    }
-
     public SubTile(String name, Class <? extends TileEntity > tile){
-        this(name, name, tile);
+        this(name, tile, -1);
     }
 
     @SideOnly(Side.CLIENT)

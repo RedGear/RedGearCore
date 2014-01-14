@@ -35,9 +35,7 @@ public class MetaBlock extends BlockGeneric {
 					"MetaBlocks can only have 16 values! (0-15) You can't register 17! Use a MetaTile OR use another MetaBlocks.");
 
 		blocks.put(counter, newBlock);
-		ItemStack temp = new ItemStack(this, 1, counter++);
-		//LanguageRegistry.addName(temp, newBlock.displayName);
-		return new SimpleItem(temp);
+		return new SimpleItem(blockID, counter++);
 	}
 
 	protected boolean indexCheck(int index) {

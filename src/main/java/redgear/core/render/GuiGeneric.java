@@ -3,8 +3,10 @@ package redgear.core.render;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -43,14 +45,6 @@ public class GuiGeneric extends GuiContainer {
 
 		guiLocation = new ResourceLocation(fileDirectory,  fileName);
 		this.guiName = guiName;
-	}
-	
-	/**
-	 * DON'T USE THIS CONSTRUCTOR!!!
-	 */
-	@Deprecated
-	protected GuiGeneric(Container par1Container) {
-		this(par1Container, 0, 0, "", "", "");
 	}
 	
 	/**
@@ -123,7 +117,7 @@ public class GuiGeneric extends GuiContainer {
 	  * @param mouseX
 	  * @param mouseY
 	  */
-	 protected void drawHoverText(ArrayList<String> lines, int mouseX, int mouseY){
+	 protected void drawHoverText(List<String> lines, int mouseX, int mouseY){
 		 func_102021_a(lines, mouseX, mouseY);
 	 }
 	 
@@ -155,8 +149,8 @@ public class GuiGeneric extends GuiContainer {
     }
  
     protected void drawProgress(int x1, int y1, int x2, int y2, int color){
-    	if(y1 != y2)
-    		this.drawRect(x1, y1, x2, y2, color);
+    	if(y1 != y2) //Value must be zero. Don't draw an empty bar. 
+    		Gui.drawRect(x1, y1, x2, y2, color);
     }
 	
     protected void drawLiquid(LiquidGauge gauge){

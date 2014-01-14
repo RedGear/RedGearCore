@@ -8,8 +8,8 @@ public class SubBlockDifferentDrop extends SubBlock implements IDifferentDrop {
 	
 	ItemStack drop;
 
-	public SubBlockDifferentDrop(String name, String displayName, ItemStack drop){
-        super(name, displayName);
+	public SubBlockDifferentDrop(String name, ItemStack drop){
+        super(name);
         this.drop = drop;
     }
 

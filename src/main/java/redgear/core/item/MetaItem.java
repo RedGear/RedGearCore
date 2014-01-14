@@ -25,7 +25,6 @@ public class MetaItem extends ItemGeneric {
 	public SimpleItem addMetaItem(SubItem newItem) {
 		items.put(items.size(), newItem);
 		ItemStack temp = new ItemStack(this, 1, items.size() - 1);
-		//LanguageRegistry.addName(temp, newItem.displayName);
 		return new SimpleItem(temp);
 	}
 

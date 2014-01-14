@@ -20,6 +20,6 @@ public class MetaItemBlock extends ItemBlock {
 
     @Override
     public String getUnlocalizedName(ItemStack itemstack){
-        return StringHelper.concat("tile.", myContainer.name.toLowerCase(), ".", myContainer.getMetaBlock(itemstack.getItemDamage()).name.toLowerCase());
+        return StringHelper.concat("tile.", myContainer.name, ".", myContainer.getMetaBlock(itemstack.getItemDamage()).name);
     }
 }

@@ -13,21 +13,13 @@ public class SubTileMachine extends SubTile {
 	protected Icon sideIcon;
 	protected final String sideName;
 
-	public SubTileMachine(String name, String sideName, String displayName, Class <? extends TileEntity > tile, int guiId){
-        super(name, displayName, tile, guiId);
+	public SubTileMachine(String name, String sideName, Class <? extends TileEntity > tile, int guiId){
+        super(name, tile, guiId);
         this.sideName = sideName;
     }
 
-    public SubTileMachine(String name, String sideName, String displayName, Class <? extends TileEntity > tile){
-        this(name, sideName, displayName, tile, -1);
-    }
-
-    public SubTileMachine(String name, String sideName, Class <? extends TileEntity > tile, int guiId){
-        this(name, sideName, name, tile, guiId);
-    }
-
     public SubTileMachine(String name, String sideName, Class <? extends TileEntity > tile){
-        this(name, sideName, name, tile);
+        this(name, sideName, tile, -1);
     }
     
     @Override
