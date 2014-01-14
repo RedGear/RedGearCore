@@ -3,6 +3,7 @@ package redgear.core.inventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import redgear.core.asm.RedGearCore;
 import redgear.core.tile.TileEntityInventory;
 
 /**
@@ -30,20 +31,24 @@ public class InvSlot extends Slot {
 	}
 	
 	public ItemStack addStack(ItemStack stack, boolean all){
-		return addStack(stack, all, false);
+		return addStack(stack, all, true);
 	}
 	
 	public ItemStack addStack(ItemStack stack, boolean all, boolean override){
 		if(canAddStack(stack, all, override))
 			if(contents == null){
-				if(stack != null)
+				RedGearCore.instance.logDebug("Contents are null");
+				if(stack != null){
 					contents = stack.copy();
+					RedGearCore.instance.logDebug("Stack is not null");
+				}
 				return null;
 			}
 			else{
 				int canFit = contents.getMaxStackSize() - contents.stackSize;
+				RedGearCore.instance.logDebug("Contents: Size:", contents.stackSize, " Max: ", contents.getMaxStackSize(), " Can Fit: ", canFit, " Added: ", Math.min(canFit, stack.stackSize));
 				contents.stackSize += Math.min(canFit, stack.stackSize);
-				if(canFit > stack.stackSize)
+				if(canFit >= stack.stackSize)
 					return null;
 				else{
 					stack.stackSize -= canFit;
@@ -51,8 +56,10 @@ public class InvSlot extends Slot {
 				}
 					
 			}
-		else
+		else{
+			RedGearCore.instance.logDebug("Stack is NOT allowed");
 			return stack;
+			}
 	}
 	
 	public boolean canAddStack(ItemStack stack){

@@ -71,7 +71,7 @@ public class StringHelper {
     }
 	
 	public static String parseUnLocalName(String name){
-		return getModId().toLowerCase().replace('|', '.') + name;
+		return concat(getModId().replace('|', '.'), ".", name);
 	}
 	
 	public static ResourceLocation parseModelTexture(String modId, String textureName){
