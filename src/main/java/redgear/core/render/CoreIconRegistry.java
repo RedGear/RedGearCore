@@ -10,7 +10,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.fluids.Fluid;
 import redgear.core.asm.RedGearCore;
-import redgear.core.util.StringHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -20,7 +19,6 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 
  * @author Blackhole
  */
-@SideOnly(Side.CLIENT)
 public class CoreIconRegistry {
 
 	private static CoreIconRegistry instance;
@@ -34,6 +32,9 @@ public class CoreIconRegistry {
 	}
 
 	public static CoreIconRegistry init() {
+		if (isServer())
+			return null;
+
 		if (instance == null) {
 			instance = new CoreIconRegistry();
 			MinecraftForge.EVENT_BUS.register(instance);
@@ -41,9 +42,15 @@ public class CoreIconRegistry {
 		return instance;
 	}
 
+	private static boolean isServer() {
+		return RedGearCore.instance.isServer();
+	}
+
 	@ForgeSubscribe
 	public void registerIcons(TextureStitchEvent.Pre event) {
-		RedGearCore.instance.logDebug("Registering Icons");
+		if (isServer())
+			return;
+
 		IconRegister reg = event.map;
 
 		for (Entry<String, Icon> set : icons.entrySet())
@@ -53,7 +60,9 @@ public class CoreIconRegistry {
 
 	@ForgeSubscribe
 	public void registerFluidIcons(TextureStitchEvent.Post event) {
-		RedGearCore.instance.logDebug("Injecting Fluid Icons");
+		if (isServer())
+			return;
+
 		for (Entry<Fluid, String> set : fluids.entrySet())
 			set.getKey().setIcons(getIcon(set.getValue() + still), getIcon(set.getValue() + flow));
 	}
@@ -68,6 +77,7 @@ public class CoreIconRegistry {
 		init().icons.put(name, null);
 	}
 
+	@SideOnly(Side.CLIENT)
 	public static Icon getIcon(String name) {
 		return init().icons.get(name);
 	}

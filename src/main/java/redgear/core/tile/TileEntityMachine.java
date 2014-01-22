@@ -184,7 +184,7 @@ public abstract class TileEntityMachine extends TileEntityTank {
 		TileEntity otherTile = worldObj.getBlockTileEntity(xCoord + side.offsetX, yCoord + side.offsetY, zCoord + side.offsetZ);
 		
 		if(otherTile != null && IFluidHandler.class.isAssignableFrom(otherTile.getClass()) && (currMode == ejectMode.ALL || TileEntityMachine.class.isAssignableFrom(otherTile.getClass()))){//IFluidHandler
-			FluidStack drain = tank.drain(maxDrain, false);
+			FluidStack drain = tank.drainWithMap(maxDrain, false);
 			if(drain == null)
 				return;
 			int fill = ((IFluidHandler)(otherTile)).fill(side.getOpposite(), drain, true);

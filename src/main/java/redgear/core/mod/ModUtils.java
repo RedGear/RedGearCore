@@ -11,6 +11,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 import net.minecraftforge.oredict.OreDictionary;
+import redgear.core.asm.RedGearCore;
 import redgear.core.util.CoreLocalization;
 import redgear.core.util.SimpleItem;
 import redgear.core.util.StringHelper;
@@ -19,6 +20,7 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.relauncher.Side;
 
 public abstract class ModUtils {
 	public Logger myLogger;
@@ -529,5 +531,17 @@ public abstract class ModUtils {
 			myLogger.log(Level.WARNING, "DEBUG: " + message);
 			e.printStackTrace();
 		}
+	}
+	
+	public Side getSide(){
+		return RedGearCore.proxy.getSide();
+	}
+	
+	public boolean isServer(){
+		return getSide() == Side.SERVER;
+	}
+	
+	public boolean isClient(){
+		return getSide() == Side.CLIENT;
 	}
 }

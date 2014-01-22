@@ -1,5 +1,12 @@
 package redgear.core.network;
 
-public class ClientProxyGeneric extends CommonProxyGeneric
-{
+import cpw.mods.fml.relauncher.Side;
+
+public class ClientProxyGeneric extends CommonProxyGeneric{
+	
+	
+	@Override
+	public Side getSide(){
+		return Side.CLIENT;
+	}
 }

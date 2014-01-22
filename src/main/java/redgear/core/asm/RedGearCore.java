@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.oredict.OreDictionary;
 import redgear.core.mod.CoreModUtils;
 import redgear.core.mod.ModUtils;
+import redgear.core.network.CommonProxyGeneric;
 import redgear.core.network.CoreGuiHandler;
 import redgear.core.network.CorePacketHandler;
 import redgear.core.render.CoreIconRegistry;
@@ -15,6 +16,7 @@ import redgear.core.util.CoreFuelHandler;
 import redgear.core.util.CoreTradeHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -34,6 +36,9 @@ public class RedGearCore extends ModUtils {
 	@Instance("RedGear|Core")
 	public static RedGearCore instance;
 
+	@SidedProxy(clientSide = "redgear.core.network.ClientProxyGeneric", serverSide = "redgear.core.network.CommonProxyGeneric")
+	public static CommonProxyGeneric proxy;
+
 	public static CoreModUtils util;
 	public static File mcLocation;
 
@@ -42,7 +47,10 @@ public class RedGearCore extends ModUtils {
 
 		CoreFuelHandler.init();
 		CoreTradeHandler.init();
-		CoreIconRegistry.init();
+
+		if (isClient())
+			CoreIconRegistry.init();
+
 		CoreGuiHandler.init();
 
 		util.saveConfig();

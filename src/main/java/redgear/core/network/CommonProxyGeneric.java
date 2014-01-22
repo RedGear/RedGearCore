@@ -1,8 +1,10 @@
 package redgear.core.network;
 
-public class CommonProxyGeneric
-{
-    public void registerRenderThings()
-    {
-    }
+import cpw.mods.fml.relauncher.Side;
+
+public class CommonProxyGeneric{
+
+	public Side getSide(){
+		return Side.SERVER;
+	}
 }
