@@ -3,6 +3,7 @@ package redgear.core.item;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.item.Item;
 import redgear.core.util.StringHelper;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -26,6 +27,7 @@ public class ItemGeneric extends Item {
 	public ItemGeneric(int Id, String name) {
 		super(Id);
 		this.name = name;
+		GameRegistry.registerItem(this, name);
 		modName = StringHelper.parseModAsset();
 	}
 
