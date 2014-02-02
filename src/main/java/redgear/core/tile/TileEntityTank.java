@@ -130,7 +130,9 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 		for (int i = 0; i < tagList.tagCount(); i++) {
 			NBTTagCompound invTag = (NBTTagCompound) tagList.tagAt(i);
 			byte slot = invTag.getByte("tank");
-			getTank(slot).readFromNBT(invTag);
+			AdvFluidTank tank = getTank(slot);
+			if(tank != null)
+				tank.readFromNBT(invTag);
 		}
 	}
 

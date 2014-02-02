@@ -1,4 +1,4 @@
-package redgear.core.render;
+package redgear.core.network;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -9,7 +9,6 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.fluids.Fluid;
-import redgear.core.asm.RedGearCore;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -19,6 +18,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 
  * @author Blackhole
  */
+@SideOnly(Side.CLIENT)
 public class CoreIconRegistry {
 
 	private static CoreIconRegistry instance;
@@ -31,10 +31,7 @@ public class CoreIconRegistry {
 	private CoreIconRegistry() {
 	}
 
-	public static CoreIconRegistry init() {
-		if (isServer())
-			return null;
-
+	static CoreIconRegistry init() {
 		if (instance == null) {
 			instance = new CoreIconRegistry();
 			MinecraftForge.EVENT_BUS.register(instance);
@@ -42,15 +39,10 @@ public class CoreIconRegistry {
 		return instance;
 	}
 
-	private static boolean isServer() {
-		return RedGearCore.instance.isServer();
-	}
+	
 
 	@ForgeSubscribe
 	public void registerIcons(TextureStitchEvent.Pre event) {
-		if (isServer())
-			return;
-
 		IconRegister reg = event.map;
 
 		for (Entry<String, Icon> set : icons.entrySet())
@@ -60,9 +52,6 @@ public class CoreIconRegistry {
 
 	@ForgeSubscribe
 	public void registerFluidIcons(TextureStitchEvent.Post event) {
-		if (isServer())
-			return;
-
 		for (Entry<Fluid, String> set : fluids.entrySet())
 			set.getKey().setIcons(getIcon(set.getValue() + still), getIcon(set.getValue() + flow));
 	}
@@ -73,19 +62,18 @@ public class CoreIconRegistry {
 	 * @param name The FULL path of the icon, IE:
 	 * assets/mod_name/textures/gui/button
 	 */
-	public static void addIcon(String name) {
-		init().icons.put(name, null);
+	void addIcon(String name) {
+		icons.put(name, null);
 	}
 
-	@SideOnly(Side.CLIENT)
-	public static Icon getIcon(String name) {
-		return init().icons.get(name);
+	Icon getIcon(String name) {
+		return icons.get(name);
 	}
 
-	public static void addFluid(String iconName, Fluid fluid) {
+	void addFluid(String iconName, Fluid fluid) {
 		addIcon(iconName + flow);
 		addIcon(iconName + still);
-		init().fluids.put(fluid, iconName);
+		fluids.put(fluid, iconName);
 	}
 
 }

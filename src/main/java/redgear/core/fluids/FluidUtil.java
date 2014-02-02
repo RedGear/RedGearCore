@@ -6,7 +6,8 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import redgear.core.render.CoreIconRegistry;
+import redgear.core.asm.RedGearCore;
+import redgear.core.network.CoreIconRegistry;
 import redgear.core.util.StringHelper;
 
 public class FluidUtil {
@@ -49,7 +50,7 @@ public class FluidUtil {
 			fluid = FluidRegistry.getFluid(fluid.getName()); //fluid already exists
 		else {
 			fluid.setUnlocalizedName(StringHelper.parseUnLocalName(fluidName));
-			CoreIconRegistry.addFluid(StringHelper.parseModName() + ":" + iconName, fluid);
+			RedGearCore.proxy.addFluid(StringHelper.parseModName() + ":" + iconName, fluid);
 		}
 		return fluid;
 	}

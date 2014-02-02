@@ -8,12 +8,8 @@ import net.minecraftforge.oredict.OreDictionary;
 import redgear.core.mod.CoreModUtils;
 import redgear.core.mod.ModUtils;
 import redgear.core.network.CommonProxyGeneric;
-import redgear.core.network.CoreGuiHandler;
 import redgear.core.network.CorePacketHandler;
-import redgear.core.render.CoreIconRegistry;
 import redgear.core.tile.TileEntitySmart;
-import redgear.core.util.CoreFuelHandler;
-import redgear.core.util.CoreTradeHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
@@ -44,14 +40,7 @@ public class RedGearCore extends ModUtils {
 
 	@Override
 	protected void PreInit(FMLPreInitializationEvent event) {
-
-		CoreFuelHandler.init();
-		CoreTradeHandler.init();
-
-		if (isClient())
-			CoreIconRegistry.init();
-
-		CoreGuiHandler.init();
+		proxy.init();
 
 		util.saveConfig();
 
