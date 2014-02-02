@@ -11,6 +11,7 @@ import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import redgear.core.render.Button;
+import redgear.core.render.DrawSnippet;
 import redgear.core.render.ProgressBar;
 
 /**
@@ -25,6 +26,7 @@ import redgear.core.render.ProgressBar;
 public abstract class TileEntityGeneric extends TileEntity {
 	private ForgeDirection direction = ForgeDirection.SOUTH; //Default
 	private boolean redstoneState = false;
+	protected List<DrawSnippet> snippets = new ArrayList<DrawSnippet>();
 	protected List<ProgressBar> progressBars = new ArrayList<ProgressBar>();
 	protected List<Button> buttons = new ArrayList<Button>();
 
@@ -58,16 +60,17 @@ public abstract class TileEntityGeneric extends TileEntity {
 	}
 
 	/**
-	 * @return true if this Tile is NOT on the server side (worldObj could be null).
+	 * @return true if this Tile is NOT on the server side (worldObj could be
+	 * null).
 	 */
 	protected boolean isClient() {
 		return !isServer();
 	}
-	
+
 	/**
 	 * @return true if this Tile is on the server side.
 	 */
-	protected boolean isServer(){
+	protected boolean isServer() {
 		return worldObj != null && !worldObj.isRemote;
 	}
 
@@ -140,6 +143,25 @@ public abstract class TileEntityGeneric extends TileEntity {
 
 	public List<ProgressBar> getProgressBars() {
 		return progressBars;
+	}
+
+	/**
+	 * Copies a piece off this texture and draws the snippet somewhere else. IE:
+	 * Furnace progress bar or burn time.
+	 * 
+	 * @param x - X Coord where the snippet WILL BE DRAWN.
+	 * @param y - Y Coord where the snippet WILL BE DRAWN.
+	 * @param width - Width of the snippet. TO and FROM are the same.
+	 * @param height - Height of the snippet. TO and FROM are the same.
+	 * @param snipX - X Coord of where to snip FROM.
+	 * @param snipY - Y Coord of where to snip FROM.
+	 */
+	protected void addDrawSnippet(int x, int y, int width, int height, int snipX, int snipY) {
+		snippets.add(new DrawSnippet(x, y, width, height, snipX, snipY));
+	}
+
+	public List<DrawSnippet> getSnippets() {
+		return snippets;
 	}
 
 	protected int addButton(int xPosition, int yPosition, int width, int height) {
