@@ -6,7 +6,7 @@ import net.minecraft.util.Icon;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
-public class LiquidGauge extends GuiRegion {
+public class LiquidGauge extends GuiRegion implements GuiElement{
 
 	public int liquidID = 0;
 	public int liquidAmount = 0;

@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
@@ -27,6 +28,8 @@ public class GuiGeneric extends GuiContainer {
 
 	protected int guiX = 0;
 	protected int guiY = 0;
+	private int mouseX;
+	private int mouseY;
 	protected final String guiName;
 	protected final ContainerGeneric myContainer;
 	protected final ResourceLocation guiLocation;
@@ -50,8 +53,8 @@ public class GuiGeneric extends GuiContainer {
 	 */
 	@Override
 	protected void actionPerformed(GuiButton but) {
-		if (but instanceof Button) {
-			Button butt = (Button) but; //I like big butts and I cannot lie.
+		Button butt = myContainer.getButton(but.id);
+		if (butt != null) {
 			butt.clickButton(); //Changes the state clientside. Should make it render correct until the bounce comes back from the server
 			sendButtonPacket(myContainer.myTile, butt.id); //Actually send the data to server so it can perform action.
 		}
@@ -79,11 +82,13 @@ public class GuiGeneric extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+		setMouse(mouseX, mouseY);
+
 		fontRenderer.drawString(guiName, 8, 4, 4210752);
 		fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8,
 				myContainer.playerInvHeight - 9, 4210752);
 
-		for (GuiRegion elem : myContainer.elements)
+		for (GuiElement elem : myContainer.elements)
 			if (elem instanceof LiquidGauge)
 				drawLiquidGaugeToolTip((LiquidGauge) elem, mouseX, mouseY);
 
@@ -122,8 +127,9 @@ public class GuiGeneric extends GuiContainer {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3) {
-		buttonList = myContainer.buttons;
+	protected void drawGuiContainerBackgroundLayer(float par1, int mouseX, int mouseY) {
+		setMouse(mouseX, mouseY);
+		buttonList = myContainer.getButtonList();
 
 		guiX = (width - xSize) / 2;
 		guiY = (height - ySize) / 2;
@@ -132,7 +138,7 @@ public class GuiGeneric extends GuiContainer {
 		mc.renderEngine.bindTexture(guiLocation);
 		drawTexturedModalRect(guiX, guiY, 0, 0, xSize, ySize);
 
-		for (GuiRegion elem : myContainer.elements)
+		for (GuiElement elem : myContainer.elements)
 			elem.draw(this);
 	}
 
@@ -158,5 +164,26 @@ public class GuiGeneric extends GuiContainer {
 
 	public void drawRectangleSolid(int x1, int y1, int x2, int y2, int color) {
 		super.drawRect(x1 + guiX, y1 + guiY, x2 + guiX, y2 + guiY, color);
+	}
+
+	public void drawButton(GuiButton button) {
+		button.drawButton(mc, mouseX, mouseY);
+	}
+
+	private void setMouse(int mouseX, int mouseY) {
+		this.mouseX = mouseX;
+		this.mouseY = mouseY;
+	}
+
+	public Minecraft getMinecraft() {
+		return mc;
+	}
+
+	public int getMouseX() {
+		return mouseX;
+	}
+
+	public int getMouseY() {
+		return mouseY;
 	}
 }

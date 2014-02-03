@@ -1,89 +1,89 @@
 package redgear.core.render;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.Icon;
-import net.minecraft.util.ResourceLocation;
+import redgear.core.asm.RedGearCore;
+import redgear.core.network.CoreClientProxy;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-import org.lwjgl.opengl.GL11;
+public class Button extends GuiRegion implements GuiElement {
 
-public class Button extends GuiButton {
-	
-	private ArrayList<ButtonState> states = new ArrayList<ButtonState>();
+	public final int id;
+	private final List<ButtonState> states = new ArrayList<ButtonState>();
 	public int currState = 0;
 
 	public Button(int id, int xPosition, int yPosition, int width, int height) {
-		super(id, xPosition, yPosition, width, height, "");
+		super(xPosition, yPosition, width, height);
+		this.id = id;
 	}
 
-	public int addState(String displayString){
+	public int addState(String displayString) {
 		return addState(new ButtonState(states.size(), displayString));
 	}
-	
-	public int addState(ResourceLocation location, Icon icon){
-		return addState(new ButtonState(states.size(), location, icon));
+
+	public int addState(String displayString, String iconName) {
+		return addState(new ButtonState(states.size(), displayString, iconName));
 	}
-	
-	public int addState(String displayString, ResourceLocation location, Icon icon){
-		return addState(new ButtonState(states.size(), displayString, location, icon));
-	}
-	
-	protected int addState(ButtonState newState){
+
+	protected int addState(ButtonState newState) {
 		states.add(newState);
-		return states.size() - 1;
+		return newState.id;
 	}
-	
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void draw(GuiGeneric gui) {
+		GuiButton but = new GuiButton(id, getX(), getY(), getWidth(), getHeight(), "");
+		ButtonState nowState = states.get(currState);
+
+		if (nowState.displayString != null)
+			but.displayString = nowState.displayString;
+
+		gui.drawButton(but);
+
+		if (nowState.iconName != null && !nowState.iconName.isEmpty())
+			gui.drawRectangleIcon(getX(), getY(), getX() + getWidth(), getY() + getHeight(), nowState.getIcon(),
+					TextureMap.locationItemsTexture);
+	}
+
 	/**
-     * Draws this button to the screen.
-     */
-    public void drawButton(Minecraft par1Minecraft, int par2, int par3){
-    	ButtonState nowState = states.get(currState);
-    	
-    	if(nowState.displayString != null)
-    		this.displayString = nowState.displayString;
-    	
-    	super.drawButton(par1Minecraft, par2, par3);
-    		
-		if(nowState.location != null && nowState.icon != null){
-			par1Minecraft.getTextureManager().bindTexture(nowState.location);
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.drawTexturedModelRectFromIcon(xPosition, yPosition, nowState.icon, width, height);
-		}	
-    }
-    
-    /**
-     * Call this when the button is clicked
-     * @return The ID of the new button state, to be sent back to the tile for processing
-     */
-    public int clickButton(){
-    	++currState;
-    	if(currState >= states.size()) //loop around when overflowed.
-    		currState = 0;
-    	return currState;
-    }
-	
-	
-	private class ButtonState{
+	 * Call this when the button is clicked
+	 * 
+	 * @return The ID of the new button state, to be sent back to the tile for
+	 * processing
+	 */
+	public int clickButton() {
+		++currState;
+		if (currState >= states.size()) //loop around when overflowed.
+			currState = 0;
+		return currState;
+	}
+
+	private class ButtonState {
 		final int id;
 		final String displayString;
-		final ResourceLocation location;
-		final Icon icon;
-		
-		ButtonState(int id, String displayString, ResourceLocation location,  Icon icon){
+		final String iconName;
+
+		ButtonState(int id, String displayString, String iconName) {
 			this.id = id;
 			this.displayString = displayString;
-			this.location = location;
-			this.icon = icon;
+			this.iconName = iconName;
+
+			if (iconName != null && !iconName.isEmpty())
+				RedGearCore.proxy.addIcon(iconName);
 		}
-		
-		ButtonState(int id, String displayString){
-			this(id, displayString, null, null);
+
+		ButtonState(int id, String displayString) {
+			this(id, displayString, null);
 		}
-		
-		ButtonState(int id, ResourceLocation location, Icon icon){
-			this(id, null, location, icon);
+
+		private Icon getIcon() {
+			return ((CoreClientProxy) RedGearCore.proxy).getIcon(iconName);
 		}
 	}
 }

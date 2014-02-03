@@ -7,7 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.oredict.OreDictionary;
 import redgear.core.mod.CoreModUtils;
 import redgear.core.mod.ModUtils;
-import redgear.core.network.CommonProxyGeneric;
+import redgear.core.network.CoreCommonProxy;
 import redgear.core.network.CorePacketHandler;
 import redgear.core.tile.TileEntitySmart;
 import cpw.mods.fml.common.Mod;
@@ -32,8 +32,8 @@ public class RedGearCore extends ModUtils {
 	@Instance("RedGear|Core")
 	public static RedGearCore instance;
 
-	@SidedProxy(clientSide = "redgear.core.network.ClientProxyGeneric", serverSide = "redgear.core.network.CommonProxyGeneric")
-	public static CommonProxyGeneric proxy;
+	@SidedProxy(clientSide = "redgear.core.network.CoreClientProxy", serverSide = "redgear.core.network.CoreCommonProxy")
+	public static CoreCommonProxy proxy;
 
 	public static CoreModUtils util;
 	public static File mcLocation;

@@ -4,7 +4,7 @@ import net.minecraft.util.Icon;
 import net.minecraftforge.fluids.Fluid;
 import cpw.mods.fml.relauncher.Side;
 
-public class ClientProxyGeneric extends CommonProxyGeneric {
+public class CoreClientProxy extends CoreCommonProxy {
 	
 	CoreIconRegistry icoReg;
 

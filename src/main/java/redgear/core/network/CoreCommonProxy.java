@@ -5,7 +5,7 @@ import redgear.core.util.CoreTradeHandler;
 import net.minecraftforge.fluids.Fluid;
 import cpw.mods.fml.relauncher.Side;
 
-public class CommonProxyGeneric {
+public class CoreCommonProxy {
 
 	public Side getSide() {
 		return Side.SERVER;

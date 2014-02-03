@@ -12,6 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import redgear.core.render.Button;
 import redgear.core.render.DrawSnippet;
+import redgear.core.render.GuiElement;
 import redgear.core.render.ProgressBar;
 
 /**
@@ -26,9 +27,13 @@ import redgear.core.render.ProgressBar;
 public abstract class TileEntityGeneric extends TileEntity {
 	private ForgeDirection direction = ForgeDirection.SOUTH; //Default
 	private boolean redstoneState = false;
-	protected List<DrawSnippet> snippets = new ArrayList<DrawSnippet>();
-	protected List<ProgressBar> progressBars = new ArrayList<ProgressBar>();
-	protected List<Button> buttons = new ArrayList<Button>();
+	private final List<GuiElement> guiElements = new ArrayList<GuiElement>();
+
+	/*
+	 * protected List<DrawSnippet> snippets = new ArrayList<DrawSnippet>();
+	 * protected List<ProgressBar> progressBars = new ArrayList<ProgressBar>();
+	 * protected List<Button> buttons = new ArrayList<Button>();
+	 */
 
 	public final int getDirectionId() {
 		return getDirection().ordinal();
@@ -133,16 +138,13 @@ public abstract class TileEntityGeneric extends TileEntity {
 	}
 
 	protected int addProgressBar(int x, int y, int width, int height) {
-		progressBars.add(new ProgressBar(progressBars.size(), x, y, width, height));
-		return progressBars.size() - 1;
+		ProgressBar temp = new ProgressBar(guiElements.size(), x, y, width, height);
+		guiElements.add(temp);
+		return temp.id;
 	}
 
 	public ProgressBar updateProgressBars(ProgressBar prog) {
 		return prog;
-	}
-
-	public List<ProgressBar> getProgressBars() {
-		return progressBars;
 	}
 
 	/**
@@ -157,27 +159,27 @@ public abstract class TileEntityGeneric extends TileEntity {
 	 * @param snipY - Y Coord of where to snip FROM.
 	 */
 	protected void addDrawSnippet(int x, int y, int width, int height, int snipX, int snipY) {
-		snippets.add(new DrawSnippet(x, y, width, height, snipX, snipY));
-	}
-
-	public List<DrawSnippet> getSnippets() {
-		return snippets;
+		guiElements.add(new DrawSnippet(x, y, width, height, snipX, snipY));
 	}
 
 	protected int addButton(int xPosition, int yPosition, int width, int height) {
-		buttons.add(new Button(buttons.size(), xPosition, yPosition, width, height));
-		return buttons.size() - 1;
-	}
-
-	public List<Button> getButtons() {
-		return buttons;
+		Button temp = new Button(guiElements.size(), xPosition, yPosition, width, height);
+		guiElements.add(temp);
+		return temp.id;
 	}
 
 	public Button getButton(int id) {
-		if (id > 0 && id < buttons.size())
-			return buttons.get(id);
-		else
-			return null;
+		for (GuiElement el : guiElements)
+			if (el instanceof Button) {
+				Button but = (Button) el;
+				if (but.id == id)
+					return but;
+			}
+		return null;
+	}
+
+	public List<GuiElement> getGuiElements() {
+		return guiElements;
 	}
 
 	/**

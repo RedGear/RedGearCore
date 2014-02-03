@@ -1,6 +1,6 @@
 package redgear.core.render;
 
-public class DrawSnippet extends GuiRegion {
+public class DrawSnippet extends GuiRegion implements GuiElement {
 
 	private final int snipX;
 	private final int snipY;
@@ -32,6 +32,6 @@ public class DrawSnippet extends GuiRegion {
 
 	@Override
 	public void draw(GuiGeneric gui) {
-		gui.drawRectangleSnip(getX1(), getY1(), getX2(), getY2(), getSnipX(), getSnipY());
+		gui.drawRectangleSnip(getX1(), getY1(), getX2(), getY2(), getSnipX(), getSnipY(), gui.guiLocation);
 	}
 }

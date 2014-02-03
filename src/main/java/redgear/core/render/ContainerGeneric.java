@@ -1,9 +1,7 @@
 package redgear.core.render;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -27,8 +25,7 @@ public class ContainerGeneric extends Container {
 	public final TileEntity myTile;
 	public final int playerInvHeight;
 	protected List<String> dataMap = new ArrayList<String>();
-	public Set<GuiRegion> elements = new HashSet<GuiRegion>();
-	public List<Button> buttons = new ArrayList<Button>();
+	public List<GuiElement> elements = new ArrayList<GuiElement>();
 
 	public ContainerGeneric(InventoryPlayer inventoryPlayer, TileEntity tile, int playerInvHeight) {
 		myTile = tile;
@@ -42,11 +39,9 @@ public class ContainerGeneric extends Container {
 		if (myTile instanceof TileEntityTank)
 			addTanks((TileEntityTank) myTile);
 
-		if (myTile instanceof TileEntityGeneric) {
-			addProgressBars((TileEntityGeneric) myTile);
-			addSnippets((TileEntityGeneric) myTile);
-			addButtons((TileEntityGeneric) myTile);
-		}
+		if (myTile instanceof TileEntityGeneric)
+			for (GuiElement element : ((TileEntityGeneric) myTile).getGuiElements())
+				addElement(element);
 	}
 
 	public ContainerGeneric(InventoryPlayer inventoryPlayer, TileEntity tile) {
@@ -66,23 +61,23 @@ public class ContainerGeneric extends Container {
 		}
 	}
 
-	protected void addProgressBars(TileEntityGeneric tile) {
-		for (ProgressBar bar : tile.getProgressBars()) {
-			elements.add(bar);
-			dataMap.add("progTot" + bar.id);
-			dataMap.add("progVal" + bar.id);
-		}
+	private void addElement(GuiElement element) {
+		if (element instanceof ProgressBar)
+			addProgressBar((ProgressBar) element);
+
+		if (element instanceof Button)
+			addButton((Button) element);
+
+		elements.add(element);
 	}
 
-	private void addSnippets(TileEntityGeneric tile) {
-		elements.addAll(tile.getSnippets());
+	protected void addProgressBar(ProgressBar bar) {
+		dataMap.add("progTot" + bar.id);
+		dataMap.add("progVal" + bar.id);
 	}
 
-	protected void addButtons(TileEntityGeneric tile) {
-		for (Button button : tile.getButtons()) {
-			buttons.add(button);
-			dataMap.add("button" + button.id);
-		}
+	protected void addButton(Button button) {
+		dataMap.add("button" + button.id);
 	}
 
 	@Override
@@ -109,26 +104,19 @@ public class ContainerGeneric extends Container {
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
 
-		for (GuiRegion element : elements)
+		for (GuiElement element : elements)
 			detectAndSendChanges(element);
-
-		if (!buttons.isEmpty() && myTile instanceof TileEntityGeneric)
-			for (Button but : buttons) {
-				Button tileBut = ((TileEntityGeneric) myTile).getButton(but.id);
-
-				if (tileBut != null && tileBut.currState != but.currState) {
-					but.currState = tileBut.currState;
-					sendGuiUpdate(dataMap.indexOf("button" + tileBut.id), tileBut.currState);
-				}
-			}
 
 	}
 
-	private void detectAndSendChanges(GuiRegion element) {
+	private void detectAndSendChanges(GuiElement element) {
 		if (myTile instanceof TileEntityGeneric) {
 
 			if (element instanceof ProgressBar)
 				detectAndSendChanges((ProgressBar) element);
+
+			if (element instanceof Button)
+				detectAndSendChanges((Button) element);
 
 			if (element instanceof LiquidGauge && myTile instanceof TileEntityTank)
 				detectAndSendChanges((LiquidGauge) element);
@@ -188,6 +176,15 @@ public class ContainerGeneric extends Container {
 
 	}
 
+	private void detectAndSendChanges(Button button) {
+		Button tileBut = ((TileEntityGeneric) myTile).getButton(button.id);
+
+		if (tileBut != null && tileBut.currState != button.currState) {
+			button.currState = tileBut.currState;
+			sendGuiUpdate(dataMap.indexOf("button" + tileBut.id), tileBut.currState);
+		}
+	}
+
 	protected void sendGuiUpdate(int mapKey, int data) {
 		for (int i = 0; i < crafters.size(); ++i) {
 			ICrafting icrafting = (ICrafting) crafters.get(i);
@@ -211,7 +208,7 @@ public class ContainerGeneric extends Container {
 			if (dataBinding.startsWith("progVal"))
 				getProgressBar(Integer.parseInt(dataBinding.substring(7))).value = data;
 			if (dataBinding.startsWith("button"))
-				buttons.get(Integer.parseInt(dataBinding.substring(6))).currState = data;
+				getButton(Integer.parseInt(dataBinding.substring(6))).currState = data;
 
 		} catch (Exception e) {
 			RedGearCore.util.logDebug("Error parsing dataBinding: " + dataBinding + " from key: " + key + "with data: "
@@ -220,7 +217,7 @@ public class ContainerGeneric extends Container {
 	}
 
 	private LiquidGauge getLiquidGauge(int id) {
-		for (GuiRegion el : elements)
+		for (GuiElement el : elements)
 			if (el instanceof LiquidGauge) {
 				LiquidGauge gauge = (LiquidGauge) el;
 				if (gauge.tankId == id)
@@ -230,13 +227,33 @@ public class ContainerGeneric extends Container {
 	}
 
 	private ProgressBar getProgressBar(int id) {
-		for (GuiRegion el : elements)
+		for (GuiElement el : elements)
 			if (el instanceof ProgressBar) {
 				ProgressBar bar = (ProgressBar) el;
 				if (bar.id == id)
 					return bar;
 			}
 		return null;
+	}
+
+	public Button getButton(int id) {
+		for (GuiElement el : elements)
+			if (el instanceof Button) {
+				Button but = (Button) el;
+				if (but.id == id)
+					return but;
+			}
+		return null;
+	}
+
+	public List<Button> getButtonList() {
+		List<Button> buttons = new ArrayList<Button>();
+
+		for (GuiElement el : elements)
+			if (el instanceof Button)
+				buttons.add((Button) el);
+
+		return buttons;
 	}
 
 	@Override

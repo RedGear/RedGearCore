@@ -44,6 +44,4 @@ abstract class GuiRegion {
 	public final int getHeight() {
 		return height;
 	}
-
-	public abstract void draw(GuiGeneric gui);
 }

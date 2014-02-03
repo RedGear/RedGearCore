@@ -2,7 +2,7 @@ package redgear.core.render;
 
 import java.awt.Color;
 
-public class ProgressBar extends GuiRegion {
+public class ProgressBar extends GuiRegion implements GuiElement{
 
 	public final int id;
 	public int total = 0;
