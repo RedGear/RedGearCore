@@ -195,6 +195,32 @@ public class AdvFluidTank extends FluidTank {
 		TransferRule direct = getRule(fluidId);
 		return direct == TransferRule.OUTPUT || direct == TransferRule.BOTH;
 	}
+	
+	/**
+	 * @param other FluidStack to try to add
+	 * @return True if other could be FULLY added to this tank with the fillWithMap()
+	 * method.
+	 */
+	public boolean canFillWithMap(FluidStack other) {
+		return other == null || (canAccept(other.fluidID) && canFill(other));
+	}
+	
+	/**
+	 * @param other FluidStack to try to add
+	 * @return True if other could be FULLY added to this tank with the fill()
+	 * method.
+	 */
+	public boolean canDrainWithMap(FluidStack other) {
+		return other != null && canEject(other.fluidID) && canDrain(other);
+	}
+
+	/**
+	 * @param amount Amount to try and remove
+	 * @return true if this tank contains at least this much fluid.
+	 */
+	public boolean canDrainWithMap(int amount) {
+		return canEject(fluid.fluidID) && canDrain(amount);
+	}
 
 	/**
 	 * @param fluidId Fluid ID to get rule for

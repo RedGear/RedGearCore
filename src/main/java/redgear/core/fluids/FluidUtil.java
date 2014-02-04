@@ -7,7 +7,6 @@ import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import redgear.core.asm.RedGearCore;
-import redgear.core.network.CoreIconRegistry;
 import redgear.core.util.StringHelper;
 
 public class FluidUtil {
