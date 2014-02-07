@@ -1,5 +1,6 @@
 package redgear.core.render;
 
+
 public class DrawSnippet extends GuiRegion implements GuiElement {
 
 	private final int snipX;

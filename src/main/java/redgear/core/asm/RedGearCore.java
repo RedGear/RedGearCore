@@ -5,6 +5,7 @@ import java.io.File;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.oredict.OreDictionary;
+import redgear.core.item.ItemDebugTool;
 import redgear.core.mod.CoreModUtils;
 import redgear.core.mod.ModUtils;
 import redgear.core.network.CoreCommonProxy;
@@ -26,7 +27,7 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 public class RedGearCore extends ModUtils {
 
 	public RedGearCore() {
-		super(0, 0);
+		super(2578, 11942);
 	}
 
 	@Instance("RedGear|Core")
@@ -45,6 +46,8 @@ public class RedGearCore extends ModUtils {
 		util.saveConfig();
 
 		GameRegistry.registerTileEntity(TileEntitySmart.class, "TileEntitySmart");
+		
+		new ItemDebugTool(getItemId("DebugTool"));
 
 		if (getBoolean("registerVanillaItems")) {
 			OreDictionary.registerOre("oreCoal", Block.oreCoal);

@@ -145,7 +145,7 @@ public class GuiGeneric extends GuiContainer {
 	protected void drawRectangleSnip(int x1, int y1, int x2, int y2, int snipX, int snipY, ResourceLocation resource) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.renderEngine.bindTexture(resource);
-		this.drawRectangleSnip(x1, y1, x2 - x1, y2 - y1, snipX, snipY);
+		this.drawRectangleSnip(x1, y1, x2, y2, snipX, snipY);
 	}
 
 	protected void drawRectangleSnip(int x1, int y1, int x2, int y2, int snipX, int snipY) {
