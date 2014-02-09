@@ -134,7 +134,7 @@ public abstract class TileEntityInventory extends TileEntityGeneric implements I
 	}
 
 	@Override
-	public String getInvName() {
+	public String getInventoryName() {
 		return "";
 	}
 
@@ -144,7 +144,7 @@ public abstract class TileEntityInventory extends TileEntityGeneric implements I
 	}
 
 	@Override
-	public boolean isInvNameLocalized() {
+	public boolean hasCustomInventoryName() {
 		return true; //TODO: When I add languages, make sure to change this to false
 	}
 
@@ -173,11 +173,11 @@ public abstract class TileEntityInventory extends TileEntityGeneric implements I
 	 * what you'd do with it.
 	 */
 	@Override
-	public void openChest() {
+	public void openInventory() {
 	}
 
 	@Override
-	public void closeChest() {
+	public void closeInventory() {
 	}
 
 	/**
@@ -211,10 +211,10 @@ public abstract class TileEntityInventory extends TileEntityGeneric implements I
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
-		NBTTagList tagList = tag.getTagList("Inventory");
+		NBTTagList tagList = tag.getTagList("Inventory", 10);
 
 		for (int i = 0; i < tagList.tagCount(); i++) {
-			NBTTagCompound invTag = (NBTTagCompound) tagList.tagAt(i);
+			NBTTagCompound invTag = tagList.getCompoundTagAt(i);
 			byte slot = invTag.getByte("Slot");
 
 			if (slot >= 0 && slot < slots.size())
@@ -223,8 +223,8 @@ public abstract class TileEntityInventory extends TileEntityGeneric implements I
 	}
 
 	@Override
-	public void onInventoryChanged() {
-		super.onInventoryChanged();
+	public void markDirty() {
+		super.markDirty();
 	}
 
 	@Override

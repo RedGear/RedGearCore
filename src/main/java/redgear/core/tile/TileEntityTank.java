@@ -6,7 +6,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -54,7 +54,7 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 
 			if (filled > 0) {
 				if (doFill)
-					onInventoryChanged();
+					markDirty();
 				return filled;
 			}
 		}
@@ -71,7 +71,7 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 
 			if (removed.amount > 0) {
 				if (doDrain)
-					onInventoryChanged();
+					markDirty();
 				return removed;
 			}
 		}
@@ -88,7 +88,7 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 
 			if (removed != null && removed.amount > 0) {
 				if (doDrain)
-					onInventoryChanged();
+					markDirty();
 				return removed;
 			}
 		}
@@ -125,10 +125,10 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
-		NBTTagList tagList = tag.getTagList("Tanks");
+		NBTTagList tagList = tag.getTagList("Tanks", 10);
 
 		for (int i = 0; i < tagList.tagCount(); i++) {
-			NBTTagCompound invTag = (NBTTagCompound) tagList.tagAt(i);
+			NBTTagCompound invTag = tagList.getCompoundTagAt(i);
 			byte slot = invTag.getByte("tank");
 			AdvFluidTank tank = getTank(slot);
 			if (tank != null)

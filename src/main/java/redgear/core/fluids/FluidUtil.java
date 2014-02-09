@@ -49,7 +49,7 @@ public class FluidUtil {
 			fluid = FluidRegistry.getFluid(fluid.getName()); //fluid already exists
 		else {
 			fluid.setUnlocalizedName(StringHelper.parseUnLocalName(fluidName));
-			RedGearCore.proxy.addFluid(StringHelper.parseModName() + ":" + iconName, fluid);
+			RedGearCore.proxy.addFluid(StringHelper.getModId() + ":" + iconName, fluid);
 		}
 		return fluid;
 	}

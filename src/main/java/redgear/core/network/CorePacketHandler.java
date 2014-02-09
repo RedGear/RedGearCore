@@ -1,21 +1,8 @@
 package redgear.core.network;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.util.HashMap;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import redgear.core.asm.RedGearCore;
-import redgear.core.tile.TileEntityGeneric;
-import cpw.mods.fml.common.network.IPacketHandler;
-import cpw.mods.fml.common.network.Player;
-
-public class CorePacketHandler implements  IPacketHandler{
-	
+public class CorePacketHandler /*implements  IPacketHandler*/{
+	/*
 	public static final String buttonChannel = "ChemButton";
 	
 	public static final HashMap<String, PacketHandler> channelMap = new HashMap<String, PacketHandler>();
@@ -70,6 +57,6 @@ public class CorePacketHandler implements  IPacketHandler{
     		}
     	}
     }
-	
+	*/
     		
 }

@@ -31,7 +31,7 @@ public class ThermalMaterial {
 		put(Material.sand, Default);
 		put(Material.tnt, Default);
 		put(Material.coral, Default);
-		put(Material.pumpkin, Default);
+		put(Material.gourd, Default);
 		
 		put(Material.leaves, air);
 		put(Material.plants, air);
@@ -49,7 +49,7 @@ public class ThermalMaterial {
 		put(Material.air, air);
 		
 		
-		put(Material.materialCarpet, 3);
+		put(Material.carpet, 3);
 		
 		put(Material.cloth, 2);
 		

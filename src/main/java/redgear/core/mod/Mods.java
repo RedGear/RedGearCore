@@ -1,4 +1,4 @@
-package redgear.core.compat;
+package redgear.core.mod;
 
 import cpw.mods.fml.common.Loader;
 

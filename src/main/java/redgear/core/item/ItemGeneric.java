@@ -1,6 +1,6 @@
 package redgear.core.item;
 
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
 import redgear.core.util.StringHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -24,8 +24,8 @@ public class ItemGeneric extends Item {
 	 * @param Id The typical ItemId
 	 * @param name Name of item's icon
 	 */
-	public ItemGeneric(int Id, String name) {
-		super(Id);
+	public ItemGeneric(String name) {
+		super();
 		this.name = name;
 		GameRegistry.registerItem(this, name);
 		modName = StringHelper.parseModAsset();
@@ -36,7 +36,7 @@ public class ItemGeneric extends Item {
 	 */
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister par1IconRegister) {
+	public void registerIcons(IIconRegister par1IconRegister) {
 		itemIcon = par1IconRegister.registerIcon(modName + name);
 	}
 }

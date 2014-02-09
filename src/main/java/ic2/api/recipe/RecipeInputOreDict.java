@@ -18,14 +18,14 @@ public class RecipeInputOreDict implements IRecipeInput {
 
 	@Override
 	public boolean matches(ItemStack subject) {
-		List<ItemStack> inputs = OreDictionary.getOres(input);
+		/*List<ItemStack> inputs = OreDictionary.getOres(input);
 
 		for (ItemStack input1 : inputs) {
 			if (subject.itemID == input1.itemID &&
 					(subject.getItemDamage() == input1.getItemDamage() || input1.getItemDamage() == OreDictionary.WILDCARD_VALUE)) {
 				return true;
 			}
-		}
+		}*/
 
 		return false;
 	}

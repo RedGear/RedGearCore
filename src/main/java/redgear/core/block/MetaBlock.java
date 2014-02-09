@@ -5,17 +5,17 @@ import java.util.Random;
 
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import redgear.core.util.SimpleItem;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -24,9 +24,8 @@ public class MetaBlock extends BlockGeneric {
 	protected BiMap<Integer, SubBlock> blocks = HashBiMap.create();
 	protected int counter = 0;
 
-	public MetaBlock(int ID, Material material, String name) {
-		super(ID, material, name);
-		GameRegistry.registerBlock(this, MetaItemBlock.class, name);
+	public MetaBlock(Material material, String name) {
+		super(material, name, MetaItemBlock.class);
 	}
 
 	public SimpleItem addMetaBlock(SubBlock newBlock) throws IndexOutOfBoundsException {
@@ -35,7 +34,7 @@ public class MetaBlock extends BlockGeneric {
 					"MetaBlocks can only have 16 values! (0-15) You can't register 17! Use a MetaTile OR use another MetaBlocks.");
 
 		blocks.put(counter, newBlock);
-		return new SimpleItem(blockID, counter++);
+		return new SimpleItem(this, counter++);
 	}
 
 	protected boolean indexCheck(int index) {
@@ -51,20 +50,21 @@ public class MetaBlock extends BlockGeneric {
 	/**
 	 * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
 	 */
-	public Icon getIcon(int side, int meta) {
+	public IIcon getIcon(int side, int meta) {
 		return getMetaBlock(meta).getIcon(side);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(int unknown, CreativeTabs tab, List subItems) {
+	public void getSubBlocks(Item item, CreativeTabs tab, @SuppressWarnings("rawtypes") List subItems) {
 		for (int i = 0; i < counter; i++)
 			subItems.add(new ItemStack(this, 1, i));
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister par1IconRegister) {
+	public void registerBlockIcons(IIconRegister par1IconRegister) {
 		for (SubBlock block : blocks.values())
 			block.registerIcons(modName, par1IconRegister);
 	}
@@ -86,13 +86,13 @@ public class MetaBlock extends BlockGeneric {
 	 * Returns the ID of the items to drop on destruction.
 	 */
 	@Override
-	public int idDropped(int meta, Random rand, int fortune) {
+	public Item getItemDropped(int meta, Random rand, int fortune) {
 		SubBlock called = getMetaBlock(meta);
 
 		if (called instanceof IDifferentDrop)
-			return ((IDifferentDrop) called).getIdDropped(meta, rand, fortune);
+			return ((IDifferentDrop) called).getItemDropped(meta, rand, fortune);
 		else
-			return blockID;
+			return super.getItemDropped(meta, rand, fortune);
 	}
 
 	/**

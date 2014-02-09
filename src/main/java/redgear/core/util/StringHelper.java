@@ -43,15 +43,7 @@ public class StringHelper {
 	}
 	
 	public static String parseModAsset(String modName){
-		return  concat(parseModName(modName), ":");
-	}
-	
-	public static String parseModName(){
-		return parseModName(getModId());
-	}
-	
-	public static String parseModName(String modName){
-		return modName.toLowerCase().replace('|', '_');
+		return  concat(modName, ":");
 	}
 	
 	public static String parseLangFile(String lang){
@@ -59,11 +51,11 @@ public class StringHelper {
 	}
 	
 	public static String parseLangFile(String modId, String lang){
-		return concat("/assets/", parseModName(modId), "/lang/", lang, ".xml");
+		return concat("/assets/", modId, "/lang/", lang, ".xml");
 	}	
 	
 	public static String parseTextureFile(String modId, String folder, String textureName){
-		return concat("/assets/", parseModName(modId), "/", folder, "/", textureName, ".png");
+		return concat("/assets/", modId, "/", folder, "/", textureName, ".png");
 	}
 	
 	public static File parseConfigFile(File configDir, String modID ){
@@ -75,6 +67,6 @@ public class StringHelper {
 	}
 	
 	public static ResourceLocation parseModelTexture(String modId, String textureName){
-		return new ResourceLocation(parseModName(modId), concat("textures/models/", textureName, ".png"));
+		return new ResourceLocation(modId, concat("textures/models/", textureName, ".png"));
 	}
 }

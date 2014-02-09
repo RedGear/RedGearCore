@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import redgear.core.asm.RedGearCore;
 import redgear.core.network.CoreClientProxy;
 import cpw.mods.fml.relauncher.Side;
@@ -82,7 +82,7 @@ public class Button extends GuiRegion implements GuiElement {
 			this(id, displayString, null);
 		}
 
-		private Icon getIcon() {
+		private IIcon getIcon() {
 			return ((CoreClientProxy) RedGearCore.proxy).getIcon(iconName);
 		}
 	}

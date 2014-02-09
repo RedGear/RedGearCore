@@ -141,9 +141,9 @@ public class ShapedArcaneRecipe implements IArcaneRecipe
     @Override
     public boolean matches(IInventory inv, World world, EntityPlayer player)
     {
-    	if (research.length()>0 && !ThaumcraftApiHelper.isResearchComplete(player.username, research)) {
+    	/*if (research.length()>0 && !ThaumcraftApiHelper.isResearchComplete(player.username, research)) {
     		return false;
-    	}
+    	}*/
         for (int x = 0; x <= MAX_CRAFT_GRID_WIDTH - width; x++)
         {
             for (int y = 0; y <= MAX_CRAFT_GRID_HEIGHT - height; ++y)
@@ -220,13 +220,13 @@ public class ShapedArcaneRecipe implements IArcaneRecipe
 
     private boolean checkItemEquals(ItemStack target, ItemStack input)
     {
-        if (input == null && target != null || input != null && target == null)
-        {
-            return false;
+        /*if (input == null && target != null || input != null && target == null)
+        {*/
+            return false;/*
         }
         return (target.itemID == input.itemID && 
         		(!target.hasTagCompound() || ItemStack.areItemStackTagsEqual(target, input)) &&
-        		(target.getItemDamage() == OreDictionary.WILDCARD_VALUE|| target.getItemDamage() == input.getItemDamage()));
+        		(target.getItemDamage() == OreDictionary.WILDCARD_VALUE|| target.getItemDamage() == input.getItemDamage()));*/
     }
 
     public ShapedArcaneRecipe setMirrored(boolean mirror)

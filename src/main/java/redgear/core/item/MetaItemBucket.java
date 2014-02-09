@@ -2,153 +2,162 @@ package redgear.core.item;
 
 import java.util.Map.Entry;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.Event;
-import net.minecraftforge.event.Event.Result;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import redgear.core.util.SimpleItem;
 import redgear.core.world.Location;
+import cpw.mods.fml.common.eventhandler.Event;
+import cpw.mods.fml.common.eventhandler.Event.Result;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class MetaItemBucket extends MetaItem {
-	
-	public MetaItemBucket(int par1, String name) {
-		super(par1, name);
-        this.maxStackSize = 1;
-        this.setCreativeTab(CreativeTabs.tabMisc);
-        setContainerItem(Item.bucketEmpty);
-        MinecraftForge.EVENT_BUS.register(this);
-    }
-	
-	
-	public SimpleItem addMetaItem(SubItemBucket newItem){
+
+	public MetaItemBucket(String name) {
+		super(name);
+		maxStackSize = 1;
+		setCreativeTab(CreativeTabs.tabMisc);
+		setContainerItem(Items.bucket);
+		MinecraftForge.EVENT_BUS.register(this);
+	}
+
+	public SimpleItem addMetaItem(SubItemBucket newItem) {
 		SimpleItem temp = super.addMetaItem(newItem);
-		FluidContainerRegistry.registerFluidContainer(newItem.fluid, temp.getStack(), FluidContainerRegistry.EMPTY_BUCKET);
+		FluidContainerRegistry.registerFluidContainer(newItem.fluid, temp.getStack(),
+				FluidContainerRegistry.EMPTY_BUCKET);
 		return temp;
 	}
-	
+
 	@Override
-	public SimpleItem addMetaItem(SubItem newItem){
-		if(!(newItem instanceof SubItemBucket))
-    		throw new ClassCastException("MetaBucketContainer can only except MetaBucket!");
-        return addMetaItem((SubItemBucket) newItem);
+	public SimpleItem addMetaItem(SubItem newItem) {
+		if (!(newItem instanceof SubItemBucket))
+			throw new ClassCastException("MetaBucketContainer can only except MetaBucket!");
+		return addMetaItem((SubItemBucket) newItem);
 	}
-	
-	@ForgeSubscribe
-	public void onBucketFill( FillBucketEvent event ){
+
+	@SubscribeEvent
+	public void onBucketFill(FillBucketEvent event) {
 		Location loc = new Location(event.target);
-		
-		int id = loc.getBlockId(event.world);
+
+		Block id = loc.getBlock(event.world);
 		int meta = getMeta(id);
-		
+
 		if (meta > -1)
-			if (loc.getBlockMeta(event.world) == 0 ){ // Check that it is a source block
-				loc.placeBlock(event.world, new SimpleItem(0, 0));; // Remove the fluid block
-				
-				event.result =  new ItemStack(itemID, 1, meta);
+			if (loc.getBlockMeta(event.world) == 0) { // Check that it is a source block
+				loc.setAir(event.world);
+				; // Remove the fluid block
+
+				event.result = new ItemStack(this, 1, meta);
 				event.setResult(Result.ALLOW);
 			}
 	}
- 
- 	private int getMeta(int blockId){
- 		for(Entry<Integer, SubItem> set : items.entrySet())
- 			if(((SubItemBucket)set.getValue()).fluid.getBlockID() == blockId)
- 				return set.getKey();
- 		return -1;
- 	}
 
-    /**
-     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
-     */
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer){
-        MovingObjectPosition movingobjectposition = this.getMovingObjectPositionFromPlayer(par2World, par3EntityPlayer, false);
+	private int getMeta(Block block) {
+		for (Entry<Integer, SubItem> set : items.entrySet())
+			if (((SubItemBucket) set.getValue()).fluid.getBlock().equals(block))
+				return set.getKey();
+		return -1;
+	}
 
-        if (movingobjectposition == null)
-            return par1ItemStack;
-        else{
-            FillBucketEvent event = new FillBucketEvent(par3EntityPlayer, par1ItemStack, par2World, movingobjectposition);
-            if (MinecraftForge.EVENT_BUS.post(event))
-                return par1ItemStack;
+	/**
+	 * Called whenever this item is equipped and the right mouse button is
+	 * pressed. Args: itemStack, world, entityPlayer
+	 */
+	@Override
+	public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
+		MovingObjectPosition movingobjectposition = getMovingObjectPositionFromPlayer(par2World, par3EntityPlayer,
+				false);
 
-            if (event.getResult() == Event.Result.ALLOW){
-                if (par3EntityPlayer.capabilities.isCreativeMode)
-                    return par1ItemStack;
+		if (movingobjectposition == null)
+			return par1ItemStack;
+		else {
+			FillBucketEvent event = new FillBucketEvent(par3EntityPlayer, par1ItemStack, par2World,
+					movingobjectposition);
+			if (MinecraftForge.EVENT_BUS.post(event))
+				return par1ItemStack;
 
-                if (--par1ItemStack.stackSize <= 0)
-                    return event.result;
+			if (event.getResult() == Event.Result.ALLOW) {
+				if (par3EntityPlayer.capabilities.isCreativeMode)
+					return par1ItemStack;
 
-                if (!par3EntityPlayer.inventory.addItemStackToInventory(event.result))
-                    par3EntityPlayer.dropPlayerItem(event.result);
+				if (--par1ItemStack.stackSize <= 0)
+					return event.result;
 
-                return par1ItemStack;
-            }
+				if (!par3EntityPlayer.inventory.addItemStackToInventory(event.result))
+					par3EntityPlayer.entityDropItem(event.result, 0);
 
-            if (movingobjectposition.typeOfHit == EnumMovingObjectType.TILE){
-                int i = movingobjectposition.blockX;
-                int j = movingobjectposition.blockY;
-                int k = movingobjectposition.blockZ;
+				return par1ItemStack;
+			}
 
-                if (!par2World.canMineBlock(par3EntityPlayer, i, j, k))
-                    return par1ItemStack;
+			if (movingobjectposition.typeOfHit == MovingObjectType.BLOCK) {
+				int i = movingobjectposition.blockX;
+				int j = movingobjectposition.blockY;
+				int k = movingobjectposition.blockZ;
 
-                if (movingobjectposition.sideHit == 0)
-                    --j;
+				if (!par2World.canMineBlock(par3EntityPlayer, i, j, k))
+					return par1ItemStack;
 
-                if (movingobjectposition.sideHit == 1)
-                    ++j;
+				if (movingobjectposition.sideHit == 0)
+					--j;
 
-                if (movingobjectposition.sideHit == 2)
-                    --k;
+				if (movingobjectposition.sideHit == 1)
+					++j;
 
-                if (movingobjectposition.sideHit == 3)
-                    ++k;
+				if (movingobjectposition.sideHit == 2)
+					--k;
 
-                if (movingobjectposition.sideHit == 4)
-                    --i;
+				if (movingobjectposition.sideHit == 3)
+					++k;
 
-                if (movingobjectposition.sideHit == 5)
-                    ++i;
+				if (movingobjectposition.sideHit == 4)
+					--i;
 
-                if (!par3EntityPlayer.canPlayerEdit(i, j, k, movingobjectposition.sideHit, par1ItemStack))
-                    return par1ItemStack;
+				if (movingobjectposition.sideHit == 5)
+					++i;
 
-                if (this.tryPlaceContainedLiquid(par2World, par1ItemStack, i, j, k) && !par3EntityPlayer.capabilities.isCreativeMode)
-                    return new ItemStack(Item.bucketEmpty);
-            }
-            return par1ItemStack;
-        }
-    }
+				if (!par3EntityPlayer.canPlayerEdit(i, j, k, movingobjectposition.sideHit, par1ItemStack))
+					return par1ItemStack;
 
-    /**
-     * Attempts to place the liquid contained inside the bucket.
-     */
-    public boolean tryPlaceContainedLiquid(World par1World, ItemStack bucket, int par2, int par3, int par4){
-	    Material material = par1World.getBlockMaterial(par2, par3, par4);
-	    boolean flag = !material.isSolid();
-	
-	    if (!par1World.isAirBlock(par2, par3, par4) && !flag)
-	        return false;
-	    else{
-            if (!par1World.isRemote && flag && !material.isLiquid())
-                par1World.destroyBlock(par2, par3, par4, true);
+				if (tryPlaceContainedLiquid(par2World, par1ItemStack, i, j, k)
+						&& !par3EntityPlayer.capabilities.isCreativeMode)
+					return new ItemStack(Items.bucket);
+			}
+			return par1ItemStack;
+		}
+	}
 
-            Fluid working = ((SubItemBucket)getMetaItem(bucket.getItemDamage())).fluid;
-            
-            if(working == null || working.getBlockID() == -1)
-            	return false;
-            else
-            	par1World.setBlock(par2, par3, par4, working.getBlockID(), 0, 3);
-	        return true;
-	    } 
-    }
+	/**
+	 * Attempts to place the liquid contained inside the bucket.
+	 */
+	public boolean tryPlaceContainedLiquid(World world, ItemStack bucket, int x, int y, int z) {
+		Location loc = new Location(x, y, z);
+
+		Material material = loc.getMaterial(world);
+		boolean flag = !material.isSolid();
+
+		if (!loc.isAir(world) && !flag)
+			return false;
+		else {
+			if (!world.isRemote && flag && !material.isLiquid())
+				loc.setAir(world);
+
+			Fluid working = ((SubItemBucket) getMetaItem(bucket.getItemDamage())).fluid;
+
+			if (working == null || working.getBlock() == null)
+				return false;
+			else
+				loc.placeBlock(world, working.getBlock());
+			return true;
+		}
+	}
 }

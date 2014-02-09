@@ -3,17 +3,19 @@ package redgear.core.block;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import redgear.core.asm.RedGearCore;
 import redgear.core.tile.TileEntityGeneric;
 import redgear.core.util.SimpleItem;
@@ -25,13 +27,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class MetaTile extends MetaBlock implements ITileEntityProvider {
 	private final int[] directionMap = {2, 5, 3, 4 };
 
-	public MetaTile(int ID, Material par2Material, String name) {
-		super(ID, par2Material, name);
+	public MetaTile(Material par2Material, String name) {
+		super(par2Material, name);
 		isBlockContainer = true;
 	}
 
 	@Override
-	public TileEntity createTileEntity(World world, int meta) {
+	public TileEntity createNewTileEntity(World world, int meta) {
 		try {
 			return getMetaTile(meta).newInstance();
 		} catch (Exception e) {
@@ -39,13 +41,6 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 		}
 
 		return null;
-	}
-
-	@Override
-	@Deprecated
-	public TileEntity createNewTileEntity(World world)   //Should never be called
-	{
-		return createTileEntity(world, 0);
 	}
 
 	@Override
@@ -57,7 +52,7 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 
 			if (!world.isRemote && player.getHeldItem() != null && player.getHeldItem().getItem() != null
 					&& IToolWrench.class.isAssignableFrom(player.getHeldItem().getItem().getClass())) {
-				TileEntity tile = world.getBlockTileEntity(x, y, z);
+				TileEntity tile = world.getTileEntity(x, y, z);
 				if (tile != null && TileEntityGeneric.class.isAssignableFrom(tile.getClass())) {
 					TileEntityGeneric tileGeneric = (TileEntityGeneric) tile;
 					boolean test;
@@ -88,7 +83,7 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 		if (entity == null)
 			return;
 
-		TileEntity tile = world.getBlockTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(x, y, z);
 
 		if (tile instanceof TileEntityGeneric)
 			((TileEntityGeneric) tile).setDirection(directionMap[MathHelper
@@ -128,7 +123,7 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 	 */
 	@Override
 	public int getDamageValue(World world, int x, int y, int z) {
-		TileEntity tile = world.getBlockTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(x, y, z);
 
 		if (tile != null)
 			for (Entry<Integer, SubBlock> test : blocks.entrySet())
@@ -149,17 +144,14 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 	 * @return A ArrayList containing all items this block drops
 	 */
 	@Override
-	public ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int metadata, int fortune) {
+	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
 		ArrayList<ItemStack> ret = new ArrayList<ItemStack>(1);
 
 		int count = quantityDropped(metadata, fortune, world.rand);
 		for (int i = 0; i < count; i++) {
-			int id = idDropped(metadata, world.rand, fortune);
-			if (id > 0)
-				ret.add(new ItemStack(id, 1, metadata /*
-													 * getDamageValue(world, x,
-													 * y, z)
-													 */));
+			Item item = getItemDropped(metadata, world.rand, fortune);
+			if (item != null)
+				ret.add(new ItemStack(item, 1, getDamageValue(world, x, y, z)));
 		}
 		return ret;
 	}
@@ -169,21 +161,8 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 	/**
 	 * Retrieves the block texture to use based on the display side. Args: iBlockAccess, x, y, z, side
 	 */
-	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side) {
+	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
 		return getMetaBlock(world.getBlockMetadata(x, y, z)).getBlockTexture(world, x, y, z, side);
-	}
-
-	/**
-	 * Called on server worlds only when the block has been replaced by a
-	 * different block ID, or the same block with a
-	 * different metadata value, but before the new metadata value is set. Args:
-	 * World, x, y, z, old block ID, old
-	 * metadata
-	 */
-	@Override
-	public void breakBlock(World par1World, int par2, int par3, int par4, int par5, int par6) {
-		super.breakBlock(par1World, par2, par3, par4, par5, par6);
-		par1World.removeBlockTileEntity(par2, par3, par4);
 	}
 
 	/**
@@ -195,41 +174,9 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 	@Override
 	public boolean onBlockEventReceived(World par1World, int par2, int par3, int par4, int par5, int par6) {
 		super.onBlockEventReceived(par1World, par2, par3, par4, par5, par6);
-		TileEntity tileentity = par1World.getBlockTileEntity(par2, par3, par4);
+		TileEntity tileentity = par1World.getTileEntity(par2, par3, par4);
 		return tileentity != null ? tileentity.receiveClientEvent(par5, par6) : false;
 	}
-
-	/**
-	 * Rotate the block. For vanilla blocks this rotates around the axis passed
-	 * in (generally, it should be the "face" that was hit).
-	 * Note: for mod blocks, this is up to the block and modder to decide. It is
-	 * not mandated that it be a rotation around the
-	 * face, but could be a rotation to orient *to* that face, or a visiting of
-	 * possible rotations.
-	 * The method should return true if the rotation was successful though.
-	 * 
-	 * @param worldObj The world
-	 * @param x X position
-	 * @param y Y position
-	 * @param z Z position
-	 * @param axis The axis to rotate around
-	 * @return True if the rotation was successful, False if the rotation
-	 * failed, or is not possible
-	 */
-	/*
-	 * @Override
-	 * public boolean rotateBlock(World world, int x, int y, int z,
-	 * ForgeDirection side){
-	 * TileEntity tile = world.getBlockTileEntity(x, y, z);
-	 * 
-	 * if(tile instanceof TileEntityGeneric){
-	 * TileEntityGeneric genTile = (TileEntityGeneric) tile;
-	 * 
-	 * return genTile.setDirection(side);
-	 * }
-	 * return false;
-	 * }
-	 */
 
 	/**
 	 * Get the rotations that can apply to the block at the specified
@@ -250,29 +197,18 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 	}
 
 	/**
-	 * Called whenever the block is added into the world. Args: world, x, y, z
-	 */
-	/*
-	 * @Override
-	 * public void onBlockAdded(World world, int x, int y, int z){
-	 * if(!world.isRemote)
-	 * checkRedstone(world, x, y, z);
-	 * }
-	 */
-
-	/**
 	 * Lets the block know when one of its neighbor changes. Doesn't know which
 	 * neighbor changed (coordinates passed are
-	 * their own) Args: x, y, z, neighbor blockID
+	 * their own) Args: x, y, z, neighbor block
 	 */
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, int par5) {
+	public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
 		if (!world.isRemote)
 			checkRedstone(world, x, y, z);
 	}
 
 	private void checkRedstone(World world, int x, int y, int z) {
-		TileEntity tile = world.getBlockTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(x, y, z);
 
 		if (tile instanceof TileEntityGeneric)
 			((TileEntityGeneric) tile).updateRedstone(world.isBlockIndirectlyGettingPowered(x, y, z));
@@ -286,7 +222,7 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 	 */
 	@Override
 	public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side) {
-		TileEntity tile = world.getBlockTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(x, y, z);
 
 		if (tile instanceof TileEntityGeneric)
 			return ((TileEntityGeneric) tile).redstoneSignal(ForgeDirection.getOrientation(side).getOpposite());
