@@ -81,6 +81,11 @@ public class SimpleItem implements ISimpleItem, Serializable {
 	public Item getItem() {
 		return item;
 	}
+	
+	@Override
+	public Block getBlock(){
+		return Block.getBlockFromItem(getItem());
+	}
 
 	@Override
 	public int getMeta() {

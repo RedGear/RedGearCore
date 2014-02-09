@@ -16,7 +16,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author Blackhole
  * 
  */
-public class BlockGeneric extends Block {
+public class BlockGeneric extends Block { 
 	/**
 	 * Use this if your item has a typical icon
 	 * 

@@ -2,6 +2,7 @@ package redgear.core.world;
 
 import java.util.Collection;
 
+import redgear.core.util.SimpleItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
@@ -121,6 +122,23 @@ public class Location extends ChunkPosition {
 	public boolean placeBlock(World world, Block item, Collection<Block> targets, ChunkPosition relative) {
 		return copy().translate(relative).placeBlock(world, item, targets);
 	}
+	
+	public void placeBlock(World world, SimpleItem block) {
+		placeBlock(world, block.getBlock());
+	}
+
+	public void placeBlock(World world, SimpleItem block, ChunkPosition relative) {
+		placeBlock(world, block.getBlock(), relative);
+	}
+
+	public boolean placeBlock(World world, SimpleItem block, SimpleItem target) {
+		return placeBlock(world, block.getBlock(), target.getBlock());
+	}
+
+	public boolean placeBlock(World world, SimpleItem item, SimpleItem target, ChunkPosition relative) {
+		return placeBlock(world, item.getBlock(), target.getBlock(), relative);
+	}
+
 
 	public Block getBlock(IBlockAccess world) {
 		return world.getBlock(chunkPosX, chunkPosY, chunkPosZ);

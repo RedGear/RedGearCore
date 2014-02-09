@@ -1,5 +1,6 @@
 package redgear.core.api.item;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,6 +18,11 @@ public interface ISimpleItem {
 	 * @return The Item
 	 */
 	Item getItem();
+	
+	/**
+	 * @return The Block form of this item, if it exists or air if it doesn't. 
+	 */
+	Block getBlock();
 
 	/**
 	 * @return The Meta value
@@ -101,5 +107,7 @@ public interface ISimpleItem {
 	boolean isItemEqual(ISimpleItem other);
 
 	boolean isStackEqual(ISimpleItem other);
+
+	
 
 }
