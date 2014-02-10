@@ -1,6 +1,7 @@
 buildscript {
     repositories {
         mavenCentral()
+		mavenLocal()
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
@@ -24,6 +25,11 @@ configFile.withReader {
 	prop.load(it)
 	ext.config = new ConfigSlurper().parse prop
 }
+
+dependencies {
+	compile('net.minecraftforge.gradle:ForgeGradle:1.1-SNAPSHOT')
+}
+
 
 version = config.core_version
 group= "redgear.core" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
