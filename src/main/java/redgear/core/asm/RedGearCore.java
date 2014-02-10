@@ -19,7 +19,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 
-@Mod(modid = "redgear_core", name = "Red Gear Core", version = "@CoreVersion@", dependencies = "")
+@Mod(modid = "RedGear|Core", name = "Red Gear Core", version = "@CoreVersion@", dependencies = "")
 //@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = {CorePacketHandler.buttonChannel }, packetHandler = CorePacketHandler.class)
 @TransformerExclusions(value = {"redgear.core.asm", "redgear.core.mod" })
 public class RedGearCore extends ModUtils {
