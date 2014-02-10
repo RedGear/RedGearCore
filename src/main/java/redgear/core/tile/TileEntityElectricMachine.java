@@ -1,7 +1,7 @@
 package redgear.core.tile;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import universalelectricity.api.UniversalClass;
 import universalelectricity.api.energy.IEnergyInterface;
 

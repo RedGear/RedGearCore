@@ -9,9 +9,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.Fluid;
@@ -20,9 +19,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import org.lwjgl.opengl.GL11;
 
 import redgear.core.asm.RedGearCore;
-import redgear.core.network.CorePacketHandler;
 import redgear.core.util.StringHelper;
-import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class GuiGeneric extends GuiContainer {
 
@@ -73,19 +70,21 @@ public class GuiGeneric extends GuiContainer {
 			RedGearCore.util.logDebug("Something went wrong trying to send a packet from the client to server", e);
 		}
 
-		Packet250CustomPayload packet = new Packet250CustomPayload();
-		packet.channel = CorePacketHandler.buttonChannel;
-		packet.data = bos.toByteArray();
-		packet.length = bos.size();
-		PacketDispatcher.sendPacketToServer(packet);
+		/*
+		 * Packet250CustomPayload packet = new Packet250CustomPayload();
+		 * packet.channel = CorePacketHandler.buttonChannel;
+		 * packet.data = bos.toByteArray();
+		 * packet.length = bos.size();
+		 * PacketDispatcher.sendPacketToServer(packet);
+		 */
 	}
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		setMouse(mouseX, mouseY);
 
-		fontRenderer.drawString(guiName, 8, 4, 4210752);
-		fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8,
+		fontRendererObj.drawString(guiName, 8, 4, 4210752);
+		fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 8,
 				myContainer.playerInvHeight - 9, 4210752);
 
 		for (GuiElement elem : myContainer.elements)
@@ -98,7 +97,7 @@ public class GuiGeneric extends GuiContainer {
 		if (gauge == null)
 			return; //What the? How?
 
-		if (!isPointInRegion(gauge.getX(), gauge.getY(), gauge.getWidth(), gauge.getHeight(), mouseX, mouseY))
+		if (!func_146978_c(gauge.getX(), gauge.getY(), gauge.getWidth(), gauge.getHeight(), mouseX, mouseY))
 			return;
 
 		ArrayList<String> lines = new ArrayList<String>(2);
@@ -123,7 +122,7 @@ public class GuiGeneric extends GuiContainer {
 	 * @param mouseY
 	 */
 	protected void drawHoverText(List<String> lines, int mouseX, int mouseY) {
-		func_102021_a(lines, mouseX, mouseY);
+		func_146283_a(lines, mouseX, mouseY);
 	}
 
 	@Override
@@ -152,13 +151,13 @@ public class GuiGeneric extends GuiContainer {
 		drawTexturedModalRect(x1 + guiX, y1 + guiY, snipX, snipY, x2 - x1, y2 - y1);
 	}
 
-	protected void drawRectangleIcon(int x1, int y1, int x2, int y2, Icon ico, ResourceLocation resource) {
+	protected void drawRectangleIcon(int x1, int y1, int x2, int y2, IIcon ico, ResourceLocation resource) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.renderEngine.bindTexture(resource);
 		this.drawRectangleIcon(x1, y1, x2, y2, ico);
 	}
 
-	protected void drawRectangleIcon(int x1, int y1, int x2, int y2, Icon ico) {
+	protected void drawRectangleIcon(int x1, int y1, int x2, int y2, IIcon ico) {
 		drawTexturedModelRectFromIcon(x1 + guiX, y1 + guiY, ico, x2 - x1, y2 - y1);
 	}
 

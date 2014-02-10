@@ -6,14 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumArmorMaterial;
-import net.minecraft.item.EnumToolMaterial;
+import net.minecraft.item.Item.ToolMaterial;
+import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
-import net.minecraftforge.common.EnumHelper;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.oredict.OreDictionary;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -39,10 +38,10 @@ import thaumcraft.api.research.ResearchPage;
 public class ThaumcraftApi {
 	
 	//Materials	
-	public static EnumToolMaterial toolMatThaumium = EnumHelper.addToolMaterial("THAUMIUM", 3, 400, 7F, 2, 22);
-	public static EnumToolMaterial toolMatElemental = EnumHelper.addToolMaterial("THAUMIUM_ELEMENTAL", 3, 1500, 10F, 3, 18);
-	public static EnumArmorMaterial armorMatThaumium = EnumHelper.addArmorMaterial("THAUMIUM", 25, new int[] { 2, 6, 5, 2 }, 25);
-	public static EnumArmorMaterial armorMatSpecial = EnumHelper.addArmorMaterial("SPECIAL", 25, new int[] { 1, 3, 2, 1 }, 25);
+	public static ToolMaterial toolMatThaumium = EnumHelper.addToolMaterial("THAUMIUM", 3, 400, 7F, 2, 22);
+	public static ToolMaterial toolMatElemental = EnumHelper.addToolMaterial("THAUMIUM_ELEMENTAL", 3, 1500, 10F, 3, 18);
+	public static ArmorMaterial armorMatThaumium = EnumHelper.addArmorMaterial("THAUMIUM", 25, new int[] { 2, 6, 5, 2 }, 25);
+	public static ArmorMaterial armorMatSpecial = EnumHelper.addArmorMaterial("SPECIAL", 25, new int[] { 1, 3, 2, 1 }, 25);
 	
 	//Enchantment references
 	public static int enchantFrugal;
@@ -107,9 +106,9 @@ public class ThaumcraftApi {
 	 * Stacksize should be 0 unless you want to guarantee that at least 1 item is always produced.
 	 */
 	public static void addSmeltingBonus(ItemStack in, ItemStack out) {
-		smeltingBonus.put(
+		/*smeltingBonus.put(
 				Arrays.asList(in.itemID,in.getItemDamage()), 
-				new ItemStack(out.itemID,0,out.getItemDamage()));
+				new ItemStack(out.itemID,0,out.getItemDamage()));*/
 	}
 	
 	/**
@@ -118,7 +117,7 @@ public class ThaumcraftApi {
 	 * @return the The bonus item that can be produced
 	 */
 	public static ItemStack getSmeltingBonus(ItemStack in) {
-		return smeltingBonus.get(Arrays.asList(in.itemID,in.getItemDamage()));
+		return null;//smeltingBonus.get(Arrays.asList(in.itemID,in.getItemDamage()));
 	}
 	
 	/**
@@ -132,7 +131,7 @@ public class ThaumcraftApi {
 	 * FMLInterModComms.sendMessage("Thaumcraft", "smeltBonusExclude", new ItemStack(Item.ingotIron));
 	 */
 	public static void addSmeltingBonusExclusion(ItemStack in) {
-		smeltingBonusExlusion.add(Arrays.asList(in.itemID,in.getItemDamage()));
+		//smeltingBonusExlusion.add(Arrays.asList(in.itemID,in.getItemDamage()));
 	}
 	
 	
@@ -142,7 +141,7 @@ public class ThaumcraftApi {
 	 * @return true or false
 	 */
 	public static boolean isSmeltingBonusExluded(ItemStack in) {
-		return smeltingBonusExlusion.contains(Arrays.asList(in.itemID,in.getItemDamage()));
+		return false;// smeltingBonusExlusion.contains(Arrays.asList(in.itemID,in.getItemDamage()));
 	}
 	
 	
@@ -264,7 +263,7 @@ public class ThaumcraftApi {
 	 */
 	private static HashMap<int[],Object[]> keyCache = new HashMap<int[],Object[]>();
 	public static Object[] getCraftingRecipeKey(EntityPlayer player, ItemStack stack) {
-		int[] key = new int[] {stack.itemID,stack.getItemDamage()};
+		/*int[] key = new int[] {stack.itemID,stack.getItemDamage()};
 		if (keyCache.containsKey(key)) {
 			if (keyCache.get(key)==null) return null;
 			if (ThaumcraftApiHelper.isResearchComplete(player.username, (String)(keyCache.get(key))[0]))
@@ -287,7 +286,7 @@ public class ThaumcraftApi {
 				}
 			}
 		}
-		keyCache.put(key,null);
+		keyCache.put(key,null);*/
 		return null;
 	}
 	
@@ -348,7 +347,7 @@ public class ThaumcraftApi {
 	 * @param aspects A ObjectTags object of the associated aspects
 	 */
 	public static void registerObjectTag(String oreDict, AspectList aspects) {
-		if (aspects==null) aspects=new AspectList();
+		/*if (aspects==null) aspects=new AspectList();
 		ArrayList<ItemStack> ores = OreDictionary.getOres(oreDict);
 		if (ores!=null && ores.size()>0) {
 			for (ItemStack ore:ores) {
@@ -356,7 +355,7 @@ public class ThaumcraftApi {
 				if (d==OreDictionary.WILDCARD_VALUE) d = -1;
 				objectTags.put(Arrays.asList(ore.itemID, d), aspects);
 			}
-		}
+		}*/
 	}
 	
 	/**
@@ -369,7 +368,7 @@ public class ThaumcraftApi {
 	 * @param aspects A ObjectTags object of the associated aspects
 	 */
 	public static void registerComplexObjectTag(int id, int meta, AspectList aspects ) {
-		if (!exists(id,meta)) {
+		/*if (!exists(id,meta)) {
 			AspectList tmp = ThaumcraftApiHelper.generateTags(id, meta);
 			if (tmp != null && tmp.size()>0) {
 				for(Aspect tag:tmp.getAspects()) {
@@ -383,7 +382,7 @@ public class ThaumcraftApi {
 				tmp.merge(tag, tmp.getAmount(tag));
 			}
 			registerObjectTag(id,meta,tmp);
-		}
+		}*/
 	}
 		
 	//CROPS //////////////////////////////////////////////////////////////////////////////////////////

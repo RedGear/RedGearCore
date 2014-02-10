@@ -28,8 +28,8 @@ public class ScanResult {
 			if (type == 1
 					&& (blockId != sr.blockId || blockMeta != sr.blockMeta))
 				return false;
-			if (type == 2 && entity.entityId != sr.entity.entityId)
-				return false;
+			/*if (type == 2 && entity.entityId != sr.entity.entityId)
+				return false;*/
 			if (type == 3 && !phenomena.equals(sr.phenomena))
 				return false;
 		}

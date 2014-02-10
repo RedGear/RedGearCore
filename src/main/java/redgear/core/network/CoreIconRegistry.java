@@ -3,12 +3,12 @@ package redgear.core.network;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.util.Icon;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.fluids.Fluid;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -23,7 +23,7 @@ public class CoreIconRegistry {
 
 	private static CoreIconRegistry instance;
 
-	private final HashMap<String, Icon> icons = new HashMap<String, Icon>();
+	private final HashMap<String, IIcon> icons = new HashMap<String, IIcon>();
 	private final HashMap<Fluid, String> fluids = new HashMap<Fluid, String>();
 	private static final String flow = "_flow";
 	private static final String still = "_still";
@@ -39,18 +39,16 @@ public class CoreIconRegistry {
 		return instance;
 	}
 
-	
-
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void registerIcons(TextureStitchEvent.Pre event) {
-		IconRegister reg = event.map;
+		IIconRegister reg = event.map;
 
-		for (Entry<String, Icon> set : icons.entrySet())
+		for (Entry<String, IIcon> set : icons.entrySet())
 			set.setValue(reg.registerIcon(set.getKey()));
 
 	}
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void registerFluidIcons(TextureStitchEvent.Post event) {
 		for (Entry<Fluid, String> set : fluids.entrySet())
 			set.getKey().setIcons(getIcon(set.getValue() + still), getIcon(set.getValue() + flow));
@@ -66,7 +64,7 @@ public class CoreIconRegistry {
 		icons.put(name, null);
 	}
 
-	Icon getIcon(String name) {
+	IIcon getIcon(String name) {
 		return icons.get(name);
 	}
 

@@ -25,7 +25,7 @@ public class CoreGuiHandler implements IGuiHandler {
 	public static CoreGuiHandler init() {
 		if (instance == null) {
 			instance = new CoreGuiHandler();
-			NetworkRegistry.instance().registerGuiHandler(RedGearCore.instance, instance);
+			NetworkRegistry.INSTANCE.registerGuiHandler(RedGearCore.instance, instance);
 		}
 
 		return instance;
@@ -34,7 +34,7 @@ public class CoreGuiHandler implements IGuiHandler {
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		if (dataMap.containsKey(ID))
-			return dataMap.get(ID).createContainer(player.inventory, world.getBlockTileEntity(x, y, z));
+			return dataMap.get(ID).createContainer(player.inventory, world.getTileEntity(x, y, z));
 		else {
 			RedGearCore.util.logDebug("Unknown Gui ID: " + ID);
 			return null;
@@ -44,7 +44,7 @@ public class CoreGuiHandler implements IGuiHandler {
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		if (dataMap.containsKey(ID))
-			return dataMap.get(ID).createGui(player.inventory, world.getBlockTileEntity(x, y, z));
+			return dataMap.get(ID).createGui(player.inventory, world.getTileEntity(x, y, z));
 		else {
 			RedGearCore.util.logDebug("Unknown Gui ID: " + ID);
 			return null;
@@ -66,7 +66,7 @@ public class CoreGuiHandler implements IGuiHandler {
 	}
 
 	public static int addGuiMap(String name, String displayName) {
-		return addGuiMap(StringHelper.parseModName(), "textures/gui/" + name + ".png", displayName, 0, 0, 84);
+		return addGuiMap(StringHelper.getModId(), "textures/gui/" + name + ".png", displayName, 0, 0, 84);
 	}
 
 	public static class GuiData {

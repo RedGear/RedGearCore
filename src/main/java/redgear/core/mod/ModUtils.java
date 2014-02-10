@@ -3,19 +3,21 @@ package redgear.core.mod;
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.oredict.OreDictionary;
+
+import org.apache.logging.log4j.Logger;
+
 import redgear.core.asm.RedGearCore;
 import redgear.core.util.CoreLocalization;
 import redgear.core.util.SimpleItem;
 import redgear.core.util.StringHelper;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -30,17 +32,13 @@ public abstract class ModUtils {
 	private File configFile;
 	private boolean isConfigLoaded;
 	private final ArrayList<IPlugin> plugins = new ArrayList<IPlugin>();
-	private int blockIdDefault;
-	private int itemIdDefault;
 
 	public final String modId;
 	public final String modName;
 	public final String modVersion;
 	public final String modDepend;
 
-	public ModUtils(int blockIdDefault, int itemIdDefault) {
-		this.blockIdDefault = blockIdDefault;
-		this.itemIdDefault = itemIdDefault;
+	public ModUtils() {
 
 		String modId = "Unknown";
 		String modName = "Unknown";
@@ -69,7 +67,6 @@ public abstract class ModUtils {
 		configFile = StringHelper.parseConfigFile(event.getModConfigurationDirectory(), event.getModMetadata().modId);
 		config = new Configuration(configFile);
 		myLogger = event.getModLog();
-		myLogger.setParent(FMLLog.getLogger());
 		isConfigLoaded = false;
 		isDebugMode = getBoolean("debugMode", false);
 
@@ -468,44 +465,20 @@ public abstract class ModUtils {
 		return prop.getBoolean(Default);
 	}
 
-	public int getItemId(String name) {
-		if (itemIdDefault > 0) {
-			loadConfig();
-			return config.getItem(name, itemIdDefault).getInt(itemIdDefault++);
-		} else
-			return 0;
+	public void addSmelting(Item input, ItemStack result) {
+		addSmelting(new ItemStack(input), result);
 	}
 
-	public int getBlockId(String name) {
-		if (blockIdDefault > 0) {
-			loadConfig();
-			return config.getBlock(name, blockIdDefault).getInt(blockIdDefault++);
-		} else
-			return 0;
+	public void addSmelting(Block input, ItemStack result) {
+		addSmelting(new ItemStack(input), result);
 	}
 
-	public void addSmelting(SimpleItem input, SimpleItem result) {
+	public void addSmelting(ItemStack input, ItemStack result) {
 		addSmelting(input, result, 0F);
 	}
 
-	public void addSmelting(SimpleItem input, SimpleItem result, float exp) {
-		addSmelting(input, result.getStack(), exp);
-	}
-
-	public void addSmelting(SimpleItem input, ItemStack result) {
-		addSmelting(input, result, 0F);
-	}
-
-	public void addSmelting(SimpleItem input, ItemStack result, float exp) {
-		addSmelting(input.id, input.meta, result, exp);
-	}
-
-	public void addSmelting(int id, int meta, ItemStack result) {
-		addSmelting(id, meta, result, 0F);
-	}
-
-	public void addSmelting(int id, int meta, ItemStack result, float exp) {
-		FurnaceRecipes.smelting().addSmelting(id, meta, result, exp);
+	public void addSmelting(ItemStack input, ItemStack result, float exp) {
+		FurnaceRecipes.smelting().func_151394_a(input, result, exp);
 	}
 
 	public void registerOre(String name, SimpleItem ore) {
@@ -518,7 +491,7 @@ public abstract class ModUtils {
 
 	public void logDebug(String message) {
 		if (isDebugMode)
-			myLogger.log(Level.INFO, "DEBUG: " + message);
+			myLogger.debug("DEBUG: " + message);
 	}
 
 	public void logDebug(Object... message) {
@@ -528,20 +501,20 @@ public abstract class ModUtils {
 
 	public void logDebug(String message, Exception e) {
 		if (isDebugMode) {
-			myLogger.log(Level.WARNING, "DEBUG: " + message);
+			myLogger.warn("DEBUG: " + message);
 			e.printStackTrace();
 		}
 	}
-	
-	public Side getSide(){
+
+	public Side getSide() {
 		return RedGearCore.proxy.getSide();
 	}
-	
-	public boolean isServer(){
+
+	public boolean isServer() {
 		return getSide() == Side.SERVER;
 	}
-	
-	public boolean isClient(){
+
+	public boolean isClient() {
 		return getSide() == Side.CLIENT;
 	}
 }

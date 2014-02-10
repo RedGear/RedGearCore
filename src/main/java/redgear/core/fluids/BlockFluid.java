@@ -1,8 +1,8 @@
 package redgear.core.fluids;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.util.Icon;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.BlockFluidClassic;
 import net.minecraftforge.fluids.Fluid;
 import redgear.core.util.StringHelper;
@@ -14,20 +14,20 @@ public class BlockFluid extends BlockFluidClassic {
 	private final String modName;
 	private final String name;
 	private final Fluid fluid;
-	private Icon iconStill;
-	private Icon iconFlowing;
+	private IIcon iconStill;
+	private IIcon iconFlowing;
 	
-	public BlockFluid(int id, Fluid fluid, String name) {
-		super(id, fluid, Material.water);
+	public BlockFluid(Fluid fluid, String name) {
+		super(fluid, Material.water);
 		this.modName = StringHelper.parseModAsset();
 		this.name = name;
 		this.fluid = fluid;
-		fluid.setBlockID(id);
+		fluid.setBlock(this);
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Icon getIcon( int side, int meta )
+	public IIcon getIcon( int side, int meta )
 	{
 		if ( side <= 1 )
 			return iconStill;
@@ -36,7 +36,7 @@ public class BlockFluid extends BlockFluidClassic {
 	}
 	
     @SideOnly(Side.CLIENT)
-    public void registerIcons(IconRegister par1IconRegister)
+    public void registerIcons(IIconRegister par1IconRegister)
     {
         this.iconStill = par1IconRegister.registerIcon(modName + name + "_still");
         this.iconFlowing = par1IconRegister.registerIcon(modName + name + "_flow");

@@ -11,8 +11,8 @@ import redgear.core.world.Location;
 
 public class ItemDebugTool extends ItemGeneric{
 
-	public ItemDebugTool(int Id) {
-		super(Id, "debugger");
+	public ItemDebugTool() {
+		super("debugger");
 	}
 
 	
@@ -24,7 +24,7 @@ public class ItemDebugTool extends ItemGeneric{
     	try{
     	
     	Location loc = new Location(x, y, z);
-    	print(player, "Block ID: " + loc.getBlockId(world));
+    	//print(player, "Block ID: " + loc.getBlockId(world));
     	print(player, "Block Meta: " + loc.getBlockMeta(world));
     	
     	TileEntity tile = loc.getTile(world);
@@ -57,7 +57,7 @@ public class ItemDebugTool extends ItemGeneric{
      * @param message
      */
     private void print(EntityPlayer player, String message){
-    	player.addChatMessage(message);
-    	//RedGearCore.instance.logDebug(message);
+    	//player.addChatMessage(message);
+    	RedGearCore.instance.logDebug(message);
     }
 }

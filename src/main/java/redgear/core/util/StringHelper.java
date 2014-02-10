@@ -24,56 +24,56 @@ public class StringHelper {
 
 	    return ret.toString();
 	}
-	
+
 	public static String concat(Object... values){
 		StringBuilder build = new StringBuilder();
-		
+
 		for(Object bit : values)
 			build.append(bit);
-		
+
 		return build.toString();
 	}
-	
+
 	public static String getModId(){
 		return Loader.instance().activeModContainer().getModId();
 	}
-	
+
 	public static String parseModAsset(){
 		return parseModAsset(getModId());
 	}
-	
+
 	public static String parseModAsset(String modName){
 		return  concat(parseModName(modName), ":");
 	}
-	
+
 	public static String parseModName(){
 		return parseModName(getModId());
 	}
-	
+
 	public static String parseModName(String modName){
 		return modName.toLowerCase().replace('|', '_');
 	}
-	
+
 	public static String parseLangFile(String lang){
 		return parseLangFile(getModId(), lang);
 	}
-	
+
 	public static String parseLangFile(String modId, String lang){
 		return concat("/assets/", parseModName(modId), "/lang/", lang, ".xml");
 	}	
-	
+
 	public static String parseTextureFile(String modId, String folder, String textureName){
 		return concat("/assets/", parseModName(modId), "/", folder, "/", textureName, ".png");
 	}
-	
+
 	public static File parseConfigFile(File configDir, String modID ){
     	return new File(configDir, modID.replace("|", slash) + ".cfg");
     }
-	
+
 	public static String parseUnLocalName(String name){
 		return concat(getModId().replace('|', '.'), ".", name);
 	}
-	
+
 	public static ResourceLocation parseModelTexture(String modId, String textureName){
 		return new ResourceLocation(parseModName(modId), concat("textures/models/", textureName, ".png"));
 	}

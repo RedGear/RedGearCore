@@ -1,12 +1,11 @@
 package redgear.core.render;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
-public class LiquidGauge extends GuiRegion implements GuiElement{
+public class LiquidGauge extends GuiRegion implements GuiElement {
 
 	public int liquidID = 0;
 	public int liquidAmount = 0;
@@ -33,10 +32,10 @@ public class LiquidGauge extends GuiRegion implements GuiElement{
 		Fluid fluid = FluidRegistry.getFluid(liquidID);
 		if (fluid == null)
 			return;
-		Icon liquidIcon = fluid.getIcon();
+		IIcon liquidIcon = fluid.getIcon();
 
-		if (liquidIcon == null && fluid.getBlockID() > 0) //frustrating
-			liquidIcon = Block.blocksList[fluid.getBlockID()].getBlockTextureFromSide(0);
+		if (liquidIcon == null && fluid.getBlock() != null) //frustrating
+			liquidIcon = fluid.getBlock().getBlockTextureFromSide(0);
 
 		if (liquidIcon == null)
 			return;

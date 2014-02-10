@@ -4,10 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import redgear.core.util.SimpleItem;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -16,8 +17,8 @@ public class MetaItem extends ItemGeneric {
 
 	protected final Map<Integer, SubItem> items = new HashMap<Integer, SubItem>();
 
-	public MetaItem(int itemID, String name) {
-		super(itemID, name);
+	public MetaItem(String name) {
+		super(name);
 		setUnlocalizedName(name);
 		hasSubtypes = true;
 	}
@@ -41,16 +42,17 @@ public class MetaItem extends ItemGeneric {
 	/**
 	 * Gets an icon index based on an item's damage value
 	 */
-	public Icon getIconFromDamage(int index) {
+	public IIcon getIconFromDamage(int index) {
 		if (indexCheck(index))
 			return items.get(index).getIcon();
 		else
 			return null;
 	}
 
+	@SuppressWarnings({"unchecked", "rawtypes" })
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(int unknown, CreativeTabs tab, List subItems) {
+	public void getSubItems(Item item, CreativeTabs tab, List subItems) {
 		for (int i = 0; i < items.size(); i++)
 			subItems.add(new ItemStack(this, 1, i));
 	}
@@ -62,7 +64,7 @@ public class MetaItem extends ItemGeneric {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister par1IconRegister) {
+	public void registerIcons(IIconRegister par1IconRegister) {
 		for (SubItem item : items.values())
 			item.registerIcons(modName, par1IconRegister);
 	}

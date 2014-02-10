@@ -10,10 +10,9 @@ public class MetaTileSpecialRenderer extends MetaTile {
 	private final int renderId;
 	private final TileEntitySpecialRenderer tileRender;
 
-	public MetaTileSpecialRenderer(int ID, Material par2Material, String name,
-			SimpleBlockRenderingHandler blockRender,
+	public MetaTileSpecialRenderer(Material par2Material, String name, SimpleBlockRenderingHandler blockRender,
 			TileEntitySpecialRenderer tileRender) {
-		super(ID, par2Material, name);
+		super(par2Material, name);
 		renderId = blockRender.getRenderId();
 		this.tileRender = tileRender;
 	}
@@ -24,10 +23,12 @@ public class MetaTileSpecialRenderer extends MetaTile {
 		return super.addMetaBlock(newBlock);
 	}
 
+	@Override
 	public boolean isOpaqueCube() {
 		return false;
 	}
 
+	@Override
 	public boolean renderAsNormalBlock() {
 		return false;
 	}

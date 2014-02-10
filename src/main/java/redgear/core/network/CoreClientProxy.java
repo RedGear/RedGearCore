@@ -1,6 +1,6 @@
 package redgear.core.network;
 
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.Fluid;
 import cpw.mods.fml.relauncher.Side;
 
@@ -18,7 +18,7 @@ public class CoreClientProxy extends CoreCommonProxy {
 		icoReg.addIcon(name);
 	}
 	
-	public Icon getIcon(String name) {
+	public IIcon getIcon(String name) {
 		return icoReg.getIcon(name);
 	}
 

@@ -5,11 +5,11 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet132TileEntityData;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import redgear.core.render.Button;
 import redgear.core.render.DrawSnippet;
 import redgear.core.render.GuiElement;
@@ -28,12 +28,6 @@ public abstract class TileEntityGeneric extends TileEntity {
 	private ForgeDirection direction = ForgeDirection.SOUTH; //Default
 	private boolean redstoneState = false;
 	private final List<GuiElement> guiElements = new ArrayList<GuiElement>();
-
-	/*
-	 * protected List<DrawSnippet> snippets = new ArrayList<DrawSnippet>();
-	 * protected List<ProgressBar> progressBars = new ArrayList<ProgressBar>();
-	 * protected List<Button> buttons = new ArrayList<Button>();
-	 */
 
 	public final int getDirectionId() {
 		return getDirection().ordinal();
@@ -129,12 +123,12 @@ public abstract class TileEntityGeneric extends TileEntity {
 	public final Packet getDescriptionPacket() {
 		NBTTagCompound tag = new NBTTagCompound();
 		writeToNBT(tag);
-		return new Packet132TileEntityData(xCoord, yCoord, zCoord, 1, tag);
+		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, tag);
 	}
 
 	@Override
-	public final void onDataPacket(INetworkManager net, Packet132TileEntityData packet) {
-		readFromNBT(packet.data);
+	public final void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+		readFromNBT(packet.func_148857_g()); //TODO: Test this.
 	}
 
 	protected int addProgressBar(int x, int y, int width, int height) {
