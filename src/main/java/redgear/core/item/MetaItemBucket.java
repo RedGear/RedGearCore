@@ -156,7 +156,7 @@ public class MetaItemBucket extends MetaItem {
 			if (working == null || working.getBlock() == null)
 				return false;
 			else
-				loc.placeBlock(world, working.getBlock());
+				loc.placeBlock(world, new SimpleItem(working.getBlock()));
 			return true;
 		}
 	}
