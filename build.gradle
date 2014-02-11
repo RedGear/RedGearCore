@@ -1,7 +1,6 @@
 buildscript {
     repositories {
         mavenCentral()
-		mavenLocal()
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
@@ -26,18 +25,12 @@ configFile.withReader {
 	ext.config = new ConfigSlurper().parse prop
 }
 
-dependencies {
-	compile('net.minecraftforge.gradle:ForgeGradle:1.1-SNAPSHOT')
-}
-
-
-version = config.core_version
+version = config.core_version //1.5.8
 group= "redgear.core" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "RedGearCore"
 
 minecraft {
 	version = config.minecraft_version + "-" + config.forge_version // "1.6.4-9.11.1.964"
-	assetDir = "eclipse/assets"
 	
 	replaceIn "asm/RedGearCore.java"
 		replace "@CoreVersion@", project.version
