@@ -8,10 +8,13 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.oredict.OreDictionary;
 import redgear.core.api.item.ISimpleItem;
+import redgear.core.world.BlockPlacerLocation;
 import redgear.core.world.Location;
+import redgear.core.world.WorldLocation;
 
 /**
  * The SimpleItem class is similar to ItemStack, but is designed to be simpler,
@@ -24,7 +27,6 @@ public class SimpleItem implements ISimpleItem, Serializable {
 	private static final long serialVersionUID = -8624739696061804763L;
 	public final Item item;
 	public final int meta;
-	public final int stackSize;
 	public final int oreID;
 
 	public SimpleItem(ItemStack stack) {
@@ -33,7 +35,6 @@ public class SimpleItem implements ISimpleItem, Serializable {
 
 		item = stack.getItem();
 		meta = stack.getItemDamage();
-		stackSize = stack.stackSize;
 		oreID = OreDictionary.getOreID(stack);
 
 	}
@@ -65,6 +66,18 @@ public class SimpleItem implements ISimpleItem, Serializable {
 	public SimpleItem(IBlockAccess world, Location loc) {
 		this(world, loc.chunkPosX, loc.chunkPosY, loc.chunkPosZ);
 	}
+	
+	public SimpleItem(ChunkPosition loc, IBlockAccess world){
+		this(new Location(loc), world);
+	}
+	
+	public SimpleItem(Location loc, IBlockAccess world){
+		this(loc.getBlock(world), loc.getBlockMeta(world));
+	}
+	
+	public SimpleItem(WorldLocation loc){
+		this(loc.getBlock(), loc.getBlockMeta());
+	}
 
 	public SimpleItem(String oreName) {
 		List<ItemStack> ores = OreDictionary.getOres(oreName);
@@ -72,7 +85,6 @@ public class SimpleItem implements ISimpleItem, Serializable {
 
 		item = stack.getItem();
 		meta = stack.getItemDamage();
-		stackSize = stack.stackSize;
 		oreID = OreDictionary.getOreID(stack);
 
 	}
@@ -98,18 +110,13 @@ public class SimpleItem implements ISimpleItem, Serializable {
 	}
 
 	@Override
-	public int getStackSize() {
-		return stackSize;
-	}
-
-	@Override
 	public ISimpleItem copy() {
 		return new SimpleItem(getStack());
 	}
 
 	@Override
 	public ItemStack getStack() {
-		return getStack(stackSize);
+		return getStack(1);
 	}
 
 	@Override
@@ -126,9 +133,14 @@ public class SimpleItem implements ISimpleItem, Serializable {
 	public boolean isInOreDict() {
 		return oreID != -1;
 	}
+	
+	@Override
+	public String getName(){
+		return Item.itemRegistry.getNameForObject(getItem());
+	}
 
 	@Override
-	public String getName() {
+	public String getDisplayName() {
 		return getStack().getDisplayName();
 	}
 
@@ -139,7 +151,7 @@ public class SimpleItem implements ISimpleItem, Serializable {
 
 	@Override
 	public String toString() {
-		return getName();
+		return getDisplayName();
 	}
 
 	@Override
@@ -161,11 +173,6 @@ public class SimpleItem implements ISimpleItem, Serializable {
 	}
 
 	@Override
-	public boolean isStackEqual(ISimpleItem other) {
-		return isItemEqual(other) && stackSize == other.getStackSize();
-	}
-
-	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof ISimpleItem)
 			return isItemEqual((ISimpleItem) obj);
@@ -178,6 +185,12 @@ public class SimpleItem implements ISimpleItem, Serializable {
 
 		if (obj instanceof Item)
 			return isItemEqual(new SimpleItem((Item) obj));
+		
+		if(obj instanceof WorldLocation)
+			return isItemEqual(new SimpleItem((WorldLocation) obj));
+		
+		if(obj instanceof BlockPlacerLocation)
+			return isItemEqual(((BlockPlacerLocation) obj).block);
 
 		return false;
 	}

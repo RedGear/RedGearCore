@@ -68,7 +68,7 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 			}
 
 			if (block instanceof IHasTile && ((IHasTile) block).hasGui() && !player.isSneaking()) {
-				player.openGui(RedGearCore.instance, ((IHasTile) block).guiId(), world, x, y, z);
+				player.openGui(RedGearCore.inst, ((IHasTile) block).guiId(), world, x, y, z);
 				return true;
 			}
 		}

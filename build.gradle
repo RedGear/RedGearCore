@@ -26,9 +26,9 @@ configFile.withReader {
 	ext.config = new ConfigSlurper().parse prop
 }
 
-dependencies {
+/*dependencies {
 	compile('net.minecraftforge.gradle:ForgeGradle:1.1-SNAPSHOT')
-}
+}*/
 
 
 version = config.core_version

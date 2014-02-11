@@ -20,7 +20,7 @@ public interface ISimpleItem {
 	Item getItem();
 	
 	/**
-	 * @return The Block form of this item, if it exists or air if it doesn't. 
+	 * @return The Block form of this item if it exists or air if it doesn't. 
 	 */
 	Block getBlock();
 
@@ -30,19 +30,17 @@ public interface ISimpleItem {
 	int getMeta();
 
 	/**
-	 * @return A new SimpleItem with the same id and meta as this.
+	 * @return A new SimpleItem with the same Item and meta as this.
 	 */
 	ISimpleItem copy();
 
 	/**
-	 * @return New ItemStack reference with size of 1. Item may or may not
-	 * exist.
+	 * @return New ItemStack reference with size of 1.
 	 */
 	ItemStack getStack();
 
 	/**
-	 * @return New ItemStack reference with given size. Item may or may not
-	 * exist.
+	 * @return New ItemStack reference with given size.
 	 */
 	ItemStack getStack(int amount);
 
@@ -100,13 +98,11 @@ public interface ISimpleItem {
 
 	int getOreID();
 
-	int getStackSize();
-
 	int getItemId();
 
 	boolean isItemEqual(ISimpleItem other);
 
-	boolean isStackEqual(ISimpleItem other);
+	String getDisplayName();
 
 	
 

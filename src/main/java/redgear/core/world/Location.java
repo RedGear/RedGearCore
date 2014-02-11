@@ -2,7 +2,6 @@ package redgear.core.world;
 
 import java.util.Collection;
 
-import redgear.core.util.SimpleItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
@@ -14,6 +13,8 @@ import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import redgear.core.api.item.ISimpleItem;
+import redgear.core.util.SimpleItem;
 
 public class Location extends ChunkPosition {
 
@@ -48,6 +49,10 @@ public class Location extends ChunkPosition {
 	public int getZ() {
 		return chunkPosZ;
 	}
+	
+	protected Location create(int x, int y, int z){
+		return new Location(x, y, z);
+	}
 
 	/**
 	 * @return A new location with the same coordinates.
@@ -56,31 +61,31 @@ public class Location extends ChunkPosition {
 		return new Location(this);
 	}
 
-	public boolean check(IBlockAccess world, Block block) {
+	public boolean check(IBlockAccess world, ISimpleItem block) {
 		if (block == null)
 			return true;
 
 		if (block.equals(Blocks.air) && isAir(world)) //Special case for air-type blocks.
 			return true;
 
-		if (block.equals(getBlock(world)))
+		if (block.equals(new SimpleItem(getBlock(world))))
 			return true;
 
 		return false;
 	}
 
-	public boolean check(IBlockAccess world, Block block, ChunkPosition relative) {
+	public boolean check(IBlockAccess world, ISimpleItem block, ChunkPosition relative) {
 		return copy().translate(relative).check(world, block);
 	}
 
-	public boolean check(IBlockAccess world, Collection<Block> blocks) {
-		for (Block block : blocks)
+	public boolean check(IBlockAccess world, Collection<ISimpleItem> blocks) {
+		for (ISimpleItem block : blocks)
 			if (check(world, block))
 				return true;
 		return false;
 	}
 
-	public boolean check(IBlockAccess world, Collection<Block> blocks, ChunkPosition relative) {
+	public boolean check(IBlockAccess world, Collection<ISimpleItem> blocks, ChunkPosition relative) {
 		return copy().translate(relative).check(world, blocks);
 	}
 
@@ -92,15 +97,15 @@ public class Location extends ChunkPosition {
 		return type.isInstance(getTile(world));
 	}
 
-	public void placeBlock(World world, Block block) {
-		world.setBlock(chunkPosX, chunkPosY, chunkPosZ, block);
+	public void placeBlock(World world, ISimpleItem block) {
+		world.setBlock(chunkPosX, chunkPosY, chunkPosZ, block.getBlock(), block.getMeta(), 3);
 	}
 
-	public void placeBlock(World world, Block block, ChunkPosition relative) {
+	public void placeBlock(World world, ISimpleItem block, ChunkPosition relative) {
 		copy().translate(relative).placeBlock(world, block);
 	}
 
-	public boolean placeBlock(World world, Block block, Block target) {
+	public boolean placeBlock(World world, ISimpleItem block, ISimpleItem target) {
 		if (check(world, target)) {
 			placeBlock(world, block);
 			return true;
@@ -108,35 +113,19 @@ public class Location extends ChunkPosition {
 			return false;
 	}
 
-	public boolean placeBlock(World world, Block item, Block target, ChunkPosition relative) {
+	public boolean placeBlock(World world, ISimpleItem item, ISimpleItem target, ChunkPosition relative) {
 		return copy().translate(relative).placeBlock(world, item, target);
 	}
 
-	public boolean placeBlock(World world, Block block, Collection<Block> targets) {
-		for (Block it : targets)
+	public boolean placeBlock(World world, ISimpleItem block, Collection<ISimpleItem> targets) {
+		for (ISimpleItem it : targets)
 			if (placeBlock(world, block, it))
 				return true;
 		return false;
 	}
 
-	public boolean placeBlock(World world, Block item, Collection<Block> targets, ChunkPosition relative) {
+	public boolean placeBlock(World world, ISimpleItem item, Collection<ISimpleItem> targets, ChunkPosition relative) {
 		return copy().translate(relative).placeBlock(world, item, targets);
-	}
-	
-	public void placeBlock(World world, SimpleItem block) {
-		placeBlock(world, block.getBlock());
-	}
-
-	public void placeBlock(World world, SimpleItem block, ChunkPosition relative) {
-		placeBlock(world, block.getBlock(), relative);
-	}
-
-	public boolean placeBlock(World world, SimpleItem block, SimpleItem target) {
-		return placeBlock(world, block.getBlock(), target.getBlock());
-	}
-
-	public boolean placeBlock(World world, SimpleItem item, SimpleItem target, ChunkPosition relative) {
-		return placeBlock(world, item.getBlock(), target.getBlock(), relative);
 	}
 
 
@@ -161,7 +150,11 @@ public class Location extends ChunkPosition {
 	}
 	
 	public void setAir(World world){
-		placeBlock(world, Blocks.air);
+		placeBlock(world, new SimpleItem(Blocks.air));
+	}
+	
+	public boolean isSideSolid(IBlockAccess world, ForgeDirection side){
+		return world.isSideSolid(chunkPosX, chunkPosY, chunkPosZ, side, false);
 	}
 
 	public Location rotate(ForgeDirection direction, int degrees) {
@@ -172,84 +165,75 @@ public class Location extends ChunkPosition {
 
 		switch (direction) {
 		case DOWN:
-			rotateY(degrees + 2 % 4);
-			break;
+			return rotateY(degrees + 2 % 4);
 		case UP:
-			rotateY(degrees);
-			break;
+			return rotateY(degrees);
 		case NORTH:
-			rotateZ((degrees + 2) % 4);
-			break;
+			return rotateZ((degrees + 2) % 4);
 		case SOUTH:
-			rotateZ(degrees);
-			break;
+			return rotateZ(degrees);
 		case WEST:
-			rotateX((degrees + 2) % 4);
-			break;
+			return rotateX((degrees + 2) % 4);
 		case EAST:
-			rotateX(degrees);
-			break;
+			return rotateX(degrees);
 		case UNKNOWN:
+		default:
+			return this.copy();
 		}
-
-		return this;
 	}
 
 	public Location reflect(ForgeDirection direction) {
 		switch (direction) {
 		case DOWN:
 		case UP:
-			reflectY();
-			break;
+			return reflectY();
 		case NORTH:
 		case SOUTH:
-			reflectZ();
-			break;
+			return reflectZ();
 		case WEST:
 		case EAST:
-			reflectX();
-			break;
+			return reflectX();
 		case UNKNOWN:
+		default:
+			return this.copy();
 		}
-
-		return this;
 	}
 
 	private Location rotateX(int degrees) {
 		if (degrees > 0)
 			rotateX(--degrees);
 
-		return new Location(chunkPosX, chunkPosZ, chunkPosY);
+		return create(chunkPosX, chunkPosZ, chunkPosY);
 	}
 
 	private Location rotateY(int degrees) {
 		if (degrees > 0)
 			rotateY(--degrees);
 
-		return new Location(chunkPosZ, chunkPosY, chunkPosX);
+		return create(chunkPosZ, chunkPosY, chunkPosX);
 	}
 
 	private Location rotateZ(int degrees) {
 		if (degrees > 0)
 			rotateZ(--degrees);
 
-		return new Location(chunkPosY, chunkPosX, chunkPosZ);
+		return create(chunkPosY, chunkPosX, chunkPosZ);
 	}
 
 	private Location reflectX() {
-		return new Location(-chunkPosX, chunkPosY, chunkPosZ);
+		return create(-chunkPosX, chunkPosY, chunkPosZ);
 	}
 
 	private Location reflectY() {
-		return new Location(chunkPosX, -chunkPosY, chunkPosZ);
+		return create(chunkPosX, -chunkPosY, chunkPosZ);
 	}
 
 	private Location reflectZ() {
-		return new Location(chunkPosX, chunkPosY, -chunkPosZ);
+		return create(chunkPosX, chunkPosY, -chunkPosZ);
 	}
 
 	public Location translate(ChunkPosition other) {
-		return new Location(chunkPosX + other.chunkPosX, chunkPosY + other.chunkPosY, chunkPosZ + other.chunkPosZ);
+		return create(chunkPosX + other.chunkPosX, chunkPosY + other.chunkPosY, chunkPosZ + other.chunkPosZ);
 	}
 
 	public Location translate(int direction, int amount) {
@@ -257,7 +241,7 @@ public class Location extends ChunkPosition {
 	}
 
 	public Location translate(int x, int y, int z) {
-		return translate(new Location(x, y, z));
+		return translate(create(x, y, z));
 	}
 
 	public Location translate(ForgeDirection direction, int amount) {

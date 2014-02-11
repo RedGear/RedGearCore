@@ -491,7 +491,7 @@ public abstract class ModUtils {
 
 	public void logDebug(String message) {
 		if (isDebugMode)
-			myLogger.debug("DEBUG: " + message);
+			myLogger.info("DEBUG: " + message);
 	}
 
 	public void logDebug(Object... message) {

@@ -11,6 +11,7 @@ import redgear.core.mod.ModUtils;
 import redgear.core.network.CoreCommonProxy;
 import redgear.core.tile.TileEntitySmart;
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -20,12 +21,11 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 
 @Mod(modid = "RedGear|Core", name = "Red Gear Core", version = "@CoreVersion@", dependencies = "")
-//@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = {CorePacketHandler.buttonChannel }, packetHandler = CorePacketHandler.class)
 @TransformerExclusions(value = {"redgear.core.asm", "redgear.core.mod" })
 public class RedGearCore extends ModUtils {
 
 	@Instance("RedGear|Core")
-	public static RedGearCore instance;
+	public static RedGearCore inst;
 
 	@SidedProxy(clientSide = "redgear.core.network.CoreClientProxy", serverSide = "redgear.core.network.CoreCommonProxy")
 	public static CoreCommonProxy proxy;
@@ -66,19 +66,19 @@ public class RedGearCore extends ModUtils {
 	}
 
 	@Override
-	@Mod.EventHandler
+	@EventHandler
 	public void PreInitialization(FMLPreInitializationEvent event) {
 		super.PreInitialization(event);
 	}
 
 	@Override
-	@Mod.EventHandler
+	@EventHandler
 	public void Initialization(FMLInitializationEvent event) {
 		super.Initialization(event);
 	}
 
 	@Override
-	@Mod.EventHandler
+	@EventHandler
 	public void PostInitialization(FMLPostInitializationEvent event) {
 		super.PostInitialization(event);
 	}

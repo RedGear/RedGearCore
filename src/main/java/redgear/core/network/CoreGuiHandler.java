@@ -25,7 +25,7 @@ public class CoreGuiHandler implements IGuiHandler {
 	public static CoreGuiHandler init() {
 		if (instance == null) {
 			instance = new CoreGuiHandler();
-			NetworkRegistry.INSTANCE.registerGuiHandler(RedGearCore.instance, instance);
+			NetworkRegistry.INSTANCE.registerGuiHandler(RedGearCore.inst, instance);
 		}
 
 		return instance;

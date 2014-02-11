@@ -34,7 +34,7 @@ public class ItemDebugTool extends ItemGeneric{
     				print(player, f.getName() + ": " + f.get(tile).toString());
 				} catch (Exception e) {
 					print(player, "Debugger bugged :(");
-					RedGearCore.instance.logDebug("", e);
+					RedGearCore.inst.logDebug("", e);
 				}
     		}
     		
@@ -44,7 +44,7 @@ public class ItemDebugTool extends ItemGeneric{
     	}
     	catch(Exception e){ //This try is just a paranoid double-check.
 			print(player, "Debugger bugged :(");
-			RedGearCore.instance.logDebug("", e);
+			RedGearCore.inst.logDebug("", e);
 		}
     	
     	
@@ -58,6 +58,6 @@ public class ItemDebugTool extends ItemGeneric{
      */
     private void print(EntityPlayer player, String message){
     	//player.addChatMessage(message);
-    	RedGearCore.instance.logDebug(message);
+    	RedGearCore.inst.logDebug(message);
     }
 }
