@@ -17,6 +17,7 @@ buildscript {
 
 apply plugin: 'forge'
 
+
 ext.configFile = file "build.properties"
 
 configFile.withReader {
@@ -25,13 +26,11 @@ configFile.withReader {
 	ext.config = new ConfigSlurper().parse prop
 }
 
-version = config.core_version //1.5.8
+version = config.core_version
 group= "redgear.core" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "RedGearCore"
 
 minecraft {
-	version = config.minecraft_version + "-" + config.forge_version // "1.6.4-9.11.1.964"
-	
 	replaceIn "asm/RedGearCore.java"
 		replace "@CoreVersion@", project.version
 }
@@ -41,6 +40,21 @@ jar{
 	
 	manifest{
 		attributes 'FMLCorePlugin': 'redgear.core.asm.CoreLoadingPlugin', 'FMLCorePluginContainsFMLMod': 'true'
+	}
+}
+
+
+allprojects{
+	apply plugin: 'forge'
+	
+	minecraft {
+		version = config.minecraft_version + "-" + config.forge_version // "1.6.4-9.11.1.964"
+	}
+}
+
+subprojects{
+	dependencies {
+		compile rootProject
 	}
 }
 
