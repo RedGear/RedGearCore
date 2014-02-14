@@ -4,8 +4,8 @@ import cpw.mods.fml.common.Loader;
 
 public enum Mods
 {
-	Geocraft("RedGear|Geocraft", "Geocraft"),
-	Snowfall("RedGear|Snowfall", "Snowfall"),
+	Geocraft("redgear_geocraft", "Geocraft"),
+	Snowfall("redgear_snowfall", "Snowfall"),
 	
     IC2("IC2", "Industrialcraft 2"),
     Greg("GregTech_Addon", "GregTech"),

@@ -20,11 +20,11 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 
-@Mod(modid = "RedGear|Core", name = "Red Gear Core", version = "@CoreVersion@", dependencies = "")
+@Mod(modid = "redgear_core", name = "Red Gear Core", version = "@CoreVersion@", dependencies = "")
 @TransformerExclusions(value = {"redgear.core.asm", "redgear.core.mod" })
 public class RedGearCore extends ModUtils {
 
-	@Instance("RedGear|Core")
+	@Instance("redgear_core")
 	public static RedGearCore inst;
 
 	@SidedProxy(clientSide = "redgear.core.network.CoreClientProxy", serverSide = "redgear.core.network.CoreCommonProxy")

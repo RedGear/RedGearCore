@@ -34,8 +34,14 @@ public class SimpleItem implements ISimpleItem, Serializable {
 			stack = new ItemStack(Blocks.air);
 
 		item = stack.getItem();
-		meta = stack.getItemDamage();
-		oreID = OreDictionary.getOreID(stack);
+		if(item == null){
+			meta = 0;
+			oreID = -1;
+		}
+		else{
+			meta = stack.getItemDamage();
+			oreID = OreDictionary.getOreID(stack);
+		}
 
 	}
 

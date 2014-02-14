@@ -15,7 +15,6 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.Logger;
 
 import redgear.core.asm.RedGearCore;
-import redgear.core.util.CoreLocalization;
 import redgear.core.util.SimpleItem;
 import redgear.core.util.StringHelper;
 import cpw.mods.fml.common.Mod;
@@ -59,8 +58,6 @@ public abstract class ModUtils {
 		this.modName = modName;
 		this.modVersion = modVersion;
 		this.modDepend = modDepend;
-
-		addPlugin(new CoreLocalization());
 	}
 
 	public void PreInitialization(FMLPreInitializationEvent event) {

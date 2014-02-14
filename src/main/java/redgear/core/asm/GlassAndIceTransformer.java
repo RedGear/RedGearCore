@@ -25,7 +25,7 @@ public class GlassAndIceTransformer implements IClassTransformer
 
             isBlockSolidOnSide.add(new InsnNode(ICONST_1));
             isBlockSolidOnSide.add(new InsnNode(IRETURN));
-            MethodNode mn = new MethodNode(ACC_PUBLIC, "isBlockSolidOnSide", "(Lnet/minecraft/world/World;IIILnet/minecraftforge/common/ForgeDirection;)Z", null, new String[] {});
+            MethodNode mn = new MethodNode(ACC_PUBLIC, "isSideSolid", "(Lnet/minecraft/world/IBlockAccess;IIILnet/minecraftforge/common/util/ForgeDirection;)Z", null, new String[] {});
             mn.instructions = isBlockSolidOnSide;
             node.methods.add(mn);
             ClassWriter writer = new ClassWriter(0);
