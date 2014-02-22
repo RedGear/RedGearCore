@@ -222,8 +222,8 @@ public class ShapedArcaneRecipe implements IArcaneRecipe
     {
         /*if (input == null && target != null || input != null && target == null)
         {*/
-            return false;/*
-        }
+            return false;
+        /*}
         return (target.itemID == input.itemID && 
         		(!target.hasTagCompound() || ItemStack.areItemStackTagsEqual(target, input)) &&
         		(target.getItemDamage() == OreDictionary.WILDCARD_VALUE|| target.getItemDamage() == input.getItemDamage()));*/
@@ -247,6 +247,11 @@ public class ShapedArcaneRecipe implements IArcaneRecipe
     
     @Override		
 	public AspectList getAspects() {
+		return aspects;
+	}
+    
+    @Override		
+	public AspectList getAspects(IInventory inv) {
 		return aspects;
 	}
 	

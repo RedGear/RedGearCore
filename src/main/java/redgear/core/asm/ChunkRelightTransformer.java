@@ -29,7 +29,7 @@ public class ChunkRelightTransformer implements IClassTransformer {
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes) {
 		
-		if (transformedName.equals("net.minecraft.world.chunk.Chunk") && RedGearCore.util.getBoolean("ChunkRelightOnce"))
+		if (transformedName.equals("net.minecraft.world.chunk.Chunk") && CoreLoadingPlugin.util.getBoolean("ChunkRelightOnce"))
         {
             ClassReader reader = new ClassReader(bytes);
             ClassNode node = new ClassNode();

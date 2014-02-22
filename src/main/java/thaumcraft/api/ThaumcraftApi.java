@@ -96,12 +96,11 @@ public class ThaumcraftApi {
 	
 	//RECIPES/////////////////////////////////////////
 	private static ArrayList craftingRecipes = new ArrayList();	
-	private static HashMap<List,ItemStack> smeltingBonus = new HashMap<List,ItemStack>();
-	private static ArrayList<List> smeltingBonusExlusion = new ArrayList<List>();
+	private static HashMap<Object,ItemStack> smeltingBonus = new HashMap<Object,ItemStack>();
 	
 	/**
 	 * This method is used to determine what bonus items are generated when the infernal furnace smelts items
-	 * @param in The result (not input) of the smelting operation. e.g. new ItemStack(ingotGold)
+	 * @param in The input of the smelting operation. e.g. new ItemStack(Block.oreGold)
 	 * @param out The bonus item that can be produced from the smelting operation e.g. new ItemStack(nuggetGold,0,0).
 	 * Stacksize should be 0 unless you want to guarantee that at least 1 item is always produced.
 	 */
@@ -112,37 +111,44 @@ public class ThaumcraftApi {
 	}
 	
 	/**
+	 * This method is used to determine what bonus items are generated when the infernal furnace smelts items
+	 * @param in The ore dictionary input of the smelting operation. e.g. "oreGold"
+	 * @param out The bonus item that can be produced from the smelting operation e.g. new ItemStack(nuggetGold,0,0).
+	 * Stacksize should be 0 unless you want to guarantee that at least 1 item is always produced.
+	 */
+	public static void addSmeltingBonus(String in, ItemStack out) {
+		//smeltingBonus.put(	in, new ItemStack(out.itemID,0,out.getItemDamage()));
+	}
+	
+	/**
 	 * Returns the bonus item produced from a smelting operation in the infernal furnace
-	 * @param in The result of the smelting operation. e.g. new ItemStack(ingotGold)
+	 * @param in The input of the smelting operation. e.g. new ItemStack(oreGold)
 	 * @return the The bonus item that can be produced
 	 */
 	public static ItemStack getSmeltingBonus(ItemStack in) {
-		return null;//smeltingBonus.get(Arrays.asList(in.itemID,in.getItemDamage()));
+		ItemStack out = null;//smeltingBonus.get(Arrays.asList(in.itemID,in.getItemDamage()));
+		if (out==null) {
+			String od = OreDictionary.getOreName( OreDictionary.getOreID(in));
+			out = smeltingBonus.get(od);
+		}
+		return out;
 	}
+	
+	@Deprecated
+	private static ArrayList<List> smeltingBonusExlusion = new ArrayList<List>();
 	
 	/**
-	 * Excludes specific items from producing bonus items when they are smelted in the infernal furnace, even 
-	 * if their smelt result would normally produce a bonus item.	 * 	 
-	 * @param in The item to be smelted that should never produce a bonus item (e.g. the various macerated dusts form IC2)
-	 * Even though they produce gold, iron, etc. ingots, they should NOT produce bonus nuggets as well.
-	 * 
-	 * Smelting exclusions can also be done via the FMLInterModComms in your @Mod.Init method using "smeltBonusExclude"
-	 * Example for vanilla iron: 
-	 * FMLInterModComms.sendMessage("Thaumcraft", "smeltBonusExclude", new ItemStack(Item.ingotIron));
+	 * DOES NOTHING ANYMORE - WILL REMOVE NEXT MAJOR VERSION
 	 */
-	public static void addSmeltingBonusExclusion(ItemStack in) {
-		//smeltingBonusExlusion.add(Arrays.asList(in.itemID,in.getItemDamage()));
-	}
+	@Deprecated
+	public static void addSmeltingBonusExclusion(ItemStack in) {}
 	
 	
 	/**
-	 * Sees if an item is allowed to produce bonus items when smelted in the infernal furnace
-	 * @param in The item you wish to check
-	 * @return true or false
+	 * DOES NOTHING ANYMORE - WILL REMOVE NEXT MAJOR VERSION
 	 */
-	public static boolean isSmeltingBonusExluded(ItemStack in) {
-		return false;// smeltingBonusExlusion.contains(Arrays.asList(in.itemID,in.getItemDamage()));
-	}
+	@Deprecated
+	public static boolean isSmeltingBonusExluded(ItemStack in) {return false;}
 	
 	
 	
@@ -319,7 +325,7 @@ public class ThaumcraftApi {
 	
 	/**
 	 * Used to assign apsects to the given item/block. Here is an example of the declaration for cobblestone:<p>
-	 * <i>ThaumcraftApi.registerObjectTag(Block.cobblestone.blockID, -1, (new ObjectTags()).add(EnumTag.ROCK, 1).add(EnumTag.DESTRUCTION, 1));</i>
+	 * <i>ThaumcraftApi.registerObjectTag(Block.cobblestone.blockID, -1, (new AspectList()).add(Aspect.ENTROPY, 1).add(Aspect.STONE, 1));</i>
 	 * @param id
 	 * @param meta pass -1 if all damage values of this item/block should have the same aspects
 	 * @param aspects A ObjectTags object of the associated aspects
@@ -331,7 +337,7 @@ public class ThaumcraftApi {
 	
 	/**
 	 * Used to assign apsects to the given item/block. Here is an example of the declaration for cobblestone:<p>
-	 * <i>ThaumcraftApi.registerObjectTag(Block.cobblestone.blockID, new int[]{0,1}, (new ObjectTags()).add(EnumTag.ROCK, 1).add(EnumTag.DESTRUCTION, 1));</i>
+	 * <i>ThaumcraftApi.registerObjectTag(Block.cobblestone.blockID, new int[]{0,1}, (new AspectList()).add(Aspect.ENTROPY, 1).add(Aspect.STONE, 1));</i>
 	 * @param id
 	 * @param meta A range of meta values if you wish to lump several item meta's together as being the "same" item (i.e. stair orientations)
 	 * @param aspects A ObjectTags object of the associated aspects
@@ -347,28 +353,28 @@ public class ThaumcraftApi {
 	 * @param aspects A ObjectTags object of the associated aspects
 	 */
 	public static void registerObjectTag(String oreDict, AspectList aspects) {
-		/*if (aspects==null) aspects=new AspectList();
+		if (aspects==null) aspects=new AspectList();
 		ArrayList<ItemStack> ores = OreDictionary.getOres(oreDict);
 		if (ores!=null && ores.size()>0) {
 			for (ItemStack ore:ores) {
 				int d = ore.getItemDamage();
 				if (d==OreDictionary.WILDCARD_VALUE) d = -1;
-				objectTags.put(Arrays.asList(ore.itemID, d), aspects);
+				//objectTags.put(Arrays.asList(ore.itemID, d), aspects);
 			}
-		}*/
+		}
 	}
 	
 	/**
 	 * Used to assign aspects to the given item/block. 
 	 * Attempts to automatically generate aspect tags by checking registered recipes.
 	 * Here is an example of the declaration for pistons:<p>
-	 * <i>ThaumcraftApi.registerComplexObjectTag(Block.pistonBase.blockID, 0, (new ObjectTags()).add(EnumTag.MECHANISM, 2).add(EnumTag.MOTION, 4));</i>
+	 * <i>ThaumcraftApi.registerComplexObjectTag(Block.pistonBase.blockID, 0, (new AspectList()).add(Aspect.MECHANISM, 2).add(Aspect.MOTION, 4));</i>
 	 * @param id
 	 * @param meta pass -1 if all damage values of this item/block should have the same aspects
 	 * @param aspects A ObjectTags object of the associated aspects
 	 */
 	public static void registerComplexObjectTag(int id, int meta, AspectList aspects ) {
-		/*if (!exists(id,meta)) {
+		if (!exists(id,meta)) {
 			AspectList tmp = ThaumcraftApiHelper.generateTags(id, meta);
 			if (tmp != null && tmp.size()>0) {
 				for(Aspect tag:tmp.getAspects()) {
@@ -377,12 +383,12 @@ public class ThaumcraftApi {
 			}
 			registerObjectTag(id,meta,aspects);
 		} else {
-			AspectList tmp = ThaumcraftApiHelper.getObjectAspects(new ItemStack(id,1,meta));
+			/*AspectList tmp = ThaumcraftApiHelper.getObjectAspects(new ItemStack(id,1,meta));
 			for(Aspect tag:aspects.getAspects()) {
 				tmp.merge(tag, tmp.getAmount(tag));
 			}
-			registerObjectTag(id,meta,tmp);
-		}*/
+			registerObjectTag(id,meta,tmp);*/
+		}
 	}
 		
 	//CROPS //////////////////////////////////////////////////////////////////////////////////////////
@@ -394,15 +400,24 @@ public class ThaumcraftApi {
 	 * Standard crops work like normal vanilla crops - they grow until a certain metadata 
 	 * value is reached and you harvest them by destroying the block and collecting the blocks.
 	 * You need to create and ItemStack that tells the golem what block id and metadata represents
-	 * the crop when fully grown.
+	 * the crop when fully grown. Sending a metadata of -1 will mean the metadata won't get 
+	 * checked.
 	 * Example for vanilla wheat: 
 	 * FMLInterModComms.sendMessage("Thaumcraft", "harvestStandardCrop", new ItemStack(Block.crops,1,7));
 	 *  
 	 * Clickable crops are crops that you right click to gather their bounty instead of destroying them.
 	 * As for standard crops, you need to create and ItemStack that tells the golem what block id 
-	 * and metadata represents the crop when fully grown. The golem will trigger the blocks onBlockActivated method.
+	 * and metadata represents the crop when fully grown. The golem will trigger the blocks onBlockActivated method. 
+	 * Sending a metadata of -1 will mean the metadata won't get checked.
 	 * Example (this will technically do nothing since clicking wheat does nothing, but you get the idea): 
 	 * FMLInterModComms.sendMessage("Thaumcraft", "harvestClickableCrop", new ItemStack(Block.crops,1,7));
+	 * 
+	 * Stacked crops (like reeds) are crops that you wish the bottom block should remain after harvesting.
+	 * As for standard crops, you need to create and ItemStack that tells the golem what block id 
+	 * and metadata represents the crop when fully grown. Sending a metadata of -1 will mean the actualy md won't get 
+	 * checked. If it has the order upgrade it will only harvest if the crop is more than one block high.
+	 * Example: 
+	 * FMLInterModComms.sendMessage("Thaumcraft", "harvestStackedCrop", new ItemStack(Block.reed,1,7));
 	 */
 	
 	//NATIVE CLUSTERS //////////////////////////////////////////////////////////////////////////////////
@@ -419,4 +434,12 @@ public class ThaumcraftApi {
 	 * FMLInterModComms.sendMessage("Thaumcraft", "nativeCluster","15,0,25016,16,2.0");
 	 */
 	
+	//LAMP OF GROWTH BLACKLIST ///////////////////////////////////////////////////////////////////////////
+	/**
+	 * You can blacklist crops that should not be effected by the Lamp of Growth via FMLInterModComms 
+	 * in your @Mod.Init method using the "lampBlacklist" string message.
+	 * Sending a metadata of -1 will mean the metadata won't get checked.
+	 * Example for vanilla wheat: 
+	 * FMLInterModComms.sendMessage("Thaumcraft", "lampBlacklist", new ItemStack(Block.crops,1,-1));
+	 */
 }

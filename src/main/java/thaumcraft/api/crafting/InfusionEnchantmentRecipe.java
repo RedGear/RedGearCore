@@ -42,7 +42,7 @@ public class InfusionEnchantmentRecipe
     		return false;
     	}*/
 		
-		if (!enchantment.canApply(central)) {
+		if (!enchantment.canApply(central) || !central.getItem().isItemTool(central)) {
 			return false;
 		}
 				
@@ -90,7 +90,7 @@ public class InfusionEnchantmentRecipe
 	
 	private boolean areItemStacksEqual(ItemStack stack0, ItemStack stack1, boolean fuzzy)
     {
-		/*if (stack0==null && stack1!=null)*/ return false;/*
+		if (stack0==null && stack1!=null) return false;
 		if (stack0!=null && stack1==null) return false;
 		if (stack0==null && stack1==null) return true;
 		boolean t1=false;
@@ -104,9 +104,10 @@ public class InfusionEnchantmentRecipe
 			}
 		}
 		else
-			t1=ItemStack.areItemStackTagsEqual(stack0, stack1);		
-        return stack0.itemID != stack1.itemID ? false : (stack0.getItemDamage() != stack1.getItemDamage() ? false : (stack0.stackSize > stack0.getMaxStackSize() ? false : t1));
-    */}
+			t1=ItemStack.areItemStackTagsEqual(stack0, stack1);
+		return false;
+        //return stack0.itemID != stack1.itemID ? false : (stack0.getItemDamage() != stack1.getItemDamage() ? false : (stack0.stackSize > stack0.getMaxStackSize() ? false : t1));
+    }
 	
    
     public Enchantment getEnchantment() {

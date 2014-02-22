@@ -54,8 +54,7 @@ public class MetaItemBucket extends MetaItem {
 
 		if (meta > -1)
 			if (loc.getBlockMeta(event.world) == 0) { // Check that it is a source block
-				loc.setAir(event.world);
-				; // Remove the fluid block
+				loc.setAir(event.world); // Remove the fluid block
 
 				event.result = new ItemStack(this, 1, meta);
 				event.setResult(Result.ALLOW);
@@ -63,9 +62,10 @@ public class MetaItemBucket extends MetaItem {
 	}
 
 	private int getMeta(Block block) {
-		for (Entry<Integer, SubItem> set : items.entrySet())
-			if (((SubItemBucket) set.getValue()).fluid.getBlock().equals(block))
-				return set.getKey();
+		if(block != null)
+			for (Entry<Integer, SubItem> set : items.entrySet())
+				if (block.equals(((SubItemBucket) set.getValue()).fluid.getBlock()))
+					return set.getKey();
 		return -1;
 	}
 

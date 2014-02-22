@@ -19,13 +19,13 @@ public class AspectList implements Serializable {
 	 * @param meta the damage value of an existing item
 	 */
 	public AspectList(int id, int meta) {
-		/*try {
-			AspectList temp = ThaumcraftApiHelper.getObjectAspects(new ItemStack(id,1,meta));
+		try {
+			/*AspectList temp = ThaumcraftApiHelper.getObjectAspects(new ItemStack(id,1,meta));
 			if (temp!=null)
 			for (Aspect tag:temp.getAspects()) {
 				add(tag,temp.getAmount(tag));
-			}
-		} catch (Exception e) {}*/
+			}*/
+		} catch (Exception e) {}
 	}
 	
 	public AspectList() {
@@ -215,8 +215,8 @@ public class AspectList implements Serializable {
 	 */
 	public void readFromNBT(NBTTagCompound nbttagcompound)
     {
-        /*aspects.clear();
-        NBTTagList tlist = nbttagcompound.getTagList("Aspects");
+        aspects.clear();
+        /*NBTTagList tlist = nbttagcompound.getTagList("Aspects");
 		for (int j = 0; j < tlist.tagCount(); j++) {
 			NBTTagCompound rs = (NBTTagCompound) tlist.tagAt(j);
 			if (rs.hasKey("key")) {

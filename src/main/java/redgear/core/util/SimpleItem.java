@@ -12,7 +12,7 @@ import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.oredict.OreDictionary;
 import redgear.core.api.item.ISimpleItem;
-import redgear.core.world.BlockPlacerLocation;
+import redgear.core.world.BlockLocation;
 import redgear.core.world.Location;
 import redgear.core.world.WorldLocation;
 
@@ -45,20 +45,16 @@ public class SimpleItem implements ISimpleItem, Serializable {
 
 	}
 
-	public SimpleItem(Item item, int meta, int stackSize) {
-		this(new ItemStack(item, stackSize, meta));
-	}
-
 	public SimpleItem(Item item, int meta) {
 		this(new ItemStack(item, 1, meta));
 	}
 
 	public SimpleItem(Item item) {
-		this(new ItemStack(item));
+		this(new ItemStack(item, 1, OreDictionary.WILDCARD_VALUE));
 	}
 
 	public SimpleItem(Block block) {
-		this(new ItemStack(block));
+		this(new ItemStack(block, 1, OreDictionary.WILDCARD_VALUE));
 	}
 
 	public SimpleItem(Block block, int meta) {
@@ -170,12 +166,10 @@ public class SimpleItem implements ISimpleItem, Serializable {
 		if (other == null)
 			return false;
 
-		if (getItemId() == other.getItemId()
-				&& (meta == OreDictionary.WILDCARD_VALUE || other.getMeta() == OreDictionary.WILDCARD_VALUE || meta == other
-						.getMeta()))
+		if (getItem() == other.getItem() && (meta == OreDictionary.WILDCARD_VALUE || other.getMeta() == OreDictionary.WILDCARD_VALUE || meta == other.getMeta()))
 			return true;
-
-		return oreID == other.getOreID();
+		else
+			return isInOreDict() && other.isInOreDict() && oreID == other.getOreID();
 	}
 
 	@Override
@@ -195,8 +189,8 @@ public class SimpleItem implements ISimpleItem, Serializable {
 		if(obj instanceof WorldLocation)
 			return isItemEqual(new SimpleItem((WorldLocation) obj));
 		
-		if(obj instanceof BlockPlacerLocation)
-			return isItemEqual(((BlockPlacerLocation) obj).block);
+		if(obj instanceof BlockLocation)
+			return isItemEqual(((BlockLocation) obj).block);
 
 		return false;
 	}

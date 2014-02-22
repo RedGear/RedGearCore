@@ -243,8 +243,8 @@ public abstract class TileEntityInventory extends TileEntityGeneric implements I
 	}
 
 	@Override
-	public boolean canExtractItem(int i, ItemStack itemstack, int j) {
-		return slots.get(i).canExtract();
+	public boolean canExtractItem(int slot, ItemStack itemstack, int side) {
+		return slots.get(slot).canExtract();
 	}
 
 	public ArrayList<InvSlot> getSlots() {

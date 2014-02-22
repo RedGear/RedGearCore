@@ -51,7 +51,10 @@ public class MetaBlock extends BlockGeneric {
 	 * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
 	 */
 	public IIcon getIcon(int side, int meta) {
-		return getMetaBlock(meta).getIcon(side);
+		if(indexCheck(meta))
+			return getMetaBlock(meta).getIcon(side);
+		else 
+			return getMetaBlock(0).getIcon(side);
 	}
 
 	@SuppressWarnings("unchecked")

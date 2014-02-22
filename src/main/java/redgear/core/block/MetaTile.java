@@ -35,9 +35,13 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
 		try {
-			return getMetaTile(meta).newInstance();
+			Class<? extends TileEntity> tile = getMetaTile(meta);
+			if(tile != null)
+				return tile.newInstance();
+			else
+				return null;
 		} catch (Exception e) {
-			e.printStackTrace();
+			RedGearCore.inst.logDebug("", e);
 		}
 
 		return null;
@@ -109,13 +113,11 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 		return super.addMetaBlock(newBlock);
 	}
 
-	@Override
-	protected boolean indexCheck(int index) {
-		return blocks.size() > index && blocks.get(index) != null;
-	}
-
 	public Class<? extends TileEntity> getMetaTile(int meta) {
-		return ((SubTile) blocks.get(meta)).tile;
+		if(indexCheck(meta))
+			return ((SubTile) getMetaBlock(meta)).tile;
+		else
+			return ((SubTile) getMetaBlock(0)).tile;
 	}
 
 	/**
@@ -162,7 +164,11 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 	 * Retrieves the block texture to use based on the display side. Args: iBlockAccess, x, y, z, side
 	 */
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
-		return getMetaBlock(world.getBlockMetadata(x, y, z)).getBlockTexture(world, x, y, z, side);
+		int meta = world.getBlockMetadata(x, y, z);
+		if(indexCheck(meta))
+			return getMetaBlock(meta).getBlockTexture(world, x, y, z, side);
+		else 
+			return getMetaBlock(0).getBlockTexture(world, x, y, z, side);
 	}
 
 	/**

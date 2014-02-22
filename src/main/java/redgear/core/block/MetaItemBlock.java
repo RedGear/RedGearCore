@@ -1,9 +1,9 @@
 package redgear.core.block;
 
-import redgear.core.util.StringHelper;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import redgear.core.util.StringHelper;
 
 public class MetaItemBlock extends ItemBlock {
     private final MetaBlock myContainer;
@@ -20,6 +20,9 @@ public class MetaItemBlock extends ItemBlock {
 
     @Override
     public String getUnlocalizedName(ItemStack itemstack){
-        return StringHelper.concat("tile.", myContainer.name, ".", myContainer.getMetaBlock(itemstack.getItemDamage()).name);
+    	if(itemstack != null && myContainer.indexCheck(itemstack.getItemDamage()))
+    		return StringHelper.concat("tile.", myContainer.name, ".", myContainer.getMetaBlock(itemstack.getItemDamage()).name);
+    	else
+    		return StringHelper.concat("tile.", myContainer.name, ".", myContainer.getMetaBlock(0).name);
     }
 }

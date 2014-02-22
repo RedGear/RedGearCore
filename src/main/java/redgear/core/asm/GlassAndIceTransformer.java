@@ -16,7 +16,7 @@ public class GlassAndIceTransformer implements IClassTransformer
 {
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes){
-        if ((transformedName.equals("net.minecraft.block.BlockGlass") && RedGearCore.util.getBoolean("SolidGlass")) || (transformedName.equals("net.minecraft.block.BlockIce") && RedGearCore.util.getBoolean("SolidIce")))
+        if ((transformedName.equals("net.minecraft.block.BlockGlass") && CoreLoadingPlugin.util.getBoolean("SolidGlass")) || (transformedName.equals("net.minecraft.block.BlockIce") && CoreLoadingPlugin.util.getBoolean("SolidIce")))
         {
             ClassReader reader = new ClassReader(bytes);
             ClassNode node = new ClassNode();

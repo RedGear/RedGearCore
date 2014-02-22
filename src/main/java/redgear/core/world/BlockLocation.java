@@ -13,75 +13,75 @@ import redgear.core.api.item.ISimpleItem;
 import redgear.core.util.SimpleItem;
 import redgear.core.util.StringHelper;
 
-public class BlockPlacerLocation extends WorldLocation {
+public class BlockLocation extends WorldLocation {
 
 	public final ISimpleItem block;
 
-	public BlockPlacerLocation(BlockPlacerLocation other) {
+	public BlockLocation(BlockLocation other) {
 		super(other);
 		block = other.block;
 	}
 
-	public BlockPlacerLocation(WorldLocation other, ISimpleItem block) {
+	public BlockLocation(WorldLocation other, ISimpleItem block) {
 		super(other);
 		this.block = block;
 	}
 	
-	public BlockPlacerLocation(WorldLocation other) {
+	public BlockLocation(WorldLocation other) {
 		super(other);
 		this.block = new SimpleItem(other);
 	}
 
-	public BlockPlacerLocation(int x, int y, int z, World world, ISimpleItem block) {
+	public BlockLocation(int x, int y, int z, World world, ISimpleItem block) {
 		super(x, y, z, world);
 		this.block = block;
 	}
 
-	public BlockPlacerLocation(ChunkPosition pos, World world, ISimpleItem block) {
+	public BlockLocation(ChunkPosition pos, World world, ISimpleItem block) {
 		super(pos, world);
 		this.block = block;
 	}
 
-	public BlockPlacerLocation(TileEntity tile, ISimpleItem block) {
+	public BlockLocation(TileEntity tile, ISimpleItem block) {
 		super(tile);
 		this.block = block;
 	}
 
-	public BlockPlacerLocation(MovingObjectPosition pos, ISimpleItem block) {
+	public BlockLocation(MovingObjectPosition pos, ISimpleItem block) {
 		super(pos);
 		this.block = block;
 	}
 
-	public BlockPlacerLocation(Vec3 vector, World world, ISimpleItem block) {
+	public BlockLocation(Vec3 vector, World world, ISimpleItem block) {
 		super(vector, world);
 		this.block = block;
 	}
 
-	public BlockPlacerLocation(NBTTagCompound tag, World world, ISimpleItem block) {
+	public BlockLocation(NBTTagCompound tag, World world, ISimpleItem block) {
 		super(tag, world);
 		this.block = block;
 	}
 
-	public BlockPlacerLocation(NBTTagCompound tag, String name, World world, ISimpleItem block) {
+	public BlockLocation(NBTTagCompound tag, String name, World world, ISimpleItem block) {
 		super(tag, name, world);
 		this.block = block;
 	}
 	
-	public BlockPlacerLocation(ChunkPosition pos, World world){
+	public BlockLocation(ChunkPosition pos, World world){
 		this(pos, world, new SimpleItem(pos, world));
 	}
 
 	@Override
-	protected BlockPlacerLocation create(int x, int y, int z) {
-		return new BlockPlacerLocation(x, y, z, world, block);
+	protected BlockLocation create(int x, int y, int z) {
+		return new BlockLocation(x, y, z, world, block);
 	}
 
 	/**
 	 * @return A new location with the same coordinates.
 	 */
 	@Override
-	public BlockPlacerLocation copy() {
-		return new BlockPlacerLocation(this);
+	public BlockLocation copy() {
+		return new BlockLocation(this);
 	}
 
 	public boolean check() {
@@ -117,39 +117,39 @@ public class BlockPlacerLocation extends WorldLocation {
 	}
 
 	@Override
-	public BlockPlacerLocation rotate(ForgeDirection direction, int degrees) {
-		return (BlockPlacerLocation) super.rotate(direction, degrees);
+	public BlockLocation rotate(ForgeDirection direction, int degrees) {
+		return (BlockLocation) super.rotate(direction, degrees);
 	}
 
 	@Override
-	public BlockPlacerLocation reflect(ForgeDirection direction) {
-		return (BlockPlacerLocation) super.reflect(direction);
+	public BlockLocation reflect(ForgeDirection direction) {
+		return (BlockLocation) super.reflect(direction);
 	}
 
 	@Override
-	public BlockPlacerLocation translate(ChunkPosition other) {
-		return (BlockPlacerLocation) super.translate(other);
+	public BlockLocation translate(ChunkPosition other) {
+		return (BlockLocation) super.translate(other);
 	}
 
 	@Override
-	public BlockPlacerLocation translate(int direction, int amount) {
-		return (BlockPlacerLocation) super.translate(direction, amount);
+	public BlockLocation translate(int direction, int amount) {
+		return (BlockLocation) super.translate(direction, amount);
 	}
 
 	@Override
-	public BlockPlacerLocation translate(int x, int y, int z) {
-		return (BlockPlacerLocation) super.translate(x, y, z);
+	public BlockLocation translate(int x, int y, int z) {
+		return (BlockLocation) super.translate(x, y, z);
 	}
 
 	@Override
-	public BlockPlacerLocation translate(ForgeDirection direction, int amount) {
-		return (BlockPlacerLocation) super.translate(direction, amount);
+	public BlockLocation translate(ForgeDirection direction, int amount) {
+		return (BlockLocation) super.translate(direction, amount);
 	}
 	
 	@Override
 	public boolean equals(Object other){
-		if(other instanceof BlockPlacerLocation)
-			return super.equals(other) && this.block.equals(((BlockPlacerLocation) other).block);
+		if(other instanceof BlockLocation)
+			return super.equals(other) && this.block.equals(((BlockLocation) other).block);
 		else
 			return super.equals(other);
 	}

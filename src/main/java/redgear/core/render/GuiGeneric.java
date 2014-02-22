@@ -67,7 +67,7 @@ public class GuiGeneric extends GuiContainer {
 			outputStream.writeInt(tile.zCoord);
 			outputStream.writeInt(data);
 		} catch (Exception e) {
-			RedGearCore.util.logDebug("Something went wrong trying to send a packet from the client to server", e);
+			RedGearCore.inst.logDebug("Something went wrong trying to send a packet from the client to server", e);
 		}
 
 		/*

@@ -3,6 +3,7 @@ package redgear.core.mod;
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -18,6 +19,7 @@ import redgear.core.asm.RedGearCore;
 import redgear.core.util.SimpleItem;
 import redgear.core.util.StringHelper;
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.LoaderState.ModState;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -30,7 +32,7 @@ public abstract class ModUtils {
 	private Configuration config;
 	private File configFile;
 	private boolean isConfigLoaded;
-	private final ArrayList<IPlugin> plugins = new ArrayList<IPlugin>();
+	private final List<IPlugin> plugins = new ArrayList<IPlugin>();
 
 	public final String modId;
 	public final String modName;
@@ -67,40 +69,78 @@ public abstract class ModUtils {
 		isConfigLoaded = false;
 		isDebugMode = getBoolean("debugMode", false);
 
-		PreInit(event);
+		try {
+			try {
+				PreInit(event);
+			} catch (Throwable e) {
+				throwFatal("PreInitialization", e);
+			}
 
-		for (IPlugin bit : plugins)
-			bit.preInit(this);
-
-		saveConfig();
+			for (IPlugin bit : plugins)
+				try {
+					if(bit.shouldRun(this, ModState.PREINITIALIZED))
+						bit.preInit(this);
+				} catch (Throwable e) {
+					throwPlugin("PreInitialization", bit, e);
+				}
+		} finally { //Save the config. Not matter what. 
+			saveConfig();
+		}
 	}
 
 	protected abstract void PreInit(FMLPreInitializationEvent event);
 
 	public void Initialization(FMLInitializationEvent event) {
-		Init(event);
+		try {
+			try {
+				Init(event);
+			} catch (Throwable e) {
+				throwFatal("Initialization", e);
+			}
 
-		for (IPlugin bit : plugins)
-			bit.Init(this);
-
-		saveConfig();
+			for (IPlugin bit : plugins)
+				try {
+					if(bit.shouldRun(this, ModState.INITIALIZED))
+						bit.Init(this);
+				} catch (Throwable e) {
+					throwPlugin("Initialization", bit, e);
+				}
+		} finally { //Save the config. Not matter what. 
+			saveConfig();
+		}
 	}
 
 	protected abstract void Init(FMLInitializationEvent event);
 
 	public void PostInitialization(FMLPostInitializationEvent event) {
-		PostInit(event);
+		try {
+			try {
+				PostInit(event);
+			} catch (Throwable e) {
+				throwFatal("PostInitialization", e);
+			}
 
-		for (IPlugin bit : plugins)
-			bit.postInit(this);
-
-		saveConfig();
+			for (IPlugin bit : plugins)
+				try {
+					if(bit.shouldRun(this, ModState.POSTINITIALIZED))
+						bit.postInit(this);
+				} catch (Throwable e) {
+					throwPlugin("PostInitialization", bit, e);
+				}
+		} finally { //Save the config. Not matter what. 
+			saveConfig();
+		}
 	}
 
 	protected abstract void PostInit(FMLPostInitializationEvent event);
 
 	public void addPlugin(IPlugin add) {
 		plugins.add(add);
+	}
+	
+	public void addPlugin(IPlugin add, Side side) {
+		if(side == this.getSide())
+			addPlugin(add);
 	}
 
 	public File getConfigDirectory() {
@@ -461,6 +501,10 @@ public abstract class ModUtils {
 			prop.comment = comment;
 		return prop.getBoolean(Default);
 	}
+	
+	public void addSmelting(SimpleItem input, SimpleItem result) {
+		this.addSmelting(input.getStack(), result.getStack());
+	}
 
 	public void addSmelting(Item input, ItemStack result) {
 		addSmelting(new ItemStack(input), result);
@@ -496,11 +540,14 @@ public abstract class ModUtils {
 			logDebug(StringHelper.concat(message));
 	}
 
-	public void logDebug(String message, Exception e) {
-		if (isDebugMode) {
-			myLogger.warn("DEBUG: " + message);
-			e.printStackTrace();
-		}
+	public void logDebug(String message, Throwable e) {
+		if (isDebugMode)
+			logWarning("DEBUG: " + message, e);
+	}
+
+	public void logWarning(String message, Throwable e) {
+		myLogger.warn(message);
+		e.printStackTrace();
 	}
 
 	public Side getSide() {
@@ -513,5 +560,17 @@ public abstract class ModUtils {
 
 	public boolean isClient() {
 		return getSide() == Side.CLIENT;
+	}
+
+	private void throwFatal(String phase, Throwable e) {
+		throw new RuntimeException(StringHelper.concat(modName, " crashed during the ", phase, " phase. "), e);
+	}
+
+	private void throwPlugin(String phase, IPlugin plug, Throwable e) {
+		if (plug.isRequired())
+			throw new RuntimeException(StringHelper.concat(modName, " crashed during the ", phase,
+					" phase while atempting to run plugin: ", plug.getName(), "."), e);
+		else
+			logWarning(StringHelper.concat("Plugin ", plug.getName(), " failed during the ", phase, "."), e);
 	}
 }

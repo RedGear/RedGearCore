@@ -8,6 +8,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.oredict.OreDictionary;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IEssentiaTransport;
@@ -137,24 +138,24 @@ public class ThaumcraftApiHelper {
         /*if (input == null && target != null || input != null && target == null)
         {*/
             return false;
-        /*}
-        return (target.itemID == input.itemID && ((target.getItemDamage() == OreDictionary.WILDCARD_VALUE && !strict) || target.getItemDamage() == input.getItemDamage()));
-   */}
+        //}
+        //return (target.itemID == input.itemID && ((target.getItemDamage() == OreDictionary.WILDCARD_VALUE && !strict) || target.getItemDamage() == input.getItemDamage()));
+    }
     
     
     public static TileEntity getConnectableTile(World world, int x, int y, int z, ForgeDirection face) {
-		/*TileEntity te = world.getBlockTileEntity(x+face.offsetX, y+face.offsetY, z+face.offsetZ);
+		TileEntity te = world.getTileEntity(x+face.offsetX, y+face.offsetY, z+face.offsetZ);
 		if (te instanceof IEssentiaTransport && ((IEssentiaTransport)te).isConnectable(face.getOpposite())) 
 			return te;
-		else*/
+		else
 			return null;
 	}
     
     public static TileEntity getConnectableTile(IBlockAccess world, int x, int y, int z, ForgeDirection face) {
-		/*TileEntity te = world.getBlockTileEntity(x+face.offsetX, y+face.offsetY, z+face.offsetZ);
+		TileEntity te = world.getTileEntity(x+face.offsetX, y+face.offsetY, z+face.offsetZ);
 		if (te instanceof IEssentiaTransport && ((IEssentiaTransport)te).isConnectable(face.getOpposite())) 
 			return te;
-		else*/
+		else
 			return null;
 	}
     

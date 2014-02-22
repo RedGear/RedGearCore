@@ -211,7 +211,7 @@ public class ContainerGeneric extends Container {
 				getButton(Integer.parseInt(dataBinding.substring(6))).currState = data;
 
 		} catch (Exception e) {
-			RedGearCore.util.logDebug("Error parsing dataBinding: " + dataBinding + " from key: " + key + "with data: "
+			RedGearCore.inst.logDebug("Error parsing dataBinding: " + dataBinding + " from key: " + key + "with data: "
 					+ data, e);
 		}
 	}

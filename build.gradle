@@ -74,6 +74,7 @@ subprojects{
 	
 	dependencies {
 		compile rootProject
+		compile rootProject.sourceSets.main.output
 	}
 	
 	ext.configFile = file "build.properties"

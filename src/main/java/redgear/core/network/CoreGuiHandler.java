@@ -36,7 +36,7 @@ public class CoreGuiHandler implements IGuiHandler {
 		if (dataMap.containsKey(ID))
 			return dataMap.get(ID).createContainer(player.inventory, world.getTileEntity(x, y, z));
 		else {
-			RedGearCore.util.logDebug("Unknown Gui ID: " + ID);
+			RedGearCore.inst.logDebug("Unknown Gui ID: " + ID);
 			return null;
 		}
 	}
@@ -46,7 +46,7 @@ public class CoreGuiHandler implements IGuiHandler {
 		if (dataMap.containsKey(ID))
 			return dataMap.get(ID).createGui(player.inventory, world.getTileEntity(x, y, z));
 		else {
-			RedGearCore.util.logDebug("Unknown Gui ID: " + ID);
+			RedGearCore.inst.logDebug("Unknown Gui ID: " + ID);
 			return null;
 		}
 	}

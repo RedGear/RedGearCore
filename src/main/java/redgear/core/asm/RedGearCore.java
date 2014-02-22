@@ -1,12 +1,11 @@
 package redgear.core.asm;
 
-import java.io.File;
-
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraftforge.oredict.OreDictionary;
 import redgear.core.item.ItemDebugTool;
-import redgear.core.mod.CoreModUtils;
 import redgear.core.mod.ModUtils;
 import redgear.core.network.CoreCommonProxy;
 import redgear.core.tile.TileEntitySmart;
@@ -18,10 +17,8 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 
 @Mod(modid = "redgear_core", name = "Red Gear Core", version = "@CoreVersion@", dependencies = "")
-@TransformerExclusions(value = {"redgear.core.asm", "redgear.core.mod" })
 public class RedGearCore extends ModUtils {
 
 	@Instance("redgear_core")
@@ -30,14 +27,11 @@ public class RedGearCore extends ModUtils {
 	@SidedProxy(clientSide = "redgear.core.network.CoreClientProxy", serverSide = "redgear.core.network.CoreCommonProxy")
 	public static CoreCommonProxy proxy;
 
-	public static CoreModUtils util;
-	public static File mcLocation;
-
 	@Override
 	protected void PreInit(FMLPreInitializationEvent event) {
 		proxy.init();
 
-		util.saveConfig();
+		CoreLoadingPlugin.util.saveConfig();
 
 		GameRegistry.registerTileEntity(TileEntitySmart.class, "TileEntitySmart");
 
@@ -53,6 +47,10 @@ public class RedGearCore extends ModUtils {
 			OreDictionary.registerOre("ingotGold", Items.gold_ingot);
 			OreDictionary.registerOre("blockGold", Blocks.gold_block);
 		}
+	}
+	
+	public static boolean isItem(Entity entity){
+		return entity instanceof EntityItem;
 	}
 
 	@Override

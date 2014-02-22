@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import redgear.core.asm.RedGearCore;
+import redgear.core.asm.CoreLoadingPlugin;
 import redgear.core.util.StringHelper;
 
 /**
@@ -32,7 +32,7 @@ public class CoreModUtils {
 	 * @param blockIdDefault
 	 */
 	public CoreModUtils(String modId) {
-		this(StringHelper.parseConfigFile(new File(RedGearCore.mcLocation, "config"), modId), LogManager
+		this(StringHelper.parseConfigFile(new File(CoreLoadingPlugin.mcLocation, "config"), modId), LogManager
 				.getLogger(modId));
 	}
 
