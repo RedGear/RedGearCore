@@ -2,14 +2,34 @@ package redgear.core.recipes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class RecipeMap {
 
-	ArrayList<String> craftMap;
-	HashMap<Character, Object> charMap;
+	List<String> craftMap;
+	Map<Character, Object> charMap;
 	
+	public RecipeMap(String[] craftMap, Level level){
+		this.craftMap = new ArrayList<String>(craftMap.length -1);
+		this.charMap = new HashMap<Character, Object>(level.action.size());
+		
+		for(String add : craftMap)
+			this.craftMap.add(add);
+		
+		replace(level);
+	}
 	
-	public RecipeMap(String[] craftMap, Object[] charMap){
+	public RecipeMap(String... craftMap){
+		this.craftMap = new ArrayList<String>(craftMap.length -1);
+		this.charMap = new HashMap<Character, Object>();
+		
+		for(String add : craftMap)
+			this.craftMap.add(add);
+	}
+	
+	public RecipeMap(String[] craftMap, Object... charMap){
 		this.craftMap = new ArrayList<String>(craftMap.length -1);
 		this.charMap = new HashMap<Character, Object>(charMap.length / 2);
 		
@@ -31,16 +51,13 @@ public class RecipeMap {
 
 
 	public Object[] output() {
-		int index = 0;
+		List<Object> out = new ArrayList<Object>();
 		
-		ArrayList<Object> out = new ArrayList<Object>();
+		out.addAll(craftMap);
 		
-		for(String bit : craftMap)
-			out.add(bit);
-		
-		for(Character key : charMap.keySet()){
-			out.add(key);
-			out.add(charMap.get(key));
+		for(Entry<Character, Object> row : charMap.entrySet()){
+			out.add(row.getKey());
+			out.add(row.getKey());
 		}
 		
 		return out.toArray();

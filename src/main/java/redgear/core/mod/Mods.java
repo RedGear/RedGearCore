@@ -4,26 +4,48 @@ import cpw.mods.fml.common.Loader;
 
 public enum Mods
 {
+	Core("redgear_core", "Red Gear Core"),
+	Brewcraft("redgear_brewcraft", "Brewcraft"),
 	Geocraft("redgear_geocraft", "Geocraft"),
+	LiquidFuels("redgear_liquidfuels", "Liquid Fuels"),
+	MoreBackpacks("redgear_morebackpacks", "More Backpacks"),
+	Securercraft("redgear_securecraft", "Securecraft"),
 	Snowfall("redgear_snowfall", "Snowfall"),
+	TileInterface("redgear_tileinterface", "Tile Interface"),
 	
     IC2("IC2", "Industrialcraft 2"),
     Greg("GregTech_Addon", "GregTech"),
+    
     Thaum("Thaumcraft"),
+    
     MetallurgyBase("Metallurgy3Base", "Metallurgy Base"),
     MetallurgyPrecious("MetallurgyPrecious", "Metallurgy Precious"),
     MetallurgyUtility("MetallurgyUtility", "Metallurgy Utility"),
+    
     ComputerCraft("ComputerCraft"),
-    BuildcraftCore("BuildCraft|Core", "Buildcraft"),
+    
+    BCCore("BuildCraft|Core", "Buildcraft"),
+    BCBuilders("BuildCraft|Builders", "Buildcraft Builders"),
+    BCEnergy("BuildCraft|Energy", "Buildcraft Energy"),
+    BCFactory("BuildCraft|Factory", "Buildcraft Factory"),
+    BCTransport("BuildCraft|Transport", "Buildcraft Transport"),
+    BCSilicon("BuildCraft|Silicon", "Buildcraft Silicon"),
+    
     StevesCarts("StevesCarts", "Steve's Carts"),
+    
     Railcraft("Railcraft"),
+    
+	CoFHCore("CoFHCore"),
     ThermalExpansion("ThermalExpansion", "Thermal Expansion"),
+    
 	Forestry("Forestry"),
+	
 	TConstruct("TConstruct", "Tinker's Construct"),
 	Natura("Natura"),
+	
 	BiomesOPlenty("BiomesOPlenty", "Biomes O' Plenty"),
-	NetherOres("NetherOres", "Nether Ores"),
-	CoFHCore("CoFHCore");
+	
+	NetherOres("NetherOres", "Nether Ores");
 
     private String ModId; //System Mod ID
     private String ModName; //User readable name

@@ -12,9 +12,10 @@ public interface IPlugin {
 
 	/**
 	 * @param state The current FML loader state.
-	 * @return True if this plugin should be run for the comming state. You can
+	 * @return True if this plugin should be run for the coming state. You can
 	 * use this to check if prerequiste mods are installed or just return false
-	 * for states that are unusued.
+	 * for states that are unusued. The calling mod is provided in case this 
+	 * plugin needs access to the config.
 	 */
 	public boolean shouldRun(ModUtils mod, ModState state);
 

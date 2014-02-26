@@ -1,14 +1,19 @@
 package redgear.core.recipes;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Level {
 	
 	public final boolean requirement;
-	public ArrayList<Replacement> action;
+	public List<Replacement> action;
 	
-	public Level(boolean requirement, Object[] data){
+	public Level(boolean requirement){
 		this.requirement = requirement;
+	}
+	
+	public Level(boolean requirement, Object... data){
+		this(requirement);
 		action = new ArrayList<Replacement>(data.length / 2);
 		
 		Character temp = null;
@@ -29,5 +34,8 @@ public class Level {
 		
 	}
 
+	public void add(char key, Object value){
+		action.add(new Replacement(key, value));
+	}
 
 }
