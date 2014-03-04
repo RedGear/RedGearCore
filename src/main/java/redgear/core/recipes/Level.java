@@ -10,6 +10,17 @@ public class Level {
 	
 	public Level(boolean requirement){
 		this.requirement = requirement;
+		action = new ArrayList<Replacement>(1);
+	}
+	
+	public Level(boolean requirement, char key, Object value){
+		this(requirement);
+		add(key, value);
+	}
+	
+	public Level(boolean requirement, Replacement replace){
+		this(requirement);
+		add(replace);
 	}
 	
 	public Level(boolean requirement, Object... data){
@@ -35,7 +46,11 @@ public class Level {
 	}
 
 	public void add(char key, Object value){
-		action.add(new Replacement(key, value));
+		add(new Replacement(key, value));
+	}
+	
+	public void add(Replacement replace){
+		action.add(replace);
 	}
 
 }

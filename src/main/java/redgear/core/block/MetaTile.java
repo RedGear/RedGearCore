@@ -8,7 +8,6 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -19,6 +18,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import redgear.core.asm.RedGearCore;
 import redgear.core.tile.TileEntityGeneric;
 import redgear.core.util.SimpleItem;
+import redgear.core.world.WorldLocation;
 import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -146,16 +146,19 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 	 * @return A ArrayList containing all items this block drops
 	 */
 	@Override
-	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
-		ArrayList<ItemStack> ret = new ArrayList<ItemStack>(1);
+	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int meta, int fortune) {
+		SubBlock called = getMetaBlock(meta);
+		WorldLocation loc = new WorldLocation(x, y, z, world);
 
-		int count = quantityDropped(metadata, fortune, world.rand);
-		for (int i = 0; i < count; i++) {
-			Item item = getItemDropped(metadata, world.rand, fortune);
-			if (item != null)
-				ret.add(new ItemStack(item, 1, getDamageValue(world, x, y, z)));
+		if (called instanceof IDifferentDrop)
+			return ((IDifferentDrop) called).getDrops(loc, meta, fortune);
+		else{
+			ArrayList<ItemStack> ret = new ArrayList<ItemStack>(1);
+			ret.add(new ItemStack(loc.getBlock(), 1, getDamageValue(world, x, y, z)));
+			return ret;
 		}
-		return ret;
+
+		
 	}
 
 	@Override

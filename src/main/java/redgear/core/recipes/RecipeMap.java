@@ -57,7 +57,7 @@ public class RecipeMap {
 		
 		for(Entry<Character, Object> row : charMap.entrySet()){
 			out.add(row.getKey());
-			out.add(row.getKey());
+			out.add(row.getValue());
 		}
 		
 		return out.toArray();

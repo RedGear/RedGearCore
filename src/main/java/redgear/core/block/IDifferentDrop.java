@@ -1,14 +1,12 @@
 package redgear.core.block;
 
-import java.util.Random;
+import java.util.ArrayList;
 
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import redgear.core.world.WorldLocation;
 
 public interface IDifferentDrop {
 
-	public Item getItemDropped(int meta, Random rand, int fortune);
+	public ArrayList<ItemStack> getDrops(WorldLocation loc, int meta, int fortune);
 	
-	public int getQuantityDropped(int meta, int fortume, Random rand);
-	
-	public int getMetaDropped(int meta);
 }

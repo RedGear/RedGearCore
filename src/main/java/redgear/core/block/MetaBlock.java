@@ -1,7 +1,7 @@
 package redgear.core.block;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import redgear.core.util.SimpleItem;
+import redgear.core.world.WorldLocation;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -71,45 +72,32 @@ public class MetaBlock extends BlockGeneric {
 		for (SubBlock block : blocks.values())
 			block.registerIcons(modName, par1IconRegister);
 	}
-
+	
 	/**
-	 * Returns the quantity of items to drop on block destruction.
+	 * This returns a complete list of items dropped from this block.
+	 * 
+	 * @param world The current world
+	 * @param x X Position
+	 * @param y Y Position
+	 * @param z Z Position
+	 * @param metadata Current metadata
+	 * @param fortune Breakers fortune level
+	 * @return A ArrayList containing all items this block drops
 	 */
 	@Override
-	public int quantityDropped(int meta, int fortume, Random rand) {
+	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int meta, int fortune) {
 		SubBlock called = getMetaBlock(meta);
+		WorldLocation loc = new WorldLocation(x, y, z, world);
 
 		if (called instanceof IDifferentDrop)
-			return ((IDifferentDrop) called).getQuantityDropped(meta, fortume, rand);
-		else
-			return 1;
-	}
+			return ((IDifferentDrop) called).getDrops(loc, meta, fortune);
+		else{
+			ArrayList<ItemStack> ret = new ArrayList<ItemStack>(1);
+			ret.add(new ItemStack(this, 1, meta));
+			return ret;
+		}
 
-	/**
-	 * Returns the ID of the items to drop on destruction.
-	 */
-	@Override
-	public Item getItemDropped(int meta, Random rand, int fortune) {
-		SubBlock called = getMetaBlock(meta);
-
-		if (called instanceof IDifferentDrop)
-			return ((IDifferentDrop) called).getItemDropped(meta, rand, fortune);
-		else
-			return super.getItemDropped(meta, rand, fortune);
-	}
-
-	/**
-	 * Determines the damage on the item the block drops. Used in cloth and
-	 * wood.
-	 */
-	@Override
-	public int damageDropped(int meta) {
-		SubBlock called = getMetaBlock(meta);
-
-		if (called instanceof IDifferentDrop)
-			return ((IDifferentDrop) called).getMetaDropped(meta);
-		else
-			return meta;
+		
 	}
 
 	/**

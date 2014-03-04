@@ -63,7 +63,7 @@ public abstract class ModUtils {
 	}
 
 	public void PreInitialization(FMLPreInitializationEvent event) {
-		configFile = StringHelper.parseConfigFile(event.getModConfigurationDirectory(), event.getModMetadata().modId);
+		configFile = StringHelper.parseConfigFile(event.getModConfigurationDirectory());
 		config = new Configuration(configFile);
 		myLogger = event.getModLog();
 		isConfigLoaded = false;
@@ -569,7 +569,7 @@ public abstract class ModUtils {
 	private void throwPlugin(String phase, IPlugin plug, Throwable e) {
 		if (plug.isRequired())
 			throw new RuntimeException(StringHelper.concat(modName, " crashed during the ", phase,
-					" phase while atempting to run plugin: ", plug.getName(), "."), e);
+					" phase while attempting to run plugin: ", plug.getName(), "."), e);
 		else
 			logWarning(StringHelper.concat("Plugin ", plug.getName(), " failed during the ", phase, "."), e);
 	}

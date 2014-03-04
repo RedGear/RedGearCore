@@ -1,9 +1,9 @@
 package redgear.core.block;
 
-import java.util.Random;
+import java.util.ArrayList;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import redgear.core.world.WorldLocation;
 
 public class SubBlockDifferentDrop extends SubBlock implements IDifferentDrop {
 
@@ -15,17 +15,9 @@ public class SubBlockDifferentDrop extends SubBlock implements IDifferentDrop {
 	}
 
 	@Override
-	public Item getItemDropped(int meta, Random rand, int fortune) {
-		return drop.getItem();
-	}
-
-	@Override
-	public int getQuantityDropped(int meta, int fortume, Random rand) {
-		return drop.stackSize;
-	}
-
-	@Override
-	public int getMetaDropped(int meta) {
-		return drop.getItemDamage();
+	public ArrayList<ItemStack> getDrops(WorldLocation loc, int meta, int fortune) {
+		ArrayList<ItemStack> ret = new ArrayList<ItemStack>(1);
+		ret.add(drop.copy());
+		return ret;
 	}
 }

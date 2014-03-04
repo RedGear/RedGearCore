@@ -45,6 +45,10 @@ public class StringHelper {
 	public static String parseTextureFile(String modId, String folder, String textureName){
 		return concat("/assets/", modId, "/", folder, "/", textureName, ".png");
 	}
+	
+	public static File parseConfigFile(File configDir){
+		return parseConfigFile(configDir, getModId());
+	}
 
 	public static File parseConfigFile(File configDir, String modID ){
     	return new File(configDir, modID.replace("_", slash) + ".cfg");

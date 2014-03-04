@@ -161,21 +161,21 @@ public class Location extends ChunkPosition {
 		degrees = Math.abs(degrees) % 4;// should ensure that degrees must be 0, 1, 2, or 3 and nothing else
 
 		if (degrees == 0)
-			return this;
+			return this.copy();
 
 		switch (direction) {
 		case DOWN:
-			return rotateY(degrees + 2 % 4);
+			return rotateY(this, (degrees + 2) % 4);
 		case UP:
-			return rotateY(degrees);
+			return rotateY(this, degrees);
 		case NORTH:
-			return rotateZ((degrees + 2) % 4);
+			return rotateZ(this, (degrees + 2) % 4);
 		case SOUTH:
-			return rotateZ(degrees);
+			return rotateZ(this, degrees);
 		case WEST:
-			return rotateX((degrees + 2) % 4);
+			return rotateX(this, (degrees + 2) % 4);
 		case EAST:
-			return rotateX(degrees);
+			return rotateX(this, degrees);
 		case UNKNOWN:
 		default:
 			return this.copy();
@@ -199,25 +199,25 @@ public class Location extends ChunkPosition {
 		}
 	}
 
-	private Location rotateX(int degrees) {
-		if (degrees > 0)
-			rotateX(--degrees);
+	private Location rotateX(Location loc, int degrees) {
+		if (degrees > 1)
+			loc = rotateX(loc, --degrees);
 
-		return create(chunkPosX, chunkPosZ, chunkPosY);
+		return create(loc.chunkPosX, loc.chunkPosZ, -loc.chunkPosY);
 	}
 
-	private Location rotateY(int degrees) {
-		if (degrees > 0)
-			rotateY(--degrees);
+	private Location rotateY(Location loc, int degrees) {
+		if (degrees > 1)
+			loc = rotateY(loc, --degrees);
 
-		return create(chunkPosZ, chunkPosY, chunkPosX);
+		return create(-loc.chunkPosZ, loc.chunkPosY, loc.chunkPosX);
 	}
 
-	private Location rotateZ(int degrees) {
-		if (degrees > 0)
-			rotateZ(--degrees);
+	private Location rotateZ(Location loc, int degrees) {
+		if (degrees > 1)
+			loc = rotateZ(loc, --degrees);
 
-		return create(chunkPosY, chunkPosX, chunkPosZ);
+		return create(loc.chunkPosY, -loc.chunkPosX, loc.chunkPosZ);
 	}
 
 	private Location reflectX() {

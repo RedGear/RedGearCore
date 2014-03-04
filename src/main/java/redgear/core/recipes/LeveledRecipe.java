@@ -57,6 +57,14 @@ public class LeveledRecipe {
 		addLevel(new Level(requirement,  data));
 	}
 	
+	public void addLevel(boolean requirement, char key, Object value){
+		addLevel(new Level(requirement,  key, value));
+	}
+	
+	public void addLevel(boolean requirement, Replacement replace){
+		addLevel(new Level(requirement,  replace));
+	}
+	
 	public Object[] compile(){
 		for(Level bit : levels)
 			recipe.replace(bit);
@@ -82,11 +90,11 @@ public class LeveledRecipe {
 	}
 	
 	public void registerShaped(SimpleItem result){
-		registerShaped(result, 0);
+		registerShaped(result, 1);
 	}
 	
 	public void registerShapeless(SimpleItem result){
-		registerShapeless(result, 0);
+		registerShapeless(result, 1);
 	}
 	
 }
