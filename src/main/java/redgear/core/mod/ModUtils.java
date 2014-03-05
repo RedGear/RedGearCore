@@ -2,7 +2,7 @@ package redgear.core.mod;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -15,11 +15,12 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import org.apache.logging.log4j.Logger;
 
+import redgear.core.api.util.ReflectionHelper;
 import redgear.core.asm.RedGearCore;
 import redgear.core.util.SimpleItem;
 import redgear.core.util.StringHelper;
-import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.LoaderState.ModState;
+import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -32,7 +33,7 @@ public abstract class ModUtils {
 	private Configuration config;
 	private File configFile;
 	private boolean isConfigLoaded;
-	private final List<IPlugin> plugins = new ArrayList<IPlugin>();
+	private final List<IPlugin> plugins = new LinkedList<IPlugin>();
 
 	public final String modId;
 	public final String modName;
@@ -83,7 +84,7 @@ public abstract class ModUtils {
 				} catch (Throwable e) {
 					throwPlugin("PreInitialization", bit, e);
 				}
-		} finally { //Save the config. Not matter what. 
+		} finally { //Save the config. No matter what. 
 			saveConfig();
 		}
 	}
@@ -105,7 +106,7 @@ public abstract class ModUtils {
 				} catch (Throwable e) {
 					throwPlugin("Initialization", bit, e);
 				}
-		} finally { //Save the config. Not matter what. 
+		} finally { //Save the config. No matter what. 
 			saveConfig();
 		}
 	}
@@ -127,20 +128,31 @@ public abstract class ModUtils {
 				} catch (Throwable e) {
 					throwPlugin("PostInitialization", bit, e);
 				}
-		} finally { //Save the config. Not matter what. 
+		} finally { //Save the config. No matter what. 
 			saveConfig();
 		}
+		
+		plugins.clear(); //Clear the plugins because they aren't needed anymore. Let them be garbage collected. 
 	}
 
 	protected abstract void PostInit(FMLPostInitializationEvent event);
 
 	public void addPlugin(IPlugin add) {
-		plugins.add(add);
+		if(add != null)
+			plugins.add(add);
 	}
 	
 	public void addPlugin(IPlugin add, Side side) {
 		if(side == this.getSide())
 			addPlugin(add);
+	}
+	
+	public void addPlugin(String add, Side side, Object[]...params) {
+		if(side == this.getSide()){
+			Object obj = ReflectionHelper.constructObjectNullFail(add, (Object[])params);
+			if(obj instanceof IPlugin)
+				addPlugin((IPlugin) obj);
+		}
 	}
 
 	public File getConfigDirectory() {
@@ -528,6 +540,10 @@ public abstract class ModUtils {
 
 	public void registerOre(String name, ItemStack ore) {
 		OreDictionary.registerOre(name, ore);
+	}
+	
+	public boolean inOreDict(String ore) {
+		return !OreDictionary.getOres(ore).isEmpty();
 	}
 
 	public void logDebug(String message) {

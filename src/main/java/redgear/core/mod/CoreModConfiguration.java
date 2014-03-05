@@ -6,19 +6,17 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CoreModConfiguration {
-	
-	private File configFile;
-	private CoreModUtils util;
-	private ArrayList<Property> properties = new ArrayList();
+
+	private final File configFile;
+	private final ArrayList<Property> properties = new ArrayList<Property>();
 	private boolean hasChanged = false;
 
 	public CoreModConfiguration(File file, CoreModUtils util) {
 		configFile = file;
-		this.util = util;
 	}
 
 	public void load() {
-		for(String line : FileHelper.readLines(configFile))
+		for (String line : FileHelper.readLines(configFile))
 			properties.add(new Property(line));
 	}
 
@@ -27,33 +25,31 @@ public class CoreModConfiguration {
 	}
 
 	public void save() {
-		if(hasChanged){
-			ArrayList<String> lines = new ArrayList();
-			
-			for(Property prop : properties){
-				if(prop.type != Type.Void)
+		if (hasChanged) {
+			ArrayList<String> lines = new ArrayList<String>();
+
+			for (Property prop : properties)
+				if (prop.type != Type.Void)
 					lines.add(prop.toString());
-			}
-			
+
 			FileHelper.writeLines(lines, configFile);
 		}
 	}
-	
-	private Property getProperty(String name, Type type){
-		for(Property prop : properties){
-			if(prop.type == type && prop.name.equals(name))
+
+	private Property getProperty(String name, Type type) {
+		for (Property prop : properties)
+			if (prop.type == type && prop.name.equals(name))
 				return prop;
-		}
-		
+
 		return null;
 	}
-	
-	private Object getValue(String name, Object Default, Type type){
+
+	private Object getValue(String name, Object Default, Type type) {
 		Property prop = getProperty(name, type);
-		
-		if(prop != null)
+
+		if (prop != null)
 			return prop.value;
-		else{
+		else {
 			properties.add(new Property(name, type, Default));
 			hasChanged = true;
 			return Default;
@@ -64,81 +60,74 @@ public class CoreModConfiguration {
 		return (Boolean) getValue(name, Default, Type.Boolean);
 	}
 
-
 	public int getInt(String name, int Default) {
 		return (Integer) getValue(name, Default, Type.Integer);
 	}
-	
-	private enum Type{
-			Integer('I', Integer.class, "parseInt"),
-			Boolean('B', Boolean.class, "parseBoolean"),
-			String('S', String.class, null),
-			Void('V', null, null);
-			
-			public char symbol;
-			public Class def;
-			public String parseFunction;
-			
-			Type(char symbol, Class def, String parseFunction){
-				this.symbol = symbol;
-				this.def = def;
-				this.parseFunction = parseFunction;
-			}
+
+	private enum Type {
+		Integer('I', Integer.class, "parseInt"), Boolean('B', Boolean.class, "parseBoolean"), String('S', String.class,
+				null), Void('V', null, null);
+
+		public char symbol;
+		public Class<?> def;
+		public String parseFunction;
+
+		Type(char symbol, Class<?> def, String parseFunction) {
+			this.symbol = symbol;
+			this.def = def;
+			this.parseFunction = parseFunction;
 		}
-		
-	
-	private static class Property{
+	}
+
+	private static class Property {
 		public String name;
 		public Type type;
 		public Object value;
-		
+
 		/**
-		 * Reads the line from the file. Correct format is:
-		 * {@code t:name=value}
-		 * As in
-		 * {@code B:debugMode=true}
+		 * Reads the line from the file. Correct format is: {@code t:name=value}
+		 * As in {@code B:debugMode=true}
+		 * 
 		 * @param line
 		 */
-		Property(String line){
-			try{//just in case
+		Property(String line) {
+			try {//just in case
 				List<String> tokens = Arrays.asList(line.split("[=:]"));
-				
+
 				char typeTest = Character.toUpperCase(tokens.get(0).charAt(0));
-				
-				for(Type test : Type.values()){
-					if(typeTest == test.symbol){
-						if(test == Type.String)
+
+				for (Type test : Type.values())
+					if (typeTest == test.symbol) {
+						if (test == Type.String)
 							value = tokens.get(2);
-						else{
+						else
 							value = test.def.getMethod(test.parseFunction, String.class).invoke(null, tokens.get(2));
-						}
-						
+
 						name = tokens.get(1);
 						type = test;
-					
+
 						return;
 					}
-				}
+			} catch (Exception e) {
 			}
-			catch(Exception e){}
-			
+
 			//if anything goes wrong, just fill in default values
 			name = "";
 			type = Type.Void;
 			value = line;
 		}
-		
-		Property(String name, Type type, Object value){
+
+		Property(String name, Type type, Object value) {
 			this.name = name;
 			this.type = type;
 			this.value = value;
 		}
-		
+
 		@Override
-		public String toString(){
+		public String toString() {
 			return type.symbol + ":" + name + "=" + value.toString();
 		}
-		
+
 	}
 
 }

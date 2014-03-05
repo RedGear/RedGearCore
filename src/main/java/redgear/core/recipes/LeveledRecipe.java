@@ -65,20 +65,27 @@ public class LeveledRecipe {
 		addLevel(new Level(requirement,  replace));
 	}
 	
-	public Object[] compile(){
+	public Object[] compileShaped(){
 		for(Level bit : levels)
 			recipe.replace(bit);
 		
-		return recipe.output();
+		return recipe.outputShaped();
+	}
+	
+	public Object[] compileShapeless(){
+		for(Level bit : levels)
+			recipe.replace(bit);
+		
+		return recipe.outputShapeless();
 	}
 	
 	
 	public void registerShaped(ItemStack result){
-		GameRegistry.addRecipe(new ShapedOreRecipe(result, compile()));
+		GameRegistry.addRecipe(new ShapedOreRecipe(result, compileShaped()));
 	}
 	
 	public void registerShapeless(ItemStack result){
-		GameRegistry.addRecipe(new ShapelessOreRecipe(result, compile()));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(result, compileShapeless()));
 	}
 	
 	public void registerShaped(SimpleItem result, int stackSize){

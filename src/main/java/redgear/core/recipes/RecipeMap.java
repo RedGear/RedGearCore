@@ -50,13 +50,25 @@ public class RecipeMap {
 	}
 
 
-	public Object[] output() {
+	public Object[] outputShaped() {
 		List<Object> out = new ArrayList<Object>();
 		
 		out.addAll(craftMap);
 		
 		for(Entry<Character, Object> row : charMap.entrySet()){
 			out.add(row.getKey());
+			out.add(row.getValue());
+		}
+		
+		return out.toArray();
+	}
+	
+	public Object[] outputShapeless() {
+		List<Object> out = new ArrayList<Object>();
+		
+		out.addAll(craftMap);
+		
+		for(Entry<Character, Object> row : charMap.entrySet()){
 			out.add(row.getValue());
 		}
 		

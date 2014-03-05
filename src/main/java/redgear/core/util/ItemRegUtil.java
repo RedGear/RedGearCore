@@ -6,21 +6,21 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ItemRegUtil {
 
-	public static SimpleItem findItem(Mods mod, String name){
+	public static SimpleItem findItem(Mods mod, String name) {
 		return findItem(mod, name, -1);
 	}
-	
-	public static SimpleItem findItem(Mods mod, String name, int meta){
-		if(mod.isIn()){
+
+	public static SimpleItem findItem(Mods mod, String name, int meta) {
+		if (mod.isIn()) {
 			ItemStack test = GameRegistry.findItemStack(mod.getId(), name, 1);
-			
-			if(meta <= 0)
-				test.setItemDamage(meta);
-			
-			if(test != null)
+
+			if (test != null) {
+				if (meta >= 0)
+					test.setItemDamage(meta);
 				return new SimpleItem(test.getItem());
+			}
 		}
-		
+
 		return null;
 	}
 }

@@ -20,7 +20,7 @@ public class ReflectionHelper {
 	public static Object constructObject(String name, Object... args) throws InstantiationException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException,
 			SecurityException, ClassNotFoundException {
-		return getClass(name).getConstructor(getTypes(args)).newInstance(args);
+		return constructObject(getClass(name), args);
 	}
 	
 	public static Object constructObjectNullFail(Class<?> clazz, Object... args){
