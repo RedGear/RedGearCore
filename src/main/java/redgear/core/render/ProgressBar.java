@@ -2,6 +2,8 @@ package redgear.core.render;
 
 import java.awt.Color;
 
+import org.lwjgl.opengl.GL11;
+
 public class ProgressBar extends GuiRegion implements GuiElement{
 
 	public final int id;
@@ -32,6 +34,7 @@ public class ProgressBar extends GuiRegion implements GuiElement{
 
 	@Override
 	public void draw(GuiGeneric gui) {
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		if (getY1() != getY2())
 			gui.drawRectangleSolid(getX1(), getY1(), getX2(), getY2(), getColor());
 	}

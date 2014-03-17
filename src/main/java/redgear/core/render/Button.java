@@ -3,6 +3,8 @@ package redgear.core.render;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.IIcon;
@@ -38,6 +40,7 @@ public class Button extends GuiRegion implements GuiElement {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void draw(GuiGeneric gui) {
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GuiButton but = new GuiButton(id, getX(), getY(), getWidth(), getHeight(), "");
 		ButtonState nowState = states.get(currState);
 

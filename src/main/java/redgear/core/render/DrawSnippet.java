@@ -1,5 +1,7 @@
 package redgear.core.render;
 
+import org.lwjgl.opengl.GL11;
+
 
 public class DrawSnippet extends GuiRegion implements GuiElement {
 
@@ -33,6 +35,7 @@ public class DrawSnippet extends GuiRegion implements GuiElement {
 
 	@Override
 	public void draw(GuiGeneric gui) {
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		gui.drawRectangleSnip(getX1(), getY1(), getX2(), getY2(), getSnipX(), getSnipY(), gui.guiLocation);
 	}
 }

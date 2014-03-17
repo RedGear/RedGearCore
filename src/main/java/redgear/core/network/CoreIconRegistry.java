@@ -14,7 +14,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Use this as a simple way to access and store Icons, particularly
- * for things that can't use normal Block or Icon textures.
+ * for things that can't use normal Block or Item textures.
  * 
  * @author Blackhole
  */

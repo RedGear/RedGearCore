@@ -45,12 +45,15 @@ public class FluidUtil {
 
 	public static Fluid createFluid(String fluidName, String iconName) {
 		Fluid fluid = new Fluid(fluidName);
+		fluid.setUnlocalizedName(StringHelper.parseUnLocalName(fluidName));
+		return createFluid(fluid, iconName);
+	}
+	
+	public static Fluid createFluid(Fluid fluid, String iconName) {
 		if (!FluidRegistry.registerFluid(fluid))
 			fluid = FluidRegistry.getFluid(fluid.getName()); //fluid already exists
-		else {
-			fluid.setUnlocalizedName(StringHelper.parseUnLocalName(fluidName));
+		else 
 			RedGearCore.proxy.addFluid(StringHelper.getModId() + ":" + iconName, fluid);
-		}
 		return fluid;
 	}
 }
