@@ -69,7 +69,7 @@ public abstract class TileEntityElectricMachine extends TileEntityMachine implem
 	}
 
 	@Override
-	public final boolean canConnect(ForgeDirection side) {
+	public final boolean canConnect(ForgeDirection side, Object source) {
 		return true;
 	}
 

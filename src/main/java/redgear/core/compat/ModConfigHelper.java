@@ -60,7 +60,7 @@ public class ModConfigHelper
             if (getName(i).equals(itemName))
                 return i;
 
-        RedGearCore.util.logDebug("Can't find item with name: " + itemName);
+        RedGearCore.instance.logDebug("Can't find item with name: " + itemName);
         return 0;
     }
     
