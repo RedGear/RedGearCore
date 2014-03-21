@@ -21,7 +21,6 @@ import thaumcraft.api.crafting.InfusionEnchantmentRecipe;
 import thaumcraft.api.crafting.InfusionRecipe;
 import thaumcraft.api.crafting.ShapedArcaneRecipe;
 import thaumcraft.api.crafting.ShapelessArcaneRecipe;
-import thaumcraft.api.research.IScanEventHandler;
 import thaumcraft.api.research.ResearchCategories;
 import thaumcraft.api.research.ResearchCategoryList;
 import thaumcraft.api.research.ResearchItem;
@@ -59,7 +58,6 @@ public class ThaumcraftApi {
 	
 	
 	//RESEARCH/////////////////////////////////////////
-	public static ArrayList<IScanEventHandler> scanEventhandlers = new ArrayList<IScanEventHandler>();
 	public static ArrayList<EntityTags> scanEntities = new ArrayList<EntityTags>();
 	public static class EntityTags {
 		public EntityTags(String entityName, NBTBase[] nbts, AspectList aspects) {
@@ -71,14 +69,7 @@ public class ThaumcraftApi {
 		public NBTBase[] nbts;
 		public AspectList aspects;
 	}
-	
-	/**
-	 * not really working atm, so ignore it for now
-	 * @param scanEventHandler
-	 */
-	public static void registerScanEventhandler(IScanEventHandler scanEventHandler) {
-		scanEventhandlers.add(scanEventHandler);
-	}
+
 	
 	/**
 	 * This is used to add aspects to entities which you can then scan using a thaumometer.
