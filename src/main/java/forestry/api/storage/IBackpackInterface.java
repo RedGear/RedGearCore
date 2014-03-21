@@ -15,5 +15,5 @@ public interface IBackpackInterface {
 	 *            Type of backpack. (T1 or T2 (= Woven)
 	 * @return Created backpack item.
 	 */
-	Item addBackpack(int itemID, IBackpackDefinition definition, EnumBackpackType type);
+	Item addBackpack(IBackpackDefinition definition, EnumBackpackType type);
 }

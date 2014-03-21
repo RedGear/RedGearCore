@@ -1,1 +1,1 @@
-includeFlat 'Geocraft', 'Snowfall', 'Brewcraft', 'LiquidFuels', 'MoreBackpacks', 'Securecraft', 'TileInterface'
+includeFlat 'Brewcraft', 'Geocraft', 'LiquidFuels', 'MoreBackpacks', 'Securecraft', 'Snowfall', 'TileInterface'

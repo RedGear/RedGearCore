@@ -17,25 +17,27 @@ import redgear.core.world.WorldLocation;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class MetaBlock extends BlockGeneric {
 
 	protected BiMap<Integer, SubBlock> blocks = HashBiMap.create();
-	protected int counter = 0;
 
 	public MetaBlock(Material material, String name) {
 		super(material, name, MetaItemBlock.class);
 	}
 
 	public SimpleItem addMetaBlock(SubBlock newBlock) throws IndexOutOfBoundsException {
-		if (counter > 15 && !(this instanceof ITileEntityProvider))
+		if (blocks.size() > 15 && !(this instanceof ITileEntityProvider))
 			throw new IndexOutOfBoundsException(
 					"MetaBlocks can only have 16 values! (0-15) You can't register 17! Use a MetaTile OR use another MetaBlocks.");
 
-		blocks.put(counter, newBlock);
-		return new SimpleItem(this, counter++);
+		blocks.put(blocks.size(), newBlock);
+		SimpleItem item = new SimpleItem(this, blocks.size() - 1);
+		GameRegistry.registerCustomItemStack(this.name + "." + newBlock.name, item.getStack());
+		return item;
 	}
 
 	protected boolean indexCheck(int index) {
@@ -62,7 +64,7 @@ public class MetaBlock extends BlockGeneric {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item item, CreativeTabs tab, @SuppressWarnings("rawtypes") List subItems) {
-		for (int i = 0; i < counter; i++)
+		for (int i = 0; i < blocks.size(); i++)
 			subItems.add(new ItemStack(this, 1, i));
 	}
 

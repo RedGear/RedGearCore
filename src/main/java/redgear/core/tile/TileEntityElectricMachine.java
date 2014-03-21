@@ -2,18 +2,17 @@ package redgear.core.tile;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
-import universalelectricity.api.UniversalClass;
-import universalelectricity.api.energy.IEnergyInterface;
+import cofh.api.energy.IEnergyHandler;
 
-@UniversalClass
-public abstract class TileEntityElectricMachine extends TileEntityMachine implements IEnergyInterface {
+//@Optional.InterfaceList(value = {@Interface(iface = "IEnergyHandler", modid = "") })
+public abstract class TileEntityElectricMachine extends TileEntityMachine implements IEnergyHandler {
 
-	private long power = 0;
-	private final long maxPower;
+	private int energy = 0;
+	private final int capacity;
 
-	public TileEntityElectricMachine(int idleRate, long powerCapacity) {
+	public TileEntityElectricMachine(int idleRate, int powerCapacity) {
 		super(idleRate);
-		maxPower = powerCapacity;
+		capacity = powerCapacity;
 	}
 
 	/**
@@ -26,8 +25,8 @@ public abstract class TileEntityElectricMachine extends TileEntityMachine implem
 	 */
 	@Override
 	protected final boolean tryUseEnergy(long energyUse) {
-		if (power > energyUse) {
-			power -= energyUse;
+		if (energy > energyUse) {
+			energy -= energyUse;
 			return true;
 		} else
 			return false;
@@ -41,7 +40,7 @@ public abstract class TileEntityElectricMachine extends TileEntityMachine implem
 	 * @return
 	 */
 	protected final long getEnergyAmount() {
-		return power;
+		return energy;
 	}
 
 	/**
@@ -53,7 +52,7 @@ public abstract class TileEntityElectricMachine extends TileEntityMachine implem
 		super.writeToNBT(tag);
 		tag.setInteger("work", work);
 		tag.setInteger("workTotal", workTotal);
-		tag.setLong("power", power);
+		tag.setInteger("energy", energy);
 	}
 
 	/**
@@ -65,51 +64,67 @@ public abstract class TileEntityElectricMachine extends TileEntityMachine implem
 		super.readFromNBT(tag);
 		work = tag.getInteger("work");
 		workTotal = tag.getInteger("workTotal");
-		power = tag.getLong("power");
+		energy = tag.getInteger("energy");
 	}
 
+	/**
+	 * Add energy to an IEnergyHandler, internal distribution is left entirely to the IEnergyHandler.
+	 * 
+	 * @param from
+	 *            Orientation the energy is received from.
+	 * @param maxReceive
+	 *            Maximum amount of energy to receive.
+	 * @param simulate
+	 *            If TRUE, the charge will only be simulated.
+	 * @return Amount of energy that was (or would have been, if simulated) received.
+	 */
 	@Override
-	public final boolean canConnect(ForgeDirection side) {
+	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
+		int energyReceived = Math.min(capacity - energy, maxReceive);
+
+		if (!simulate) {
+			energy += energyReceived;
+		}
+		return energyReceived;
+	}
+
+	/**
+	 * Remove energy from an IEnergyHandler, internal distribution is left entirely to the IEnergyHandler.
+	 * 
+	 * @param from
+	 *            Orientation the energy is extracted from.
+	 * @param maxExtract
+	 *            Maximum amount of energy to extract.
+	 * @param simulate
+	 *            If TRUE, the extraction will only be simulated.
+	 * @return Amount of energy that was (or would have been, if simulated) extracted.
+	 */
+	@Override
+	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
+		return 0;
+	}
+
+	/**
+	 * Returns true if the Handler functions on a given side - if a Tile Entity can receive or send energy on a given side, this should return true.
+	 */
+	@Override
+	public boolean canInterface(ForgeDirection from) {
 		return true;
 	}
 
 	/**
-	 * Adds energy to a block. Returns the quantity of energy that was accepted.
-	 * This should always
-	 * return 0 if the block cannot be externally charged.
-	 * 
-	 * @param from Orientation the energy is sent in from.
-	 * @param receive Maximum amount of energy (joules) to be sent into the
-	 * block.
-	 * @param doReceive If false, the charge will only be simulated.
-	 * @return Amount of energy that was accepted by the block.
+	 * Returns the amount of energy currently stored.
 	 */
 	@Override
-	public final long onReceiveEnergy(ForgeDirection from, long receive, boolean doReceive) {
-		long allowed = Math.min(maxPower - power, receive);
-
-		if (doReceive)
-			power += allowed;
-
-		return allowed;
+	public int getEnergyStored(ForgeDirection from) {
+		return energy;
 	}
 
 	/**
-	 * Removes energy from a block. Returns the quantity of energy that was
-	 * extracted. This should
-	 * always return 0 if the block cannot be externally discharged.
-	 * 
-	 * @param from Orientation the energy is requested from. This direction MAY
-	 * be passed as
-	 * "Unknown" if it is wrapped from another energy system that has no clear
-	 * way to find
-	 * direction. (e.g BuildCraft 4)
-	 * @param energy Maximum amount of energy to be sent into the block.
-	 * @param doExtract If false, the charge will only be simulated.
-	 * @return Amount of energy that was given out by the block.
+	 * Returns the maximum amount of energy that can be stored.
 	 */
 	@Override
-	public final long onExtractEnergy(ForgeDirection from, long extract, boolean doExtract) {
-		return 0;
+	public int getMaxEnergyStored(ForgeDirection from) {
+		return capacity;
 	}
 }

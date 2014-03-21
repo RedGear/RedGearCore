@@ -10,6 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import redgear.core.util.SimpleItem;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -25,8 +26,9 @@ public class MetaItem extends ItemGeneric {
 
 	public SimpleItem addMetaItem(SubItem newItem) {
 		items.put(items.size(), newItem);
-		ItemStack temp = new ItemStack(this, 1, items.size() - 1);
-		return new SimpleItem(temp);
+		SimpleItem item = new SimpleItem(this, items.size() - 1);
+		GameRegistry.registerCustomItemStack(this.name + "." + newItem.name, item.getStack());
+		return item;
 	}
 
 	public boolean indexCheck(int index) {

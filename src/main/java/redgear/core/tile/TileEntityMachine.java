@@ -57,7 +57,7 @@ public abstract class TileEntityMachine extends TileEntityTank {
 		}
 	}
 
-	protected void addWork(int work, long energyRate) {
+	protected void addWork(int work, int energyRate) {
 		workTotal = work;
 		this.work = work;
 		this.energyRate = energyRate;
