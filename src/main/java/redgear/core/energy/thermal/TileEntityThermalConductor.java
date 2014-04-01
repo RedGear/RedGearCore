@@ -1,4 +1,4 @@
-package redgear.core.thermal;
+package redgear.core.energy.thermal;
 
 public class TileEntityThermalConductor extends TileEntityThermalMachine{
 

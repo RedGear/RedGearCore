@@ -24,7 +24,7 @@ public abstract class TileEntityElectricMachine extends TileEntityMachine implem
 	 * @return true if there is enough power, false if there is not
 	 */
 	@Override
-	protected final boolean tryUseEnergy(long energyUse) {
+	protected final boolean tryUseEnergy(int energyUse) {
 		if (energy > energyUse) {
 			energy -= energyUse;
 			return true;

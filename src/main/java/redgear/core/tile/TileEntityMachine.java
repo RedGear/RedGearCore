@@ -12,7 +12,7 @@ public abstract class TileEntityMachine extends TileEntityTank {
 
 	private final int idleRate;
 	private int idle = 0;
-	private long energyRate = 0;
+	private int energyRate = 0;
 
 	protected int workTotal = 0;
 	protected int work = 0;
@@ -88,7 +88,7 @@ public abstract class TileEntityMachine extends TileEntityTank {
 	 * @param energy Amount of energy needed to work
 	 * @return true if there is enough power, false if there is not
 	 */
-	protected abstract boolean tryUseEnergy(long energy);
+	protected abstract boolean tryUseEnergy(int energy);
 
 	/**
 	 * Called when work is done.
@@ -116,7 +116,7 @@ public abstract class TileEntityMachine extends TileEntityTank {
 		super.readFromNBT(tag);
 		idle = tag.getInteger("idle");
 		currMode = ejectMode.valueOf(tag.getInteger("ejectMode"));
-		energyRate = tag.getLong("energyRate");
+		energyRate = tag.getInteger("energyRate");
 	}
 
 	protected void incrementEjectMode() {
