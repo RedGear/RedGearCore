@@ -27,7 +27,7 @@ public abstract class TileEntityThermalMachine extends TileEntityMachine impleme
 	
 	
 	private void shareHeat(ForgeDirection side){
-		storage.shareHeat(new WorldLocation(this).translate(side, 1).getTile(), side);
+		storage.shareHeat(new WorldLocation(this).translate(side, 1).getTile(), side.getOpposite());
 	}
 	
 	
@@ -56,7 +56,7 @@ public abstract class TileEntityThermalMachine extends TileEntityMachine impleme
 	public void writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
 		storage.writeToNBT(tag);
-		tag.setInteger("heatCheckDirect", heatCheckDirect.ordinal());
+		tag.setByte("heatCheckDirect", (byte) heatCheckDirect.ordinal());
 	}
 
 	/**
@@ -67,7 +67,7 @@ public abstract class TileEntityThermalMachine extends TileEntityMachine impleme
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
 		storage.readFromNBT(tag);
-		heatCheckDirect = ForgeDirection.getOrientation(tag.getInteger("heatCheckDirect"));
+		heatCheckDirect = ForgeDirection.getOrientation(tag.getByte("heatCheckDirect"));
 	}
 
 	@Override
