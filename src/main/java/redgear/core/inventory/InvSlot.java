@@ -1,6 +1,7 @@
 package redgear.core.inventory;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import redgear.core.tile.TileEntityInventory;
@@ -23,7 +24,7 @@ public class InvSlot extends Slot {
 	//filter
 	//side
 
-	public InvSlot(TileEntityInventory inventory, int x, int y) {
+	public InvSlot(IInventory inventory, int x, int y) {
 		super(inventory, inventory.getSizeInventory(), x, y);
 
 	}
