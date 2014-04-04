@@ -39,4 +39,21 @@ public class ItemGeneric extends Item {
 	public void registerIcons(IIconRegister par1IconRegister) {
 		itemIcon = par1IconRegister.registerIcon(modName + name);
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getModName() {
+		return modName;
+	}
+
+	public void setModName(String modName) {
+		this.modName = modName;
+	}
+
 }
