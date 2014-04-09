@@ -2,44 +2,32 @@ package redgear.core.tile;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidHandler;
-import redgear.core.fluids.AdvFluidTank;
 
 public abstract class TileEntityMachine extends TileEntityTank {
 
 	private final int idleRate;
 	private int idle = 0;
 	private int energyRate = 0;
+	private int standby = 0;
 
 	protected int workTotal = 0;
 	protected int work = 0;
 
-	private ejectMode currMode;
-
-	private enum ejectMode {
-		OFF, MACHINE, ALL;
-
-		public static ejectMode increment(ejectMode lastMode) {
-			return lastMode == OFF ? MACHINE : lastMode == MACHINE ? ALL : OFF;
-		}
-
-		public static ejectMode valueOf(int ordinal) {
-			return ordinal == 0 ? OFF : ordinal == 2 ? ALL : MACHINE;
-		}
-	}
-
 	public TileEntityMachine(int idleRate) {
 		this.idleRate = idleRate;
-		currMode = ejectMode.MACHINE;
+
 	}
 
 	@Override
 	public void updateEntity() {
 		if (isClient())
 			return;//do nothing client-side
+
+		if (standby > 0) {
+			standby--;
+			return;
+		}
 
 		if (idle-- <= 0) {
 			idle = idleRate;
@@ -48,25 +36,68 @@ public abstract class TileEntityMachine extends TileEntityTank {
 
 			if (work == 0)
 				checkWork();
-
-			if (work > 0 && tryUseEnergy(energyRate))
-				if (--work <= 0) {
-					workTotal = 0;
-					doPostWork();
-				}
 		}
+
+		if (work > 0 && tryUseEnergy(energyRate))
+			if (--work <= 0) {
+				workTotal = 0;
+				doPostWork();
+			}
+
 	}
 
-	protected void addWork(int work, int energyRate) {
+	public int getWork() {
+		return work;
+	}
+
+	public void addWork(int work) {
+		this.work += work;
 		workTotal = work;
-		this.work = work;
+	}
+
+	public int getWorkTotal() {
+		return workTotal;
+	}
+
+	public void setWorkTotal(int workTotal) {
+		this.workTotal = workTotal;
+	}
+
+	public void setEnergyRate(int energyRate) {
 		this.energyRate = energyRate;
+	}
+
+	public int getIdle() {
+		return idle;
+	}
+
+	public void setIdle(int idle) {
+		this.idle = idle;
+	}
+
+	public int getStandby() {
+		return standby;
+	}
+
+	/**
+	 * Orders this machine to wait for the specified time in ticks before
+	 * performing any further operations.
+	 * This includes counting down it's idle timer, as well as preWork,
+	 * checkWork, and doPostWork.
+	 * 
+	 * You can call this again with a value of 0 to stop waiting.
+	 * 
+	 * Standby timer is NOT preserved on chunk unload.
+	 * 
+	 * @param ticks
+	 */
+	public void setStandby(int ticks) {
+		standby = ticks;
 	}
 
 	protected void stopWork() {
 		workTotal = 0;
 		work = 0;
-		energyRate = 0;
 	}
 
 	/**
@@ -103,8 +134,9 @@ public abstract class TileEntityMachine extends TileEntityTank {
 	public void writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
 		tag.setInteger("idle", idle);
-		tag.setInteger("ejectMode", currMode.ordinal());
 		tag.setLong("energyRate", energyRate);
+		tag.setInteger("work", work);
+		tag.setInteger("workTotal", workTotal);
 	}
 
 	/**
@@ -115,16 +147,9 @@ public abstract class TileEntityMachine extends TileEntityTank {
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
 		idle = tag.getInteger("idle");
-		currMode = ejectMode.valueOf(tag.getInteger("ejectMode"));
 		energyRate = tag.getInteger("energyRate");
-	}
-
-	protected void incrementEjectMode() {
-		currMode = ejectMode.increment(currMode);
-	}
-
-	protected String getEjectMode() {
-		return currMode.name();
+		work = tag.getInteger("work");
+		workTotal = tag.getInteger("workTotal");
 	}
 
 	/**
@@ -155,54 +180,4 @@ public abstract class TileEntityMachine extends TileEntityTank {
 		return false;
 	}
 
-	protected void ejectAllFluids() {
-		int max = tanks();
-
-		for (int i = 0; i < max; i++)
-			ejectFluidAllSides(i);
-	}
-
-	protected void ejectFluidAllSides(int tankIndex) {
-		AdvFluidTank temp = getTank(tankIndex);
-
-		if (temp != null)
-			ejectFluidAllSides(temp);
-	}
-
-	protected void ejectFluidAllSides(AdvFluidTank tank) {
-		for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-			ejectFluid(side, tank);
-	}
-
-	protected void ejectFluid(ForgeDirection side, AdvFluidTank tank, int maxDrain) {
-		if (tank == null || tank.getFluid() == null || currMode == ejectMode.OFF)
-			return; //can't drain from a null or empty tank, duh
-
-		TileEntity otherTile = worldObj.getTileEntity(xCoord + side.offsetX, yCoord + side.offsetY, zCoord
-				+ side.offsetZ);
-
-		if (otherTile != null && IFluidHandler.class.isAssignableFrom(otherTile.getClass())
-				&& (currMode == ejectMode.ALL || TileEntityMachine.class.isAssignableFrom(otherTile.getClass()))) {//IFluidHandler
-			FluidStack drain = tank.drainWithMap(maxDrain, false);
-			if (drain == null)
-				return;
-			int fill = ((IFluidHandler) otherTile).fill(side.getOpposite(), drain, true);
-			tank.drain(fill, true);//find out how much the tank can drain. Try to fill all that into the other tile. Actually drain all that the other tile took.
-		}
-	}
-
-	protected void ejectFluid(ForgeDirection side, int tankIndex, int maxDrain) {
-		ejectFluid(side, getTank(tankIndex), maxDrain);
-	}
-
-	protected void ejectFluid(ForgeDirection side, AdvFluidTank tank) {
-		ejectFluid(side, tank, tank.getCapacity());
-	}
-
-	protected void ejectFluid(ForgeDirection side, int tankIndex) {
-		AdvFluidTank temp = getTank(tankIndex);
-
-		if (temp != null)
-			ejectFluid(side, temp, temp.getCapacity());
-	}
 }

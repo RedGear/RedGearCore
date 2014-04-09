@@ -36,13 +36,14 @@ public class MachineHandler {
 
 			if (work == 0)
 				work = machine.checkWork();
-
-			if (work > 0 && machine.tryUseEnergy(energyRate))
-				if (--work <= 0) {
-					workTotal = 0;
-					machine.doPostWork();
-				}
 		}
+		
+		if (work > 0 && machine.tryUseEnergy(energyRate))
+			if (--work <= 0) {
+				workTotal = 0;
+				machine.doPostWork();
+			}
+		
 	}
 	
 	

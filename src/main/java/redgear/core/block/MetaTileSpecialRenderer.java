@@ -4,7 +4,7 @@ import net.minecraft.block.material.Material;
 import redgear.core.util.SimpleItem;
 
 public class MetaTileSpecialRenderer extends MetaTile {
-	private final int renderId;
+	public final int renderId;
 
 	public MetaTileSpecialRenderer(Material par2Material, String name, int renderId) {
 		super(par2Material, name);
@@ -13,7 +13,6 @@ public class MetaTileSpecialRenderer extends MetaTile {
 
 	@Override
 	public SimpleItem addMetaBlock(SubTile newBlock) {
-		//ClientRegistry.bindTileEntitySpecialRenderer(newBlock.tile, tileRender);
 		return super.addMetaBlock(newBlock);
 	}
 

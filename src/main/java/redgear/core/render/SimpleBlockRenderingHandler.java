@@ -7,8 +7,8 @@ public abstract class SimpleBlockRenderingHandler implements ISimpleBlockRenderi
 
 	private final int renderId;
 
-	public SimpleBlockRenderingHandler() {
-		renderId = RenderingRegistry.getNextAvailableRenderId();
+	public SimpleBlockRenderingHandler(int renderId) {
+		this.renderId = renderId;
 		RenderingRegistry.registerBlockHandler(renderId, this);
 	}
 

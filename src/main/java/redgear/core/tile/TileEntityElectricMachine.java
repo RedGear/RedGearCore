@@ -2,17 +2,24 @@ package redgear.core.tile;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
+import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
 
-//@Optional.InterfaceList(value = {@Interface(iface = "IEnergyHandler", modid = "") })
 public abstract class TileEntityElectricMachine extends TileEntityMachine implements IEnergyHandler {
 
-	private int energy = 0;
-	private final int capacity;
+	protected EnergyStorage storage;
+	
+	public TileEntityElectricMachine() {
+		this(4);
+	}
+	
+	public TileEntityElectricMachine(int idleRate) {
+		this(idleRate, 32000);
+	}
 
 	public TileEntityElectricMachine(int idleRate, int powerCapacity) {
 		super(idleRate);
-		capacity = powerCapacity;
+		storage = new EnergyStorage(powerCapacity);
 	}
 
 	/**
@@ -25,22 +32,12 @@ public abstract class TileEntityElectricMachine extends TileEntityMachine implem
 	 */
 	@Override
 	protected final boolean tryUseEnergy(int energyUse) {
-		if (energy > energyUse) {
-			energy -= energyUse;
+		if (storage.getEnergyStored() > energyUse) {
+			storage.extractEnergy(energyUse, false);
 			return true;
 		} else
 			return false;
 
-	}
-
-	/**
-	 * Actually returns the maximum of the four energy buffers, since they can't
-	 * be mixed anyway
-	 * 
-	 * @return
-	 */
-	protected final long getEnergyAmount() {
-		return energy;
 	}
 
 	/**
@@ -50,9 +47,7 @@ public abstract class TileEntityElectricMachine extends TileEntityMachine implem
 	@Override
 	public void writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
-		tag.setInteger("work", work);
-		tag.setInteger("workTotal", workTotal);
-		tag.setInteger("energy", energy);
+		storage.writeToNBT(tag);
 	}
 
 	/**
@@ -62,9 +57,7 @@ public abstract class TileEntityElectricMachine extends TileEntityMachine implem
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
-		work = tag.getInteger("work");
-		workTotal = tag.getInteger("workTotal");
-		energy = tag.getInteger("energy");
+		storage.readFromNBT(tag);
 	}
 
 	/**
@@ -80,12 +73,7 @@ public abstract class TileEntityElectricMachine extends TileEntityMachine implem
 	 */
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
-		int energyReceived = Math.min(capacity - energy, maxReceive);
-
-		if (!simulate) {
-			energy += energyReceived;
-		}
-		return energyReceived;
+		return storage.receiveEnergy(maxReceive, simulate);
 	}
 
 	/**
@@ -101,7 +89,7 @@ public abstract class TileEntityElectricMachine extends TileEntityMachine implem
 	 */
 	@Override
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-		return 0;
+		return storage.extractEnergy(maxExtract, simulate);
 	}
 
 	/**
@@ -117,7 +105,7 @@ public abstract class TileEntityElectricMachine extends TileEntityMachine implem
 	 */
 	@Override
 	public int getEnergyStored(ForgeDirection from) {
-		return energy;
+		return storage.getEnergyStored();
 	}
 
 	/**
@@ -125,6 +113,6 @@ public abstract class TileEntityElectricMachine extends TileEntityMachine implem
 	 */
 	@Override
 	public int getMaxEnergyStored(ForgeDirection from) {
-		return capacity;
+		return storage.getMaxEnergyStored();
 	}
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -18,6 +19,24 @@ import redgear.core.render.LiquidGauge;
 
 public abstract class TileEntityTank extends TileEntityInventory implements IFluidHandler {
 	private final List<AdvFluidTank> tanks = new ArrayList<AdvFluidTank>();
+
+	private ejectMode currMode;
+
+	private enum ejectMode {
+		OFF, MACHINE, ALL;
+
+		public static ejectMode increment(ejectMode lastMode) {
+			return lastMode == OFF ? MACHINE : lastMode == MACHINE ? ALL : OFF;
+		}
+
+		public static ejectMode valueOf(int ordinal) {
+			return ordinal == 0 ? OFF : ordinal == 2 ? ALL : MACHINE;
+		}
+	}
+
+	public TileEntityTank() {
+		currMode = ejectMode.MACHINE;
+	}
 
 	/**
 	 * Adds the given LiquidTank to this tile
@@ -116,6 +135,7 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 		}
 
 		tag.setTag("Tanks", tankList);
+		tag.setInteger("ejectMode", currMode.ordinal());
 	}
 
 	/**
@@ -134,6 +154,66 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 			if (tank != null)
 				tank.readFromNBT(invTag);
 		}
+		currMode = ejectMode.valueOf(tag.getInteger("ejectMode"));
+	}
+
+	protected void incrementEjectMode() {
+		currMode = ejectMode.increment(currMode);
+	}
+
+	protected String getEjectMode() {
+		return currMode.name();
+	}
+
+	protected void ejectAllFluids() {
+		int max = tanks();
+
+		for (int i = 0; i < max; i++)
+			ejectFluidAllSides(i);
+	}
+
+	protected void ejectFluidAllSides(int tankIndex) {
+		AdvFluidTank temp = getTank(tankIndex);
+
+		if (temp != null)
+			ejectFluidAllSides(temp);
+	}
+
+	protected void ejectFluidAllSides(AdvFluidTank tank) {
+		for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			ejectFluid(side, tank);
+	}
+
+	protected void ejectFluid(ForgeDirection side, AdvFluidTank tank, int maxDrain) {
+		if (tank == null || tank.getFluid() == null || currMode == ejectMode.OFF)
+			return; //can't drain from a null or empty tank, duh
+
+		TileEntity otherTile = worldObj.getTileEntity(xCoord + side.offsetX, yCoord + side.offsetY, zCoord
+				+ side.offsetZ);
+
+		if (otherTile != null && IFluidHandler.class.isAssignableFrom(otherTile.getClass())
+				&& (currMode == ejectMode.ALL || TileEntityMachine.class.isAssignableFrom(otherTile.getClass()))) {//IFluidHandler
+			FluidStack drain = tank.drainWithMap(maxDrain, false);
+			if (drain == null)
+				return;
+			int fill = ((IFluidHandler) otherTile).fill(side.getOpposite(), drain, true);
+			tank.drain(fill, true);//find out how much the tank can drain. Try to fill all that into the other tile. Actually drain all that the other tile took.
+		}
+	}
+
+	protected void ejectFluid(ForgeDirection side, int tankIndex, int maxDrain) {
+		ejectFluid(side, getTank(tankIndex), maxDrain);
+	}
+
+	protected void ejectFluid(ForgeDirection side, AdvFluidTank tank) {
+		ejectFluid(side, tank, tank.getCapacity());
+	}
+
+	protected void ejectFluid(ForgeDirection side, int tankIndex) {
+		AdvFluidTank temp = getTank(tankIndex);
+
+		if (temp != null)
+			ejectFluid(side, temp, temp.getCapacity());
 	}
 
 	protected void writeFluidStack(NBTTagCompound tag, String name, FluidStack stack) {
@@ -190,7 +270,7 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 			ItemStack filled = FluidContainerRegistry.fillFluidContainer(contents.copy(), emptySlot.copy());
 			if (filled != null) {
 				int capacity = FluidUtil.getContainerCapacity(contents, filled);
-				
+
 				if (tank.canDrainWithMap(capacity) && canAddStack(slotFullIndex, filled)) {
 					addStack(slotFullIndex, filled);
 					tank.drainWithMap(capacity, true);
