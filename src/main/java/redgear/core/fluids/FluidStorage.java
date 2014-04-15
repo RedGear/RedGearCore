@@ -139,7 +139,7 @@ public class FluidStorage implements IFluidHandler {
 		FluidStack contents = FluidContainerRegistry.getFluidForFilledItem(fullSlot);
 		ItemStack emptyContainer = FluidUtil.getEmptyContainer(fullSlot);
 
-		if (tank.canFillWithMap(contents) && inventory.canAddStack(slotEmptyIndex, emptyContainer)) {
+		if (tank.canFillWithMap(contents, true) && inventory.canAddStack(slotEmptyIndex, emptyContainer)) {
 			tank.fillWithMap(contents, true);
 
 			if (emptyContainer != null)

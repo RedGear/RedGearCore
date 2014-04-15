@@ -241,7 +241,7 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 		FluidStack contents = FluidContainerRegistry.getFluidForFilledItem(fullSlot);
 		ItemStack emptyContainer = FluidUtil.getEmptyContainer(fullSlot);
 
-		if (tank.canFillWithMap(contents) && canAddStack(slotEmptyIndex, emptyContainer)) {
+		if (tank.canFillWithMap(contents, true) && canAddStack(slotEmptyIndex, emptyContainer)) {
 			tank.fillWithMap(contents, true);
 
 			if (emptyContainer != null)

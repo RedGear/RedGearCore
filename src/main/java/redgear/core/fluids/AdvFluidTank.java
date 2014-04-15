@@ -126,11 +126,11 @@ public class AdvFluidTank extends FluidTank {
 
 	/**
 	 * @param other FluidStack to try to add
-	 * @return True if other could be FULLY added to this tank with the fill()
+	 * @return True if other could be added to this tank with the fill()
 	 * method.
 	 */
-	public boolean canFill(FluidStack other) {
-		return other != null && isEmpty() ? true : fluid.isFluidEqual(other) && canFill(other.amount);
+	public boolean canFill(FluidStack other, boolean fully) {
+		return other != null && isEmpty() ? true : fluid.isFluidEqual(other) && (!fully || canFill(other.amount));
 	}
 
 	/**
@@ -152,12 +152,12 @@ public class AdvFluidTank extends FluidTank {
 
 	/**
 	 * @param other FluidStack to try to remove
-	 * @return True if other could be FULLY removed from this tank with the
+	 * @return True if other could be removed from this tank with the
 	 * drain()
 	 * method.
 	 */
-	public boolean canDrain(FluidStack other) {
-		return other != null && isEmpty() ? false : fluid.containsFluid(other);
+	public boolean canDrain(FluidStack other, boolean fully) {
+		return other != null && isEmpty() ? false : fully ? fluid.containsFluid(other) : fluid.isFluidEqual(other);
 	}
 
 	/**
@@ -199,21 +199,21 @@ public class AdvFluidTank extends FluidTank {
 
 	/**
 	 * @param other FluidStack to try to add
-	 * @return True if other could be FULLY added to this tank with the
+	 * @return True if other could be added to this tank with the
 	 * fillWithMap()
 	 * method.
 	 */
-	public boolean canFillWithMap(FluidStack other) {
-		return other == null || canAccept(other.fluidID) && canFill(other);
+	public boolean canFillWithMap(FluidStack other, boolean fully) {
+		return other == null || canAccept(other.fluidID) && canFill(other, fully);
 	}
 
 	/**
 	 * @param other FluidStack to try to add
-	 * @return True if other could be FULLY added to this tank with the fill()
+	 * @return True if other could be added to this tank with the fill()
 	 * method.
 	 */
-	public boolean canDrainWithMap(FluidStack other) {
-		return other != null && canEject(other.fluidID) && canDrain(other);
+	public boolean canDrainWithMap(FluidStack other, boolean fully) {
+		return other != null && canEject(other.fluidID) && canDrain(other, fully);
 	}
 
 	/**
@@ -251,7 +251,7 @@ public class AdvFluidTank extends FluidTank {
 	 * @return amount of fluid accepted, or would have been moved.
 	 */
 	public int fillWithMap(FluidStack resource, boolean doFill) {
-		if (canFillWithMap(resource))
+		if (canFillWithMap(resource, false))
 			return super.fill(resource, doFill);
 		else
 			return 0;
@@ -268,7 +268,7 @@ public class AdvFluidTank extends FluidTank {
 	 * drained. Null if no fluid would be drained.
 	 */
 	public FluidStack drainWithMap(int maxDrain, boolean doDrain) {
-		if (!isEmpty() && canDrainWithMap(fluid))
+		if (!isEmpty() && canDrainWithMap(fluid, false))
 			return super.drain(maxDrain, doDrain);
 		else
 			return null;
@@ -286,7 +286,7 @@ public class AdvFluidTank extends FluidTank {
 	 */
 	public FluidStack drainWithMap(FluidStack resource, boolean doDrain) {
 		FluidStack drained = null;
-		if (canDrain(resource))
+		if (canDrain(resource, false))
 			drained = drain(resource.amount, doDrain);
 		return drained;
 	}
