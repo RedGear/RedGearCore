@@ -50,11 +50,11 @@ public class SimpleItem implements ISimpleItem, Serializable {
 	}
 
 	public SimpleItem(Item item) {
-		this(new ItemStack(item, 1, OreDictionary.WILDCARD_VALUE));
+		this(new ItemStack(item, 1, 0));
 	}
 
 	public SimpleItem(Block block) {
-		this(new ItemStack(block, 1, OreDictionary.WILDCARD_VALUE));
+		this(new ItemStack(block, 1, 0));
 	}
 
 	public SimpleItem(Block block, int meta) {
