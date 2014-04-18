@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -15,7 +16,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 /**
  * Use this as a simple way to access and store Icons, particularly
  * for things that can't use normal Block or Item textures.
- * 
+ *
  * @author Blackhole
  */
 @SideOnly(Side.CLIENT)
@@ -43,8 +44,14 @@ public class CoreIconRegistry {
 	public void registerIcons(TextureStitchEvent.Pre event) {
 		IIconRegister reg = event.map;
 
-		for (Entry<String, IIcon> set : icons.entrySet())
-			set.setValue(reg.registerIcon(set.getKey()));
+		if (reg instanceof TextureMap) {
+			TextureMap map = (TextureMap) reg;
+
+			if (map.getTextureType() == 0)
+				for (Entry<String, IIcon> set : icons.entrySet())
+					set.setValue(reg.registerIcon(set.getKey()));
+
+		}
 
 	}
 
@@ -56,7 +63,7 @@ public class CoreIconRegistry {
 
 	/**
 	 * Add an icon to the registry
-	 * 
+	 *
 	 * @param name The FULL path of the icon, IE:
 	 * assets/mod_name/textures/gui/button
 	 */
