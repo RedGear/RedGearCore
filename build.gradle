@@ -42,6 +42,8 @@ jar{
 	manifest{
 		attributes 'FMLCorePlugin': 'redgear.core.asm.CoreLoadingPlugin', 'FMLCorePluginContainsFMLMod': 'true'
 	}
+	
+	exclude 'thaumcraft*', 'forestry*', 'buildcraft/api/fuels*', 'buildcraft/api/recipes*', 'ic2*'
 }
 
 
