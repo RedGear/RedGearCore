@@ -3,7 +3,6 @@ package redgear.core.network;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -42,16 +41,11 @@ public class CoreIconRegistry {
 
 	@SubscribeEvent
 	public void registerIcons(TextureStitchEvent.Pre event) {
-		IIconRegister reg = event.map;
+		TextureMap reg = event.map;
 
-		if (reg instanceof TextureMap) {
-			TextureMap map = (TextureMap) reg;
-
-			if (map.getTextureType() == 0)
-				for (Entry<String, IIcon> set : icons.entrySet())
-					set.setValue(reg.registerIcon(set.getKey()));
-
-		}
+		if (reg.getTextureType() == 0)
+			for (Entry<String, IIcon> set : icons.entrySet())
+				set.setValue(reg.registerIcon(set.getKey()));
 
 	}
 

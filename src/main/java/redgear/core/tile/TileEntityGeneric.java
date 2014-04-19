@@ -1,8 +1,5 @@
 package redgear.core.tile;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -10,10 +7,6 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import redgear.core.render.Button;
-import redgear.core.render.DrawSnippet;
-import redgear.core.render.GuiElement;
-import redgear.core.render.ProgressBar;
 
 /**
  * TileEntityGeneric handles the basic necessities of TileEntities
@@ -27,7 +20,7 @@ import redgear.core.render.ProgressBar;
 public abstract class TileEntityGeneric extends TileEntity {
 	private ForgeDirection direction = ForgeDirection.SOUTH; //Default
 	private boolean redstoneState = false;
-	private final List<GuiElement> guiElements = new ArrayList<GuiElement>();
+	private boolean needsReSync = false;
 
 	public final int getDirectionId() {
 		return getDirection().ordinal();
@@ -96,6 +89,19 @@ public abstract class TileEntityGeneric extends TileEntity {
 	public boolean wrenchedShift(EntityPlayer player, ForgeDirection side) {
 		return true;
 	}
+	
+	@Override
+	public void updateEntity() {
+		if(isServer() && needsReSync){
+			this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			this.markDirty();
+			needsReSync = false;
+		}
+	}
+	
+	protected void forceSync(){
+		needsReSync = true;	
+	}
 
 	/**
 	 * Don't forget to override this function in all children if you want more
@@ -129,75 +135,6 @@ public abstract class TileEntityGeneric extends TileEntity {
 	@Override
 	public final void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
 		readFromNBT(packet.func_148857_g()); //TODO: Test this.
-	}
-
-	protected int addProgressBar(int x, int y, int width, int height) {
-		ProgressBar temp = new ProgressBar(guiElements.size(), x, y, width, height);
-		guiElements.add(temp);
-		return temp.id;
-	}
-
-	public ProgressBar updateProgressBars(ProgressBar prog) {
-		return prog;
-	}
-
-	/**
-	 * Copies a piece off this texture and draws the snippet somewhere else. IE:
-	 * Furnace progress bar or burn time.
-	 * 
-	 * @param x - X Coord where the snippet WILL BE DRAWN.
-	 * @param y - Y Coord where the snippet WILL BE DRAWN.
-	 * @param width - Width of the snippet. TO and FROM are the same.
-	 * @param height - Height of the snippet. TO and FROM are the same.
-	 * @param snipX - X Coord of where to snip FROM.
-	 * @param snipY - Y Coord of where to snip FROM.
-	 */
-	protected void addDrawSnippet(int x, int y, int width, int height, int snipX, int snipY) {
-		guiElements.add(new DrawSnippet(x, y, width, height, snipX, snipY));
-	}
-
-	protected int addButton(int xPosition, int yPosition, int width, int height) {
-		Button temp = new Button(guiElements.size(), xPosition, yPosition, width, height);
-		guiElements.add(temp);
-		return temp.id;
-	}
-
-	public Button getButton(int id) {
-		for (GuiElement el : guiElements)
-			if (el instanceof Button) {
-				Button but = (Button) el;
-				if (but.id == id)
-					return but;
-			}
-		return null;
-	}
-
-	public List<GuiElement> getGuiElements() {
-		return guiElements;
-	}
-
-	/**
-	 * Called by the CorePacketHander when a button with this ID is clicked
-	 * 
-	 * @param id
-	 */
-	public final void clickButton(int id) {
-		Button temp = getButton(id);
-		if (temp != null) {
-			temp.clickButton();
-			buttonClicked(temp);
-		}
-	}
-
-	/**
-	 * Override this function if you have any buttons. This will be called
-	 * whenever this button is clicked, so do whatever the button does.
-	 * You can check the currState to see what state it is in now if that is
-	 * needed.
-	 * 
-	 * @param button The button clicked.
-	 */
-	protected void buttonClicked(Button button) {
 	}
 
 	protected final boolean getRedstoneState() {

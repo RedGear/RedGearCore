@@ -21,6 +21,8 @@ public abstract class TileEntityMachine extends TileEntityTank {
 
 	@Override
 	public void updateEntity() {
+		super.updateEntity();
+		
 		if (isClient())
 			return;//do nothing client-side
 

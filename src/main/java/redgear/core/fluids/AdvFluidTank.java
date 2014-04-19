@@ -8,11 +8,9 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import redgear.core.inventory.TransferRule;
-import redgear.core.render.LiquidGauge;
 
 public class AdvFluidTank extends FluidTank {
 
-	private LiquidGauge guage;
 	private final Map<Integer, TransferRule> fluidMap = new HashMap<Integer, TransferRule>();
 
 	/**
@@ -289,28 +287,5 @@ public class AdvFluidTank extends FluidTank {
 		if (canDrain(resource, false))
 			drained = drain(resource.amount, doDrain);
 		return drained;
-	}
-
-	/**
-	 * Creates a fluid gauge used by GUIs and attaches it to this tank.
-	 * 
-	 * @param x Top of the tank in the GUI
-	 * @param y Left of the tank in the GUI
-	 * @param width x + width is the Right of the tank in the GUI
-	 * @param height y + height is the Bottom of the tank in the GUI
-	 * @param tankId The ID of this tank inside it's parent TileEntity.
-	 * @return This object
-	 */
-	public AdvFluidTank addLiquidGauge(int x, int y, int width, int height, int tankId) {
-		guage = new LiquidGauge(capacity, x, y, width, height, tankId);
-		return this;
-	}
-
-	/**
-	 * @return The LiquidGauge representing this tank, or null if no gauge was
-	 * created.
-	 */
-	public LiquidGauge getLiquidGauge() {
-		return guage;
 	}
 }

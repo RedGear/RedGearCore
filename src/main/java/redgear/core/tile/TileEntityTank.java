@@ -15,7 +15,6 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import redgear.core.fluids.AdvFluidTank;
 import redgear.core.fluids.FluidUtil;
-import redgear.core.render.LiquidGauge;
 
 public abstract class TileEntityTank extends TileEntityInventory implements IFluidHandler {
 	private final List<AdvFluidTank> tanks = new ArrayList<AdvFluidTank>();
@@ -44,8 +43,8 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 	 * @param newTank New Tank to add
 	 * @return index of the new tank used for adding side mappings
 	 */
-	public int addTank(AdvFluidTank newTank, int x, int y, int width, int height) {
-		tanks.add(newTank.addLiquidGauge(x, y, width, height, tanks.size()));
+	public int addTank(AdvFluidTank newTank) {
+		tanks.add(newTank);
 		return tanks.size() - 1;
 	}
 
@@ -310,14 +309,5 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 			info[x] = tanks.get(x).getInfo();
 
 		return info;
-	}
-
-	public LiquidGauge[] getLiquidGauges() {
-		LiquidGauge[] gauges = new LiquidGauge[tanks.size()];
-
-		for (int i = 0; i < tanks.size(); i++)
-			gauges[i] = tanks.get(i).getLiquidGauge();
-
-		return gauges;
 	}
 }
