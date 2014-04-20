@@ -75,7 +75,7 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 
 			if (filled > 0) {
 				if (doFill)
-					markDirty();
+					forceSync();
 				return filled;
 			}
 		}
@@ -92,7 +92,7 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 
 			if (removed.amount > 0) {
 				if (doDrain)
-					markDirty();
+					forceSync();
 				return removed;
 			}
 		}
@@ -109,7 +109,7 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 
 			if (removed != null && removed.amount > 0) {
 				if (doDrain)
-					markDirty();
+					forceSync();
 				return removed;
 			}
 		}
@@ -167,28 +167,35 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 		return currMode.name();
 	}
 
-	protected void ejectAllFluids() {
+	protected boolean ejectAllFluids() {
+		boolean check = false;
 		int max = tanks();
 
 		for (int i = 0; i < max; i++)
-			ejectFluidAllSides(i);
+			check |= ejectFluidAllSides(i);
+		return check;
 	}
 
-	protected void ejectFluidAllSides(int tankIndex) {
+	protected boolean ejectFluidAllSides(int tankIndex) {
 		AdvFluidTank temp = getTank(tankIndex);
 
 		if (temp != null)
-			ejectFluidAllSides(temp);
+			return ejectFluidAllSides(temp);
+		else
+			return false;
 	}
 
-	protected void ejectFluidAllSides(AdvFluidTank tank) {
+	protected boolean ejectFluidAllSides(AdvFluidTank tank) {
+		boolean check = false;
+		
 		for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-			ejectFluid(side, tank);
+			check |= ejectFluid(side, tank);
+		return check;
 	}
 
-	protected void ejectFluid(ForgeDirection side, AdvFluidTank tank, int maxDrain) {
+	protected boolean ejectFluid(ForgeDirection side, AdvFluidTank tank, int maxDrain) {
 		if (tank == null || tank.getFluid() == null || currMode == ejectMode.OFF)
-			return; //can't drain from a null or empty tank, duh
+			return false; //can't drain from a null or empty tank, duh
 
 		TileEntity otherTile = worldObj.getTileEntity(xCoord + side.offsetX, yCoord + side.offsetY, zCoord
 				+ side.offsetZ);
@@ -197,25 +204,30 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 				&& (currMode == ejectMode.ALL || TileEntityMachine.class.isAssignableFrom(otherTile.getClass()))) {//IFluidHandler
 			FluidStack drain = tank.drainWithMap(maxDrain, false);
 			if (drain == null)
-				return;
+				return false;
 			int fill = ((IFluidHandler) otherTile).fill(side.getOpposite(), drain, true);
 			tank.drain(fill, true);//find out how much the tank can drain. Try to fill all that into the other tile. Actually drain all that the other tile took.
+			return true;
 		}
+		
+		return false;
 	}
 
-	protected void ejectFluid(ForgeDirection side, int tankIndex, int maxDrain) {
-		ejectFluid(side, getTank(tankIndex), maxDrain);
+	protected boolean ejectFluid(ForgeDirection side, int tankIndex, int maxDrain) {
+		return ejectFluid(side, getTank(tankIndex), maxDrain);
 	}
 
-	protected void ejectFluid(ForgeDirection side, AdvFluidTank tank) {
-		ejectFluid(side, tank, tank.getCapacity());
+	protected boolean ejectFluid(ForgeDirection side, AdvFluidTank tank) {
+		return ejectFluid(side, tank, tank.getCapacity());
 	}
 
-	protected void ejectFluid(ForgeDirection side, int tankIndex) {
+	protected boolean ejectFluid(ForgeDirection side, int tankIndex) {
 		AdvFluidTank temp = getTank(tankIndex);
 
 		if (temp != null)
-			ejectFluid(side, temp, temp.getCapacity());
+			return ejectFluid(side, temp, temp.getCapacity());
+		else
+			return false;
 	}
 
 	protected void writeFluidStack(NBTTagCompound tag, String name, FluidStack stack) {
