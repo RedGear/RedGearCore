@@ -1,12 +1,12 @@
-package redgear.cofh.gui.element;
+package redgear.core.render.gui.element;
 
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import redgear.cofh.gui.TabTracker;
-import redgear.cofh.render.RenderHelper;
 import redgear.core.render.GuiBase;
+import redgear.core.render.RenderHelper;
+import redgear.core.render.gui.TabTracker;
 
 /**
  * Base class for a tab element. Has self-contained rendering methods and a link back to the {@link GuiBase} it is a part of.

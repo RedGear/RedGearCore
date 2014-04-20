@@ -20,10 +20,9 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import redgear.cofh.gui.TabTracker;
-import redgear.cofh.gui.element.ElementBase;
-import redgear.cofh.gui.element.TabBase;
-import redgear.cofh.render.RenderHelper;
+import redgear.core.render.gui.TabTracker;
+import redgear.core.render.gui.element.ElementBase;
+import redgear.core.render.gui.element.TabBase;
 import cpw.mods.fml.common.Loader;
 
 /**

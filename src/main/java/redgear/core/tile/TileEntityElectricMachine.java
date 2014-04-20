@@ -5,7 +5,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
 
-public abstract class TileEntityElectricMachine extends TileEntityMachine implements IEnergyHandler {
+public abstract class TileEntityElectricMachine extends TileEntityInventory implements IEnergyHandler {
 
 	protected EnergyStorage storage;
 	

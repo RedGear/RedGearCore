@@ -1,11 +1,11 @@
-package redgear.cofh.gui.element;
+package redgear.core.render.gui.element;
 
 import java.util.List;
 
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
-import redgear.cofh.render.RenderHelper;
 import redgear.core.render.GuiBase;
+import redgear.core.render.RenderHelper;
 import cofh.api.energy.IEnergyStorage;
 
 public class ElementEnergyStored extends ElementBase {

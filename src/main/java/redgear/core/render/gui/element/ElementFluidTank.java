@@ -1,16 +1,16 @@
-package redgear.cofh.gui.element;
+package redgear.core.render.gui.element;
 
 import java.util.List;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.IFluidTank;
-import redgear.cofh.render.RenderHelper;
 import redgear.core.render.GuiBase;
+import redgear.core.render.RenderHelper;
 import redgear.core.util.StringHelper;
 
 public class ElementFluidTank extends ElementBase {
 
-	public static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation("FluidTank.png");
+	public static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation("redgear_core:textures/gui/elements/FluidTank.png");
 	public static final int DEFAULT_SCALE = 60;
 
 	protected IFluidTank tank;

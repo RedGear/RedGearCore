@@ -1,4 +1,4 @@
-package redgear.cofh.gui.element;
+package redgear.core.render.gui.element;
 
 import java.util.List;
 

@@ -9,6 +9,10 @@ public interface ITileFactory{
 	
 	TileEntity createTile();
 	
+	boolean hasGui();
+	
+	int guiId();
+	
 	@SideOnly(Side.CLIENT)
 	Object createGui(InventoryPlayer inventoryPlayer, TileEntity tile);
 	

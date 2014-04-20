@@ -1,10 +1,10 @@
-package redgear.cofh.gui.element;
+package redgear.core.render.gui.element;
 
 import java.util.List;
 
 import net.minecraft.util.StatCollector;
-import redgear.cofh.render.RenderHelper;
 import redgear.core.render.GuiBase;
+import redgear.core.render.RenderHelper;
 
 public class ElementButton extends ElementBase {
 

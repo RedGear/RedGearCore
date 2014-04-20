@@ -4,7 +4,7 @@ import net.minecraft.tileentity.TileEntity;
 
 public interface IHasTile {
 
-	public Class <? extends TileEntity > getTile();
+	public TileEntity createTile();
 	
 	public boolean hasGui();
 	

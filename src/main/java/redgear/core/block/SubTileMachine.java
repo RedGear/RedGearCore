@@ -4,6 +4,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
+import redgear.core.tile.ITileFactory;
 import redgear.core.tile.TileEntityGeneric;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -13,13 +14,9 @@ public class SubTileMachine extends SubTile {
 	protected IIcon sideIcon;
 	protected final String sideName;
 
-	public SubTileMachine(String name, String sideName, Class<? extends TileEntity> tile, int guiId) {
-		super(name, tile, guiId);
+	public SubTileMachine(String name, String sideName, ITileFactory factory) {
+		super(name, factory);
 		this.sideName = sideName;
-	}
-
-	public SubTileMachine(String name, String sideName, Class<? extends TileEntity> tile) {
-		this(name, sideName, tile, -1);
 	}
 
 	@Override

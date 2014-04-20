@@ -20,7 +20,6 @@ import redgear.core.tile.TileEntityGeneric;
 import redgear.core.util.SimpleItem;
 import redgear.core.world.WorldLocation;
 import buildcraft.api.tools.IToolWrench;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -34,17 +33,10 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
-		try {
-			Class<? extends TileEntity> tile = getMetaTile(meta);
-			if(tile != null)
-				return tile.newInstance();
-			else
-				return null;
-		} catch (Exception e) {
-			RedGearCore.inst.logDebug("", e);
-		}
-
-		return null;
+		if(indexCheck(meta))
+			return ((SubTile) getMetaBlock(meta)).createTile();
+		else
+			return ((SubTile) getMetaBlock(0)).createTile();
 	}
 
 	@Override
@@ -109,15 +101,7 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 	}
 
 	public SimpleItem addMetaBlock(SubTile newBlock) {
-		GameRegistry.registerTileEntity(newBlock.tile, newBlock.tile.getName());
 		return super.addMetaBlock(newBlock);
-	}
-
-	public Class<? extends TileEntity> getMetaTile(int meta) {
-		if(indexCheck(meta))
-			return ((SubTile) getMetaBlock(meta)).tile;
-		else
-			return ((SubTile) getMetaBlock(0)).tile;
 	}
 
 	/**
@@ -129,7 +113,7 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 
 		if (tile != null)
 			for (Entry<Integer, SubBlock> test : blocks.entrySet())
-				if (test.getValue() instanceof SubTile && ((SubTile) test.getValue()).tile.equals(tile.getClass()))
+				if (test.getValue() instanceof SubTile && ((SubTile) test.getValue()).createTile().getClass().equals(tile.getClass()))
 					return test.getKey();
 		return 0;
 	}
@@ -154,7 +138,7 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 			return ((IDifferentDrop) called).getDrops(loc, meta, fortune);
 		else{
 			ArrayList<ItemStack> ret = new ArrayList<ItemStack>(1);
-			ret.add(new ItemStack(loc.getBlock(), 1, getDamageValue(world, x, y, z)));
+			ret.add(new ItemStack(this, 1, meta));
 			return ret;
 		}
 

@@ -1,4 +1,4 @@
-package redgear.cofh.gui.element;
+package redgear.core.render.gui.element;
 
 import net.minecraftforge.fluids.FluidStack;
 import redgear.core.render.GuiBase;

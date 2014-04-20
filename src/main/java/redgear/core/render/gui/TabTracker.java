@@ -1,6 +1,6 @@
-package redgear.cofh.gui;
+package redgear.core.render.gui;
 
-import redgear.cofh.gui.element.TabBase;
+import redgear.core.render.gui.element.TabBase;
 
 /**
  * Keeps track of which tabs should be open by default when a player opens a GUI.

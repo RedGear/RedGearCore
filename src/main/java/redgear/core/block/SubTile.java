@@ -2,44 +2,31 @@ package redgear.core.block;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
+import redgear.core.tile.ITileFactory;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class SubTile extends SubBlock implements IHasTile {
-	public final boolean hasGui;
-	public final int guiId;
-	public final Class<? extends TileEntity> tile;
+	private final ITileFactory factory;
 
 	@Override
-	public Class<? extends TileEntity> getTile() {
-		return tile;
+	public TileEntity createTile() {
+		return factory.createTile();
 	}
 
 	@Override
 	public boolean hasGui() {
-		return hasGui;
+		return factory.hasGui();
 	}
 
 	@Override
 	public int guiId() {
-		return guiId;
+		return factory.guiId();
 	}
 
-	public SubTile(String name, Class<? extends TileEntity> tile, int guiId) {
+	public SubTile(String name, ITileFactory factory) {
 		super(name);
-
-		if (guiId < 0)
-			hasGui = false;
-		else
-			hasGui = true;
-
-		this.guiId = guiId;
-
-		this.tile = tile;
-	}
-
-	public SubTile(String name, Class<? extends TileEntity> tile) {
-		this(name, tile, -1);
+		this.factory = factory;
 	}
 
 	@SideOnly(Side.CLIENT)
