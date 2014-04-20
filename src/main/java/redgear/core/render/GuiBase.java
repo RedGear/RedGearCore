@@ -306,11 +306,6 @@ public abstract class GuiBase<C extends ContainerBase<? extends TileEntity>> ext
 		drawIcon(icon, x, y, spriteSheet);
 	}
 
-	public void drawButton(String iconName, int x, int y, int spriteSheet, int mode) {
-
-		//drawButton(IconRegistry.getIcon(iconName), x, y, spriteSheet, mode);
-	}
-
 	/**
 	 * Simple method used to draw a fluid of arbitrary size.
 	 */

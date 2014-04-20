@@ -7,17 +7,23 @@ public class TileEntityThermalConductor extends TileEntityThermalMachine{
 	}
 
 	@Override
-	protected void doPreWork() {
-		
+	protected boolean doPreWork() {
+		return false;
 	}
 
 	@Override
-	protected void checkWork() {
-		
+	protected int checkWork() {
+		return 0;
 	}
 
 	@Override
-	protected void doPostWork() {
+	protected boolean doPostWork() {
+		return false;
+	}
+
+	@Override
+	protected boolean doWork() {
+		return false;
 		
 	}
 

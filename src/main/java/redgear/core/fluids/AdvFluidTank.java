@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -287,5 +288,12 @@ public class AdvFluidTank extends FluidTank {
 		if (canDrain(resource, false))
 			drained = drain(resource.amount, doDrain);
 		return drained;
+	}
+	
+	public FluidTank readFromNBT(NBTTagCompound nbt){
+		if(nbt.hasKey("Empty"))
+			this.fluid = null;
+		
+		return super.readFromNBT(nbt);
 	}
 }

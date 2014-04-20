@@ -2,18 +2,16 @@ package redgear.core.tile;
 
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.tileentity.TileEntity;
-import redgear.core.machine.IMachine;
-import redgear.core.render.ContainerBase;
-import redgear.core.render.GuiBase;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-public interface ITileFactory<T extends TileEntity, C extends ContainerBase<T>, G extends GuiBase<C>> {
+public interface ITileFactory{
 	
-	T createTile();
+	TileEntity createTile();
 	
-	IMachine createMachine();
+	@SideOnly(Side.CLIENT)
+	Object createGui(InventoryPlayer inventoryPlayer, TileEntity tile);
 	
-	G createGui(InventoryPlayer inventoryPlayer, TileEntity tile);
-	
-	C createContainer(InventoryPlayer inventoryPlayer, TileEntity tile);
+	Object createContainer(InventoryPlayer inventoryPlayer, TileEntity tile);
 
 }

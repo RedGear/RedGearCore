@@ -17,6 +17,11 @@ import redgear.core.fluids.AdvFluidTank;
 import redgear.core.fluids.FluidUtil;
 
 public abstract class TileEntityTank extends TileEntityInventory implements IFluidHandler {
+	public TileEntityTank(int idleRate) {
+		super(idleRate);
+		currMode = ejectMode.MACHINE;
+	}
+
 	private final List<AdvFluidTank> tanks = new ArrayList<AdvFluidTank>();
 
 	private ejectMode currMode;
@@ -33,9 +38,7 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 		}
 	}
 
-	public TileEntityTank() {
-		currMode = ejectMode.MACHINE;
-	}
+	
 
 	/**
 	 * Adds the given LiquidTank to this tile

@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public abstract class TileEntityMachine extends TileEntityTank {
+public abstract class TileEntityMachine extends TileEntityGeneric {
 
 	private final int idleRate;
 	private int idle = 0;
@@ -30,22 +30,34 @@ public abstract class TileEntityMachine extends TileEntityTank {
 			standby--;
 			return;
 		}
+		
+		boolean check = false;
 
 		if (idle-- <= 0) {
 			idle = idleRate;
 
-			doPreWork();
+			check |= doPreWork();
 
-			if (work == 0)
-				checkWork();
+			if (work == 0){
+				int add = checkWork();
+				if(add > 0){
+					addWork(add);
+					check = true;
+				}
+			}
 		}
 
-		if (work > 0 && tryUseEnergy(energyRate))
+		if (work > 0 && tryUseEnergy(energyRate)){
+			check |= doWork();
 			if (--work <= 0) {
 				workTotal = 0;
-				doPostWork();
+				check |= doPostWork();
 			}
+		}
 
+		if(check)// && worldObj.getWorldTime() % 10 == 0
+			forceSync();
+		
 	}
 
 	public int getWork() {
@@ -106,13 +118,15 @@ public abstract class TileEntityMachine extends TileEntityTank {
 	 * Called every time the idle timer ticks. Use this for free things like
 	 * filling/emptying buckets
 	 */
-	protected abstract void doPreWork();
+	protected abstract boolean doPreWork();
 
 	/**
 	 * Called after PreWork if work is 0, check for work here and it will be
 	 * added before calling work.
 	 */
-	protected abstract void checkWork();
+	protected abstract int checkWork();
+	
+	protected abstract boolean doWork();
 
 	/**
 	 * If the amount of energy requested is found, then use it and return true,
@@ -126,7 +140,7 @@ public abstract class TileEntityMachine extends TileEntityTank {
 	/**
 	 * Called when work is done.
 	 */
-	protected abstract void doPostWork();
+	protected abstract boolean doPostWork();
 
 	/**
 	 * Don't forget to override this function in all children if you want more
@@ -174,12 +188,12 @@ public abstract class TileEntityMachine extends TileEntityTank {
 	 * @param player The Player who clicked
 	 * @param side The Side the player clicked on
 	 * @return true if the gui should open, false if it should not.
-	 */
+	 
 	@Override
 	public boolean wrenchedShift(EntityPlayer player, ForgeDirection side) {
 		incrementEjectMode();
 		player.addChatMessage(player.func_145748_c_().appendText("Eject mode set to " + getEjectMode())); //TODO: Test this
 		return false;
-	}
+	}*/
 
 }

@@ -17,7 +17,12 @@ import redgear.core.inventory.InvSlot;
  * @author Blackhole
  * 
  */
-public abstract class TileEntityInventory extends TileEntityGeneric implements ISidedInventory {
+public abstract class TileEntityInventory extends TileEntityMachine implements ISidedInventory {
+	public TileEntityInventory(int idleRate) {
+		super(idleRate);
+		// TODO Auto-generated constructor stub
+	}
+
 	private final ArrayList<InvSlot> slots = new ArrayList<InvSlot>();
 
 	protected int addSlot(InvSlot slot) {
