@@ -118,7 +118,7 @@ public class SimpleItemFactory {
 	 * went wrong.
 	 */
 	private static ISimpleItem build(Object... args) {
-		if (Loader.isModLoaded("RedGear|Core"))
+		if (Loader.isModLoaded("redgear_core"))
 			return (ISimpleItem) ReflectionHelper.constructObjectNullFail("redgear.core.util.SimpleItem", args);
 		else
 			return null;

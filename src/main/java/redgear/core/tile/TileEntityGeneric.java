@@ -99,7 +99,7 @@ public abstract class TileEntityGeneric extends TileEntity {
 		}
 	}
 	
-	protected void forceSync(){
+	public void forceSync(){
 		needsReSync = true;	
 	}
 
