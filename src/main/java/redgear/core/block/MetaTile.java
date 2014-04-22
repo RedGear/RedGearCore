@@ -11,20 +11,20 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import redgear.core.asm.RedGearCore;
-import redgear.core.tile.TileEntityGeneric;
-import redgear.core.util.SimpleItem;
+import redgear.core.tile.IFacedTile;
+import redgear.core.tile.IRedstoneTile;
+import redgear.core.tile.IWrenchableTile;
 import redgear.core.world.WorldLocation;
 import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class MetaTile extends MetaBlock implements ITileEntityProvider {
-	private final int[] directionMap = {2, 5, 3, 4 };
+public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider {
+	
 
 	public MetaTile(Material par2Material, String name) {
 		super(par2Material, name);
@@ -42,29 +42,29 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float f, float g,
 			float t) {
-		SubBlock block = getMetaBlock(world.getBlockMetadata(x, y, z));
+		SubTile block = getMetaBlock(world.getBlockMetadata(x, y, z));
 
 		if (block != null) {
 
 			if (!world.isRemote && player.getHeldItem() != null && player.getHeldItem().getItem() != null
 					&& IToolWrench.class.isAssignableFrom(player.getHeldItem().getItem().getClass())) {
 				TileEntity tile = world.getTileEntity(x, y, z);
-				if (tile != null && TileEntityGeneric.class.isAssignableFrom(tile.getClass())) {
-					TileEntityGeneric tileGeneric = (TileEntityGeneric) tile;
+				if (tile instanceof IWrenchableTile) {
+					IWrenchableTile wrenchable = (IWrenchableTile) tile;
 					boolean test;
 
 					if (player.isSneaking())
-						test = tileGeneric.wrenchedShift(player, ForgeDirection.getOrientation(side));
+						test = wrenchable.wrenchedShift(player, ForgeDirection.getOrientation(side));
 					else
-						test = tileGeneric.wrenched(player, ForgeDirection.getOrientation(side));
+						test = wrenchable.wrenched(player, ForgeDirection.getOrientation(side));
 
 					if (!test)//if tile returns true, continue to the gui. false means stop. 
 						return true;
 				}
 			}
 
-			if (block instanceof IHasTile && ((IHasTile) block).hasGui() && !player.isSneaking()) {
-				player.openGui(RedGearCore.inst, ((IHasTile) block).guiId(), world, x, y, z);
+			if (block.hasGui() && !player.isSneaking()) {
+				player.openGui(RedGearCore.inst, block.guiId(), world, x, y, z);
 				return true;
 			}
 		}
@@ -81,27 +81,8 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 
 		TileEntity tile = world.getTileEntity(x, y, z);
 
-		if (tile instanceof TileEntityGeneric)
-			((TileEntityGeneric) tile).setDirection(directionMap[MathHelper
-					.floor_double(entity.rotationYaw * 4.0F / 360.0F + 0.5D) & 3]);
-	}
-
-	/**
-	 * Make sure to pass a MetaTileBlock, not just MetaBlock, otherwise it will
-	 * crash.
-	 * 
-	 * @param newBlock The new MetaTileBlock for this MetaTile
-	 * @throws ClassCastException if the passed MetaBlock is not a MetaTileBlock
-	 */
-	@Override
-	public SimpleItem addMetaBlock(SubBlock newBlock) throws ClassCastException {
-		if (!(newBlock instanceof SubTile))
-			throw new ClassCastException("MetaTile can only except MetaTileBlocks!");
-		return addMetaBlock((SubTile) newBlock);
-	}
-
-	public SimpleItem addMetaBlock(SubTile newBlock) {
-		return super.addMetaBlock(newBlock);
+		if (tile instanceof IFacedTile)
+			((IFacedTile) tile).onBlockPlacedBy(world, x, y, z, entity, stack);
 	}
 
 	/**
@@ -112,8 +93,8 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 		TileEntity tile = world.getTileEntity(x, y, z);
 
 		if (tile != null)
-			for (Entry<Integer, SubBlock> test : blocks.entrySet())
-				if (test.getValue() instanceof SubTile && ((SubTile) test.getValue()).createTile().getClass().equals(tile.getClass()))
+			for (Entry<Integer, SubTile> test : blocks.entrySet())
+				if (test.getValue().createTile().getClass().equals(tile.getClass()))
 					return test.getKey();
 		return 0;
 	}
@@ -131,7 +112,7 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 	 */
 	@Override
 	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int meta, int fortune) {
-		SubBlock called = getMetaBlock(meta);
+		SubTile called = getMetaBlock(meta);
 		WorldLocation loc = new WorldLocation(x, y, z, world);
 
 		if (called instanceof IDifferentDrop)
@@ -203,8 +184,8 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 	private void checkRedstone(World world, int x, int y, int z) {
 		TileEntity tile = world.getTileEntity(x, y, z);
 
-		if (tile instanceof TileEntityGeneric)
-			((TileEntityGeneric) tile).updateRedstone(world.isBlockIndirectlyGettingPowered(x, y, z));
+		if (tile instanceof IRedstoneTile)
+			((IRedstoneTile) tile).updateRedstone(world.getBlockPowerInput(x, y, z));
 	}
 
 	/**
@@ -217,8 +198,8 @@ public class MetaTile extends MetaBlock implements ITileEntityProvider {
 	public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side) {
 		TileEntity tile = world.getTileEntity(x, y, z);
 
-		if (tile instanceof TileEntityGeneric)
-			return ((TileEntityGeneric) tile).redstoneSignal(ForgeDirection.getOrientation(side).getOpposite());
+		if (tile instanceof IRedstoneTile)
+			return ((IRedstoneTile) tile).redstoneSignal(ForgeDirection.getOrientation(side).getOpposite());
 		else
 			return 0;
 	}

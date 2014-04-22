@@ -21,15 +21,15 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class MetaBlock extends BlockGeneric {
+public class MetaBlock<S extends SubBlock> extends BlockGeneric {
 
-	protected BiMap<Integer, SubBlock> blocks = HashBiMap.create();
+	protected BiMap<Integer, S> blocks = HashBiMap.create();
 
 	public MetaBlock(Material material, String name) {
 		super(material, name, MetaItemBlock.class);
 	}
 
-	public SimpleItem addMetaBlock(SubBlock newBlock) throws IndexOutOfBoundsException {
+	public SimpleItem addMetaBlock(S newBlock) throws IndexOutOfBoundsException {
 		if (blocks.size() > 15 && !(this instanceof ITileEntityProvider))
 			throw new IndexOutOfBoundsException(
 					"MetaBlocks can only have 16 values! (0-15) You can't register 17! Use a MetaTile OR use another MetaBlocks.");
@@ -44,7 +44,7 @@ public class MetaBlock extends BlockGeneric {
 		return blocks.size() > index && blocks.get(index) != null;
 	}
 
-	public SubBlock getMetaBlock(int meta) {
+	public S getMetaBlock(int meta) {
 		return blocks.get(meta);
 	}
 
@@ -71,7 +71,7 @@ public class MetaBlock extends BlockGeneric {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister par1IconRegister) {
-		for (SubBlock block : blocks.values())
+		for (S block : blocks.values())
 			block.registerIcons(modName, par1IconRegister);
 	}
 	
@@ -88,7 +88,7 @@ public class MetaBlock extends BlockGeneric {
 	 */
 	@Override
 	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int meta, int fortune) {
-		SubBlock called = getMetaBlock(meta);
+		S called = getMetaBlock(meta);
 		WorldLocation loc = new WorldLocation(x, y, z, world);
 
 		if (called instanceof IDifferentDrop)

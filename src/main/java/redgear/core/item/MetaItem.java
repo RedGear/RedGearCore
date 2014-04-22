@@ -14,9 +14,9 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class MetaItem extends ItemGeneric {
+public class MetaItem<S extends SubItem> extends ItemGeneric {
 
-	protected final Map<Integer, SubItem> items = new HashMap<Integer, SubItem>();
+	protected final Map<Integer, S> items = new HashMap<Integer, S>();
 
 	public MetaItem(String name) {
 		super(name);
@@ -24,7 +24,7 @@ public class MetaItem extends ItemGeneric {
 		hasSubtypes = true;
 	}
 
-	public SimpleItem addMetaItem(SubItem newItem) {
+	public SimpleItem addMetaItem(S newItem) {
 		items.put(items.size(), newItem);
 		SimpleItem item = new SimpleItem(this, items.size() - 1);
 		GameRegistry.registerCustomItemStack(this.name + "." + newItem.name, item.getStack());
@@ -35,7 +35,7 @@ public class MetaItem extends ItemGeneric {
 		return items.size() > index && items.get(index) != null;
 	}
 
-	public SubItem getMetaItem(int meta) {
+	public S getMetaItem(int meta) {
 		return items.get(meta);
 	}
 
@@ -67,7 +67,7 @@ public class MetaItem extends ItemGeneric {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister par1IconRegister) {
-		for (SubItem item : items.values())
+		for (S item : items.values())
 			item.registerIcons(modName, par1IconRegister);
 	}
 }

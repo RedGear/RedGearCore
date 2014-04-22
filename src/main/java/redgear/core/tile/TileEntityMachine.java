@@ -1,8 +1,6 @@
 package redgear.core.tile;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
 
 public abstract class TileEntityMachine extends TileEntityGeneric {
 
@@ -167,33 +165,4 @@ public abstract class TileEntityMachine extends TileEntityGeneric {
 		work = tag.getInteger("work");
 		workTotal = tag.getInteger("workTotal");
 	}
-
-	/**
-	 * Called when a player right clicks this tile while holding a Buildcraft
-	 * wrench
-	 * 
-	 * @param player The Player who clicked.
-	 * @param side The Side the player clicked on.
-	 * @return true if the gui should open, false if it should not.
-	 */
-	@Override
-	public boolean wrenched(EntityPlayer player, ForgeDirection side) {
-		return !setDirection(side);
-	}
-
-	/**
-	 * Called when a player right clicks this tile while holding a Buildcraft
-	 * wrench and holding shift
-	 * 
-	 * @param player The Player who clicked
-	 * @param side The Side the player clicked on
-	 * @return true if the gui should open, false if it should not.
-	 
-	@Override
-	public boolean wrenchedShift(EntityPlayer player, ForgeDirection side) {
-		incrementEjectMode();
-		player.addChatMessage(player.func_145748_c_().appendText("Eject mode set to " + getEjectMode())); //TODO: Test this
-		return false;
-	}*/
-
 }

@@ -21,7 +21,7 @@ import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public class MetaItemBucket extends MetaItem {
+public class MetaItemBucket extends MetaItem<SubItemBucket> {
 
 	public MetaItemBucket(String name) {
 		super(name);
@@ -31,18 +31,12 @@ public class MetaItemBucket extends MetaItem {
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
+	@Override
 	public SimpleItem addMetaItem(SubItemBucket newItem) {
 		SimpleItem temp = super.addMetaItem(newItem);
 		FluidContainerRegistry.registerFluidContainer(newItem.fluid, temp.getStack(),
 				FluidContainerRegistry.EMPTY_BUCKET);
 		return temp;
-	}
-
-	@Override
-	public SimpleItem addMetaItem(SubItem newItem) {
-		if (!(newItem instanceof SubItemBucket))
-			throw new ClassCastException("MetaBucketContainer can only except MetaBucket!");
-		return addMetaItem((SubItemBucket) newItem);
 	}
 
 	@SubscribeEvent
@@ -62,9 +56,9 @@ public class MetaItemBucket extends MetaItem {
 	}
 
 	private int getMeta(Block block) {
-		if(block != null)
-			for (Entry<Integer, SubItem> set : items.entrySet())
-				if (block.equals(((SubItemBucket) set.getValue()).fluid.getBlock()))
+		if (block != null)
+			for (Entry<Integer, SubItemBucket> set : items.entrySet())
+				if (block.equals(set.getValue().fluid.getBlock()))
 					return set.getKey();
 		return -1;
 	}
@@ -151,7 +145,7 @@ public class MetaItemBucket extends MetaItem {
 			if (!world.isRemote && flag && !material.isLiquid())
 				loc.setAir(world);
 
-			Fluid working = ((SubItemBucket) getMetaItem(bucket.getItemDamage())).fluid;
+			Fluid working = getMetaItem(bucket.getItemDamage()).fluid;
 
 			if (working == null || working.getBlock() == null)
 				return false;
