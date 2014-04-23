@@ -6,7 +6,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.IFluidTank;
 import redgear.core.render.GuiBase;
 import redgear.core.render.RenderHelper;
-import redgear.core.util.StringHelper;
 
 public class ElementFluidTank extends ElementBase {
 

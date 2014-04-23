@@ -9,7 +9,6 @@ import java.util.List;
  * 
  * @author BlackHole
  */
-@SuppressWarnings("unused")
 public final class HashHelper {
 
 	private final static int seed = 7;
@@ -20,31 +19,31 @@ public final class HashHelper {
 	}
 
 	
-	private static int hash(int seed, boolean value) {
+	public static int hash(int seed, boolean value) {
 		return start(seed) + (value ? 1 : 0);
 	}
 
-	private static int hash(int seed, char value) {
+	public static int hash(int seed, char value) {
 		return hash((int) value);
 	}
 
-	private static int hash(int seed, int value) {
+	public static int hash(int seed, int value) {
 		return start(seed) + value;
 	}
 
-	private static int hash(int seed, float value) {
+	public static int hash(int seed, float value) {
 		return hash(seed, Float.floatToIntBits(value));
 	}
 
-	private static int hash(int seed, long value) {
+	public static int hash(int seed, long value) {
 		return start(seed) + (int) (value ^ value >>> 32);
 	}
 
-	private static int hash(int seed, double value) {
+	public static int hash(int seed, double value) {
 		return hash(seed, Double.doubleToLongBits(value));
 	}
 
-	private static int hash(int seed, Object obj) {
+	public static int hash(int seed, Object obj) {
 		if (obj == null)
 			return hash(seed, 0);
 		else if (obj.getClass().isArray()) {

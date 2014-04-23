@@ -19,6 +19,8 @@ public class ElementFluidTankWithGlass extends ElementFluidTank{
 		
 		int amount = getScaled();
 		
+		RenderHelper.bindTexture(texture);
+		drawTexturedModalRect(posX, posY, 0, 1, sizeX, sizeY);
 		gui.drawFluid(posX, posY + sizeY - amount, tank.getFluid(), sizeX, amount);
 		RenderHelper.bindTexture(texture);
 		drawTexturedModalRect(posX, posY, 17, 1, sizeX, sizeY);

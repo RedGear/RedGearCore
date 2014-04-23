@@ -10,6 +10,11 @@ import net.minecraft.nbt.NBTTagCompound;
  * The SimpleItem class is similar to ItemStack, but is designed to be simpler,
  * smaller, and is safe to be used in Hash-based data structures.
  * 
+ * Note: Setting the meta to OreDictionary.WILDCARD_VALUE works for equals(), but NOT hashCode(). 
+ * 
+ * In other words, you can't use WILDCARD if you intend to use hashing. Using a List instead of a Set seems to work. 
+ * 
+ * 
  * @author BlackHole
  */
 public interface ISimpleItem {
@@ -67,6 +72,15 @@ public interface ISimpleItem {
 	 * and this makes it safe to use SimpleItems inside Hash-based data
 	 * structures, like HashMaps or HashSets.
 	 * 
+	 * Note: This does NOT work with wild card metas. 
+	 * 
+	 * <pre>
+	 * {@code
+	 * new SimpleItem(Blocks.wool, OreDictionary.WILDCARD_VALUE).hashCode() != new SimpleItem(Blocks.wool, 14);
+	 * }
+	 * </pre>
+	 *
+	 * 
 	 * @return Unique HashCode created by the combination of the id and meta.
 	 */
 	@Override
@@ -92,7 +106,7 @@ public interface ISimpleItem {
 	 * 
 	 * @param tag Root tag to add the new subtag too.
 	 * @param name Name of the subtag to add to root that will hold the ints
-	 * 'id' and 'meta;
+	 * 'id' and 'meta'
 	 */
 	void writeToNBT(NBTTagCompound tag, String name);
 

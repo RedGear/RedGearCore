@@ -1,5 +1,6 @@
 package forestry.api.storage;
 
+import cpw.mods.fml.common.eventhandler.Cancelable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -9,6 +10,7 @@ import net.minecraft.item.ItemStack;
  * of stackToStow drops to 0 or less or the event is canceled.
  */
 
+@Cancelable
 public class BackpackStowEvent extends BackpackEvent {
 
 	public final ItemStack stackToStow;

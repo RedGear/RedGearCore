@@ -12,6 +12,7 @@ import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.oredict.OreDictionary;
 import redgear.core.api.item.ISimpleItem;
+import redgear.core.api.util.HashHelper;
 import redgear.core.world.BlockLocation;
 import redgear.core.world.Location;
 import redgear.core.world.WorldLocation;
@@ -19,6 +20,10 @@ import redgear.core.world.WorldLocation;
 /**
  * The SimpleItem class is similar to ItemStack, but is designed to be simpler,
  * smaller, and is safe to be used in Hash-based data structures.
+ * 
+ * Note: Setting the meta to OreDictionary.WILDCARD_VALUE works for equals(), but NOT hashCode(). 
+ * 
+ * In other words, you can't use WILDCARD if you intend to use hashing. Using a List instead of a Set seems to work. 
  * 
  * @author Blackhole
  * 
@@ -157,8 +162,8 @@ public class SimpleItem implements ISimpleItem, Serializable {
 	}
 
 	@Override
-	public int hashCode() {
-		return oreID != -1 ? oreID : meta | getItemId() << 16;
+	public int hashCode() {//if it's in the ore dict, it'll hash the oreID with 0, 0, otherwise it'll hash -1 with the Id and meta.
+		return HashHelper.hash(oreID, isInOreDict() ? 0 : getItemId(), isInOreDict() ? 0 : meta);
 	}
 
 	@Override
@@ -166,7 +171,7 @@ public class SimpleItem implements ISimpleItem, Serializable {
 		if (other == null)
 			return false;
 
-		if (getItem() == other.getItem() && (meta == OreDictionary.WILDCARD_VALUE || other.getMeta() == OreDictionary.WILDCARD_VALUE || meta == other.getMeta()))
+		if (getItem() == other.getItem() && (getMeta() == OreDictionary.WILDCARD_VALUE || other.getMeta() == OreDictionary.WILDCARD_VALUE || getMeta() == other.getMeta()))
 			return true;
 		else
 			return isInOreDict() && other.isInOreDict() && oreID == other.getOreID();
@@ -214,4 +219,6 @@ public class SimpleItem implements ISimpleItem, Serializable {
 	public SimpleItem(NBTTagCompound tag, String name) {
 		this(tag.getCompoundTag(name));
 	}
+
+	
 }

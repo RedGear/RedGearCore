@@ -22,25 +22,6 @@ import cpw.mods.fml.common.Loader;
 public class SimpleItemFactory {
 
 	/**
-	 * @param id Item id
-	 * @param meta Meta value
-	 * @return SimpleItem with the given id and meta, or null if Core was not
-	 * found.
-	 */
-	public static ISimpleItem create(int id, int meta) {
-		return build(id, meta);
-	}
-
-	/**
-	 * @param id Item id
-	 * @return SimpleItem with the given id and a wildcard meta, or null if Core
-	 * was not found.
-	 */
-	public static ISimpleItem create(int id) {
-		return build(id);
-	}
-
-	/**
 	 * @param stack ItemStack
 	 * @return SimpleItem with the id and meta from the given ItemStack, or null
 	 * if Core was not found.
