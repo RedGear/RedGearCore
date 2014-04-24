@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class FileHelper {
@@ -75,5 +77,21 @@ public class FileHelper {
 					writer.close();
 			}catch(Exception e){}
 		}
+	}
+	
+	public static void copy(InputStream in, OutputStream out) throws IOException{
+		copy(in, out, true);
+	}
+	
+	public static void copy(InputStream in, OutputStream out, boolean autoClose) throws IOException{
+		int value;
+		while((value = in.read()) != -1)
+			out.write(value);
+		
+		if(autoClose){
+			in.close();
+			out.close();
+		}
+		
 	}
 }

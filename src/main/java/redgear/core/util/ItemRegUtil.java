@@ -27,7 +27,7 @@ public class ItemRegUtil {
 	}
 
 	public static ItemStack findStack(String mod, String name) {
-		if (Loader.isModLoaded(mod))
+		if (mod.equalsIgnoreCase("minecraft") || Loader.isModLoaded(mod))
 			return GameRegistry.findItemStack(mod, name, 1);
 		else {
 			RedGearCore.inst.logDebug("ItemRegUtil: Mod: ", mod, " was not found, skipping item: ", name);
