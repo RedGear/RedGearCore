@@ -68,7 +68,7 @@ public class Location extends ChunkPosition {
 		if (block.equals(Blocks.air) && isAir(world)) //Special case for air-type blocks.
 			return true;
 
-		if (block.equals(new SimpleItem(getBlock(world))))
+		if (block.equals(new SimpleItem(this, world)))
 			return true;
 
 		return false;

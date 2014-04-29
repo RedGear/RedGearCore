@@ -75,7 +75,7 @@ public abstract class TileEntityGeneric extends TileEntity implements IFacedTile
 
 	@Override
 	public void updateEntity() {
-		if (isServer() && needsReSync) {
+		if (needsReSync) {
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 			markDirty();
 			needsReSync = false;

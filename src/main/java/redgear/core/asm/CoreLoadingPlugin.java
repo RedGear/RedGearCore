@@ -32,7 +32,7 @@ public class CoreLoadingPlugin implements IFMLLoadingPlugin {
 	@Override
 	public void injectData(Map<String, Object> data) {
 		mcLocation = (File) data.get("mcLocation");
-		util = new CoreModUtils("RedGear|Transformer");
+		util = new CoreModUtils("RedGear_Transformer");
 	}
 
 	@Override
