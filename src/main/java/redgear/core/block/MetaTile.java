@@ -14,7 +14,9 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import redgear.core.asm.RedGearCore;
+import redgear.core.tile.IBucketableTank;
 import redgear.core.tile.IFacedTile;
 import redgear.core.tile.IRedstoneTile;
 import redgear.core.tile.IWrenchableTile;
@@ -24,7 +26,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider {
-	
 
 	public MetaTile(Material par2Material, String name) {
 		super(par2Material, name);
@@ -33,10 +34,10 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider 
 
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
-		if(indexCheck(meta))
-			return ((SubTile) getMetaBlock(meta)).createTile();
+		if (indexCheck(meta))
+			return getMetaBlock(meta).createTile();
 		else
-			return ((SubTile) getMetaBlock(0)).createTile();
+			return getMetaBlock(0).createTile();
 	}
 
 	@Override
@@ -46,22 +47,30 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider 
 
 		if (block != null) {
 
-			if (!world.isRemote && player.getHeldItem() != null && player.getHeldItem().getItem() != null
-					&& IToolWrench.class.isAssignableFrom(player.getHeldItem().getItem().getClass())) {
-				TileEntity tile = world.getTileEntity(x, y, z);
-				if (tile instanceof IWrenchableTile) {
-					IWrenchableTile wrenchable = (IWrenchableTile) tile;
-					boolean test;
+			if (!world.isRemote)
+				if (player.getHeldItem() != null && player.getHeldItem().getItem() != null)
+					if (IToolWrench.class.isAssignableFrom(player.getHeldItem().getItem().getClass())) {
+						TileEntity tile = world.getTileEntity(x, y, z);
+						if (tile instanceof IWrenchableTile) {
+							IWrenchableTile wrenchable = (IWrenchableTile) tile;
+							boolean test;
 
-					if (player.isSneaking())
-						test = wrenchable.wrenchedShift(player, ForgeDirection.getOrientation(side));
-					else
-						test = wrenchable.wrenched(player, ForgeDirection.getOrientation(side));
+							if (player.isSneaking())
+								test = wrenchable.wrenchedShift(player, ForgeDirection.getOrientation(side));
+							else
+								test = wrenchable.wrenched(player, ForgeDirection.getOrientation(side));
 
-					if (!test)//if tile returns true, continue to the gui. false means stop. 
-						return true;
-				}
-			}
+							if (!test)//if tile returns true, continue to the gui. false means stop.
+								return true;
+						}
+					}
+
+					else if (FluidContainerRegistry.isContainer(player.getHeldItem())) {
+						TileEntity tile = world.getTileEntity(x, y, z);
+						if (tile instanceof IBucketableTank)
+							if (((IBucketableTank) tile).bucket(player, player.inventory.currentItem, player.getHeldItem()))
+								return true;
+					}
 
 			if (block.hasGui() && !player.isSneaking()) {
 				player.openGui(RedGearCore.inst, block.guiId(), world, x, y, z);
@@ -101,7 +110,7 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider 
 
 	/**
 	 * This returns a complete list of items dropped from this block.
-	 * 
+	 *
 	 * @param world The current world
 	 * @param x X Position
 	 * @param y Y Position
@@ -117,13 +126,12 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider 
 
 		if (called instanceof IDifferentDrop)
 			return ((IDifferentDrop) called).getDrops(loc, meta, fortune);
-		else{
+		else {
 			ArrayList<ItemStack> ret = new ArrayList<ItemStack>(1);
 			ret.add(new ItemStack(this, 1, meta));
 			return ret;
 		}
 
-		
 	}
 
 	@Override
@@ -133,9 +141,9 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider 
 	 */
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
 		int meta = world.getBlockMetadata(x, y, z);
-		if(indexCheck(meta))
+		if (indexCheck(meta))
 			return getMetaBlock(meta).getBlockTexture(world, x, y, z, side);
-		else 
+		else
 			return getMetaBlock(0).getBlockTexture(world, x, y, z, side);
 	}
 
@@ -157,7 +165,7 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider 
 	 * coordinates. Null means no rotations are possible.
 	 * Note, this is up to the block to decide. It may not be accurate or
 	 * representative.
-	 * 
+	 *
 	 * @param worldObj The world
 	 * @param x X position
 	 * @param y Y position

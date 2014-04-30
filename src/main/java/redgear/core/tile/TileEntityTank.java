@@ -3,6 +3,7 @@ package redgear.core.tile;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -15,8 +16,9 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import redgear.core.fluids.AdvFluidTank;
 import redgear.core.fluids.FluidUtil;
+import redgear.core.util.ItemStackUtil;
 
-public abstract class TileEntityTank extends TileEntityInventory implements IFluidHandler {
+public abstract class TileEntityTank extends TileEntityInventory implements IFluidHandler, IBucketableTank {
 	public TileEntityTank(int idleRate) {
 		super(idleRate);
 		currMode = ejectMode.MACHINE;
@@ -38,11 +40,9 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 		}
 	}
 
-	
-
 	/**
 	 * Adds the given LiquidTank to this tile
-	 * 
+	 *
 	 * @param newTank New Tank to add
 	 * @return index of the new tank used for adding side mappings
 	 */
@@ -90,7 +90,7 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 		for (AdvFluidTank tank : tanks) {
 			removed = tank.drainWithMap(resource, doDrain);
 
-			if (removed.amount > 0) {
+			if (removed != null && removed.amount > 0) {
 				if (doDrain)
 					forceSync();
 				return removed;
@@ -115,6 +115,66 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 		}
 
 		return null;
+	}
+
+	@Override
+	public boolean bucket(EntityPlayer player, int index, ItemStack container) {
+		if (FluidContainerRegistry.isFilledContainer(container))
+			return empty(player, index, container);
+		else if (FluidContainerRegistry.isEmptyContainer(container))
+			return fill(player, index, container);
+		else
+			return false;
+	}
+
+	@Override
+	public boolean fill(EntityPlayer player, int index, ItemStack container) {
+		if (container == null)
+			return false;
+
+		FluidStack contents = FluidContainerRegistry.getFluidForFilledItem(container);
+
+		if (contents != null && fill(ForgeDirection.UNKNOWN, contents, false) == contents.amount) {
+			fill(ForgeDirection.UNKNOWN, contents, true);
+			container.stackSize--;
+			ItemStack ans = container.getItem().getContainerItem(container);
+
+			if (container.stackSize == 0)
+				player.inventory.mainInventory[index] = ans;
+			else if (ans != null)
+				player.inventory.addItemStackToInventory(ans);
+
+			return true;
+		} else
+			return false;
+	}
+
+	@Override
+	public boolean empty(EntityPlayer player, int index, ItemStack container) {
+		for (AdvFluidTank tank : tanks) {
+			FluidStack contents = tank.getFluid();
+
+			if (contents != null) {
+				ItemStack filled = FluidContainerRegistry.fillFluidContainer(contents.copy(), container.copy());
+				if (filled != null) {
+					int capacity = FluidUtil.getContainerCapacity(contents, filled);
+
+					if (tank.canDrainWithMap(capacity)) {
+						tank.drainWithMap(capacity, true);
+						container.stackSize--;
+
+						if (container.stackSize == 0)
+							player.inventory.mainInventory[index] = filled;
+						else if (!player.inventory.addItemStackToInventory(filled))
+							ItemStackUtil.dropItemStack(player.worldObj, (int) player.posX, (int) player.posY,
+									(int) player.posZ, filled);
+
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -187,7 +247,7 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 
 	protected boolean ejectFluidAllSides(AdvFluidTank tank) {
 		boolean check = false;
-		
+
 		for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			check |= ejectFluid(side, tank);
 		return check;
@@ -209,7 +269,7 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 			tank.drain(fill, true);//find out how much the tank can drain. Try to fill all that into the other tile. Actually drain all that the other tile took.
 			return true;
 		}
-		
+
 		return false;
 	}
 
