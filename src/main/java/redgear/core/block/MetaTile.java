@@ -44,10 +44,10 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider 
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float f, float g,
 			float t) {
 		SubTile block = getMetaBlock(world.getBlockMetadata(x, y, z));
-
+		
 		if (block != null) {
 
-			if (!world.isRemote)
+			//if (!world.isRemote)
 				if (player.getHeldItem() != null && player.getHeldItem().getItem() != null)
 					if (IToolWrench.class.isAssignableFrom(player.getHeldItem().getItem().getClass())) {
 						TileEntity tile = world.getTileEntity(x, y, z);
@@ -67,9 +67,10 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider 
 
 					else if (FluidContainerRegistry.isContainer(player.getHeldItem())) {
 						TileEntity tile = world.getTileEntity(x, y, z);
-						if (tile instanceof IBucketableTank)
-							if (((IBucketableTank) tile).bucket(player, player.inventory.currentItem, player.getHeldItem()))
-								return true;
+						if (tile instanceof IBucketableTank && ((IBucketableTank) tile).bucket(player, player.inventory.currentItem, player.getHeldItem()))
+							return true;
+						
+							
 					}
 
 			if (block.hasGui() && !player.isSneaking()) {

@@ -120,9 +120,9 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 	@Override
 	public boolean bucket(EntityPlayer player, int index, ItemStack container) {
 		if (FluidContainerRegistry.isFilledContainer(container))
-			return empty(player, index, container);
-		else if (FluidContainerRegistry.isEmptyContainer(container))
 			return fill(player, index, container);
+		else if (FluidContainerRegistry.isEmptyContainer(container))
+			return empty(player, index, container);
 		else
 			return false;
 	}
@@ -136,14 +136,15 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 
 		if (contents != null && fill(ForgeDirection.UNKNOWN, contents, false) == contents.amount) {
 			fill(ForgeDirection.UNKNOWN, contents, true);
-			container.stackSize--;
 			ItemStack ans = container.getItem().getContainerItem(container);
 
-			if (container.stackSize == 0)
-				player.inventory.mainInventory[index] = ans;
-			else if (ans != null)
-				player.inventory.addItemStackToInventory(ans);
-
+			player.inventory.decrStackSize(index, 1);
+			
+			if (ans != null)
+				if (!player.inventory.addItemStackToInventory(ans))
+					ItemStackUtil.dropItemStack(player.worldObj, (int) player.posX, (int) player.posY,
+							(int) player.posZ, ans);
+			player.inventory.markDirty();
 			return true;
 		} else
 			return false;
@@ -161,14 +162,12 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 
 					if (tank.canDrainWithMap(capacity)) {
 						tank.drainWithMap(capacity, true);
-						container.stackSize--;
+						player.inventory.decrStackSize(index, 1);
 
-						if (container.stackSize == 0)
-							player.inventory.mainInventory[index] = filled;
-						else if (!player.inventory.addItemStackToInventory(filled))
+						if (!player.inventory.addItemStackToInventory(filled))
 							ItemStackUtil.dropItemStack(player.worldObj, (int) player.posX, (int) player.posY,
 									(int) player.posZ, filled);
-
+						player.inventory.markDirty();
 						return true;
 					}
 				}
