@@ -136,6 +136,10 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 
 		if (contents != null && fill(ForgeDirection.UNKNOWN, contents, false) == contents.amount) {
 			fill(ForgeDirection.UNKNOWN, contents, true);
+			
+			if(player.capabilities.isCreativeMode)
+				return true;
+			
 			ItemStack ans = container.getItem().getContainerItem(container);
 
 			player.inventory.decrStackSize(index, 1);
@@ -162,6 +166,10 @@ public abstract class TileEntityTank extends TileEntityInventory implements IFlu
 
 					if (tank.canDrainWithMap(capacity)) {
 						tank.drainWithMap(capacity, true);
+						
+						if(player.capabilities.isCreativeMode)
+							return true;
+						
 						player.inventory.decrStackSize(index, 1);
 
 						if (!player.inventory.addItemStackToInventory(filled))
