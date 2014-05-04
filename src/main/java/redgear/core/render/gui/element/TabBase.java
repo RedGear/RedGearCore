@@ -4,6 +4,8 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import codechicken.lib.vec.Rectangle4i;
+import cpw.mods.fml.common.Optional.Method;
 import redgear.core.render.GuiBase;
 import redgear.core.render.RenderHelper;
 import redgear.core.render.gui.TabTracker;
@@ -162,7 +164,8 @@ public abstract class TabBase extends ElementBase {
 			}
 		}
 	}
-/*
+
+	@Method(modid = "NotEnoughItems")
 	public Rectangle4i getBounds() {
 
 		if (side == 0) {
@@ -170,5 +173,5 @@ public abstract class TabBase extends ElementBase {
 		} else {
 			return new Rectangle4i(posX, posY, currentWidth, currentHeight);
 		}
-	}*/
+	}
 }
