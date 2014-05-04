@@ -30,48 +30,32 @@ dependencies {
 	//compile "codechicken:NotEnoughItems:1.7.2-1.0.1:dev"//NotEnoughItems-1.7.2-1.0.1-dev
 	
 	
-	
+	def ccc = "CodeChickenCore-1.7.2-1.0.0-dev.jar"
+	def nei = "NotEnoughItems-1.7.2-1.0.1-dev.jar"
 	
 	def f = new File('dep/')
-	if(f.exists()){
-		f.delete()
-	}
-	f.mkdirs()
-	if(!f.exists()){
+	if(!f.exists())
 		f.mkdir()
-	}
-	println(" Downloading dependencies!")
-	/*print(" - CCL")
-	ant.get(src: 'http://files.minecraftforge.net/CodeChickenLib/CodeChickenLib-dev-1.6.4-1.0.0.62.jar', dest: 'dep')
-	file("dep/CodeChickenLib-dev-1.6.4-1.0.0.62.jar").renameTo(file("dep/ccl.jar"))
-	println(" Done")*/
-
-	print(" - CCC")
-	ant.get(src:
-	"http://www.chickenbones.craftsaddle.org/Files/New_Versions/1.7.2/CodeChickenCore-1.7.2-1.0.0-dev.jar", dest: 'dep')
-	//file("dep/CodeChickenCore%201.7.2-rc1.jar").renameTo(file("dep/ccc.jar"))
-	println(" Done")
 	
-	print(" - NEI")
-	ant.get(src: "http://www.chickenbones.craftsaddle.org/Files/New_Versions/1.7.2/NotEnoughItems-1.7.2-1.0.1-dev.jar", dest: "dep")
-	//file("dep/NotEnoughItems-1.7.2-rc2.jar").renameTo(file("dep/nei.jar"))
-	println(" Done")
 
+	def coreFile = new File(f, ccc)
+	if(!coreFile.exists())
+		ant.get(src:"http://www.chickenbones.craftsaddle.org/Files/New_Versions/1.7.2/${ccc}", dest: 'dep')
 
-	println(" Adding dependencies!")
-	//compile files("dep/ccl.jar")
-	compile files("dep/CodeChickenCore-1.7.2-1.0.0-dev.jar")
-	compile files("dep/NotEnoughItems-1.7.2-1.0.1-dev.jar")
-	println(" Finished adding dependencies!")
+	def neiFile = new File(f, nei)
+	if(!neiFile.exists())
+		ant.get(src: "http://www.chickenbones.craftsaddle.org/Files/New_Versions/1.7.2/${nei}", dest: "dep")
+
+	compile files(coreFile)
+	compile files(neiFile)
 }
 
 minecraft {
-	version = "1.7.2-10.12.1.1063"
+	version = ext.mcversion
 	
 	assetDir = "run/assets"
 	
-	//replaceIn "asm/RedGearCore.java"
-		replace "@CoreVersion@", project.version
+	replace "@CoreVersion@", project.version
 }
 
 jar{
@@ -99,4 +83,10 @@ processResources{
 	from(sourceSets.main.resources.srcDirs) {
 		exclude 'mcmod.info'
 	}
+}
+
+
+task brewcraft {
+	dependsOn ':Brewcraft:reobf'
+	dependsOn reobf
 }
