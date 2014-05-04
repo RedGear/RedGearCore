@@ -11,7 +11,7 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 public class CoreLoadingPlugin implements IFMLLoadingPlugin {
 
 	public static File mcLocation;
-	public static CoreModUtils util;
+	public static CoreModUtils util = new CoreModUtils("RedGear_Transformer");
 	
 	@Override
 	public String[] getASMTransformerClass() {
@@ -32,7 +32,6 @@ public class CoreLoadingPlugin implements IFMLLoadingPlugin {
 	@Override
 	public void injectData(Map<String, Object> data) {
 		mcLocation = (File) data.get("mcLocation");
-		util = new CoreModUtils("RedGear_Transformer");
 	}
 
 	@Override
