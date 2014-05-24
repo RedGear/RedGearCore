@@ -1,24 +1,25 @@
 buildscript {
-    repositories {
-        mavenCentral()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
-    }
+	repositories {
+		mavenCentral()
+		maven {
+			name = "forge"
+			url = "http://files.minecraftforge.net/maven"
+		}
+		maven {
+			name = "sonatype"
+			url = "https://oss.sonatype.org/content/repositories/snapshots/"
+		}
+
+
+	}
+	dependencies {
+		classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+	}
 }
 
 apply plugin: 'forge'
 
-
-version = "2.1.1"
+version = "2.1.2"
 ext.mcversion = "1.7.2-10.12.1.1063"
 group= "redgear.core" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "RedGearCore"
@@ -26,17 +27,18 @@ archivesBaseName = "RedGearCore"
 dependencies {
 	compile "codechicken:CodeChickenLib:1.7.2-1.1.0.74:dev"
 	compile "codechicken:ForgeMultipart:1.7.2-1.1.0.275:dev"
+	//compile(group: 'com.jfrog.bintray.gradle', name: 'gradle-bintray-plugin', version: '0.3')
 	//compile "codechicken:CodeChickenCore:1.7.2-1.0.0:dev"
 	//compile "codechicken:NotEnoughItems:1.7.2-1.0.1:dev"//NotEnoughItems-1.7.2-1.0.1-dev
-	
-	
+
+
 	def ccc = "CodeChickenCore-1.7.2-1.0.0-dev.jar"
 	def nei = "NotEnoughItems-1.7.2-1.0.1-dev.jar"
-	
+
 	def f = new File('dep/')
 	if(!f.exists())
 		f.mkdir()
-	
+
 
 	def coreFile = new File(f, ccc)
 	if(!coreFile.exists())
@@ -52,18 +54,19 @@ dependencies {
 
 minecraft {
 	version = "1.7.2-10.12.1.1063"
-	
+
 	assetDir = "run/assets"
-	
+
 	replace "@CoreVersion@", project.version
 }
 
 jar{
+	version = "${project.minecraft.version}-${project.version}"
 	manifest{
 		attributes 'FMLCorePlugin': 'redgear.core.asm.CoreLoadingPlugin'
 		attributes 'FMLCorePluginContainsFMLMod': 'true'
 	}
-	
+
 	exclude 'thaumcraft*', 'forestry*', 'buildcraft/api/fuels*', 'buildcraft/api/recipes*', 'ic2*'
 }
 
@@ -75,18 +78,99 @@ processResources{
 	from(sourceSets.main.resources.srcDirs) {
 		include 'mcmod/info'
 
-	// replace version and mcversion
-	expand 'version':project.version, 'mcversion':project.minecraft.version
+		// replace version and mcversion
+		expand 'version':project.version, 'mcversion':project.minecraft.version
 	}
 
 	// copy everything else, thats not the mcmod.info
-	from(sourceSets.main.resources.srcDirs) {
-		exclude 'mcmod.info'
+	from(sourceSets.main.resources.srcDirs) { exclude 'mcmod.info' }
+}
+
+// Add in a source jar for people, should they desire to download such a thing
+task sourceJar(type: Jar) {
+	from sourceSets.main.allSource
+	classifier = 'sources'
+	version = "${project.minecraft.version}-${project.version}"
+	manifest{
+		attributes 'FMLCorePlugin': 'redgear.core.asm.CoreLoadingPlugin'
+		attributes 'FMLCorePluginContainsFMLMod': 'true'
+	}
+	
+	exclude 'thaumcraft*', 'forestry*', 'buildcraft/api/fuels*', 'buildcraft/api/recipes*', 'ic2*'
+}
+
+// Add in an mcp named jar, for those who wish to run in a development environment (assuming mcp naming matches)
+task deobfJar(type: Jar) {
+	//from sourceSets.main.allSource
+	from sourceSets.main.output
+	classifier = 'dev'
+	version = "${project.minecraft.version}-${project.version}"
+	manifest{
+		attributes 'FMLCorePlugin': 'redgear.core.asm.CoreLoadingPlugin'
+		attributes 'FMLCorePluginContainsFMLMod': 'true'
+	}
+	
+	exclude 'thaumcraft*', 'forestry*', 'buildcraft/api/fuels*', 'buildcraft/api/recipes*', 'ic2*'
+}
+
+// Tell the artifact system about our extra jars
+artifacts { archives sourceJar, deobfJar }
+
+
+
+apply plugin: 'maven'
+uploadArchives {
+	dependsOn 'reobf'
+	repositories {
+		if (project.hasProperty("repo")) {
+			logger.info('Publishing to files server')
+			mavenDeployer {
+				//configuration = configurations.deployJars
+				repository(url: project.repourl) {
+					authentication(userName: project.repousername, password: project.repokey)
+				}
+				// This is just the pom data for the maven repo
+				pom {
+					groupId = project.group
+					// Force the maven upload to use the <mcversion>-<version> syntax preferred at files
+					version = "${project.minecraft.version}-${project.version}"
+					artifactId = project.archivesBaseName
+					project {
+						name project.archivesBaseName
+						packaging 'jar'
+						description 'RedGearCore'
+						url 'https://github.com/RedGear/RedGearCore'
+						scm {
+							url 'https://github.com/RedGear/RedGearCore'
+							connection 'scm:git:git://github.com/RedGear/RedGearCore.git'
+							developerConnection 'scm:git:git@github.com:RedGear/RedGearCore.git'
+						}
+						issueManagement {
+							system 'github'
+							url 'https://github.com/RedGear/RedGearCore/issues'
+						}
+						developers {
+							developer {
+								id 'lordblackhole'
+								name 'LordBlackHole'
+								roles { role 'developer' }
+							}
+						}
+					}
+				}
+			}
+		} else {
+			logger.info('Publishing to repo folder')
+			mavenDeployer {
+				pom.version = "${project.minecraft.version}-${project.version}"
+				repository(url: mavenLocal())
+			}
+		}
 	}
 }
 
 
-task brewcraft {
-	dependsOn ':Brewcraft:reobf'
-	dependsOn reobf
-}
+/*task brewcraft {
+ dependsOn ':Brewcraft:reobf'
+ dependsOn reobf
+ }*/

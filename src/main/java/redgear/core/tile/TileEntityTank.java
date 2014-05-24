@@ -14,6 +14,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+import redgear.core.api.tile.IBucketableTank;
 import redgear.core.fluids.AdvFluidTank;
 import redgear.core.fluids.FluidUtil;
 import redgear.core.util.ItemStackUtil;

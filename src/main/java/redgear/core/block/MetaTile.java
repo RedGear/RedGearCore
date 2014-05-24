@@ -1,6 +1,7 @@
 package redgear.core.block;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
@@ -15,17 +16,25 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import redgear.core.api.tile.IBucketableTank;
+import redgear.core.api.tile.IDismantleableTile;
+import redgear.core.api.tile.IFacedTile;
+import redgear.core.api.tile.IRedstoneCachePrecise;
+import redgear.core.api.tile.IRedstoneEmiter;
+import redgear.core.api.tile.ITileDebug;
+import redgear.core.api.tile.ITileInfo;
+import redgear.core.api.tile.IWrenchableTile;
 import redgear.core.asm.RedGearCore;
-import redgear.core.tile.IBucketableTank;
-import redgear.core.tile.IFacedTile;
-import redgear.core.tile.IRedstoneTile;
-import redgear.core.tile.IWrenchableTile;
 import redgear.core.world.WorldLocation;
 import buildcraft.api.tools.IToolWrench;
+import cofh.api.block.IBlockDebug;
+import cofh.api.block.IBlockInfo;
+import cofh.api.block.IDismantleable;
+import cofh.api.tileentity.IRedstoneCache;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider {
+public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider, IBlockDebug, IBlockInfo, IDismantleable {
 
 	public MetaTile(Material par2Material, String name) {
 		super(par2Material, name);
@@ -44,34 +53,35 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider 
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float f, float g,
 			float t) {
 		SubTile block = getMetaBlock(world.getBlockMetadata(x, y, z));
-		
+
 		if (block != null) {
 
 			//if (!world.isRemote)
-				if (player.getHeldItem() != null && player.getHeldItem().getItem() != null)
-					if (IToolWrench.class.isAssignableFrom(player.getHeldItem().getItem().getClass())) {
-						TileEntity tile = world.getTileEntity(x, y, z);
-						if (tile instanceof IWrenchableTile) {
-							IWrenchableTile wrenchable = (IWrenchableTile) tile;
-							boolean test;
+			if (player.getHeldItem() != null && player.getHeldItem().getItem() != null)
+				if (holdingWrench(player)) {
+					TileEntity tile = world.getTileEntity(x, y, z);
+					if (tile instanceof IWrenchableTile) {
+						IWrenchableTile wrenchable = (IWrenchableTile) tile;
+						boolean test;
 
-							if (player.isSneaking())
-								test = wrenchable.wrenchedShift(player, ForgeDirection.getOrientation(side));
-							else
-								test = wrenchable.wrenched(player, ForgeDirection.getOrientation(side));
+						if (player.isSneaking())
+							test = wrenchable.wrenchedShift(player, ForgeDirection.getOrientation(side));
+						else
+							test = wrenchable.wrenched(player, ForgeDirection.getOrientation(side));
 
-							if (!test)//if tile returns true, continue to the gui. false means stop.
-								return true;
-						}
-					}
-
-					else if (FluidContainerRegistry.isContainer(player.getHeldItem())) {
-						TileEntity tile = world.getTileEntity(x, y, z);
-						if (tile instanceof IBucketableTank && ((IBucketableTank) tile).bucket(player, player.inventory.currentItem, player.getHeldItem()))
+						if (!test)//if tile returns true, continue to the gui. false means stop.
 							return true;
-						
-							
 					}
+				}
+
+				else if (FluidContainerRegistry.isContainer(player.getHeldItem())) {
+					TileEntity tile = world.getTileEntity(x, y, z);
+					if (tile instanceof IBucketableTank
+							&& ((IBucketableTank) tile).bucket(player, player.inventory.currentItem,
+									player.getHeldItem()))
+						return true;
+
+				}
 
 			if (block.hasGui() && !player.isSneaking()) {
 				player.openGui(RedGearCore.inst, block.guiId(), world, x, y, z);
@@ -193,8 +203,10 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider 
 	private void checkRedstone(World world, int x, int y, int z) {
 		TileEntity tile = world.getTileEntity(x, y, z);
 
-		if (tile instanceof IRedstoneTile)
-			((IRedstoneTile) tile).updateRedstone(world.getBlockPowerInput(x, y, z));
+		if (tile instanceof IRedstoneCachePrecise)
+			((IRedstoneCachePrecise) tile).setPower(world.getBlockPowerInput(x, y, z));
+		else if (tile instanceof IRedstoneCache)
+			((IRedstoneCache) tile).setPowered(world.getBlockPowerInput(x, y, z) > 0);
 	}
 
 	/**
@@ -207,9 +219,50 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider 
 	public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side) {
 		TileEntity tile = world.getTileEntity(x, y, z);
 
-		if (tile instanceof IRedstoneTile)
-			return ((IRedstoneTile) tile).redstoneSignal(ForgeDirection.getOrientation(side).getOpposite());
+		if (tile instanceof IRedstoneEmiter)
+			return ((IRedstoneEmiter) tile).getRedstoneSignal(ForgeDirection.getOrientation(side).getOpposite());
 		else
 			return 0;
+	}
+
+	@Override
+	public void debugBlock(IBlockAccess world, int x, int y, int z, ForgeDirection side, EntityPlayer player) {
+		TileEntity tile = world.getTileEntity(x, y, z);
+		
+		if(tile instanceof ITileDebug)
+			((ITileDebug) tile).debugBlock(side, player);
+	}
+
+	@Override
+	public void getBlockInfo(IBlockAccess world, int x, int y, int z, ForgeDirection side, EntityPlayer player, List<String> info, boolean debug) {
+		TileEntity tile = world.getTileEntity(x, y, z);
+		
+		if(tile instanceof ITileInfo)
+			((ITileInfo) tile).getBlockInfo(side, player, info, debug);
+	}
+
+	@Override
+	public ItemStack dismantleBlock(EntityPlayer player, World world, int x, int y, int z, boolean returnBlock) {
+		TileEntity tile = world.getTileEntity(x, y, z);
+
+		if (tile instanceof IDismantleableTile){
+			return ((IDismantleableTile) tile).dismantleBlock(player, holdingWrench(player), player.isSneaking());
+		}
+		else
+			return null;
+	}
+
+	@Override
+	public boolean canDismantle(EntityPlayer player, World world, int x, int y, int z) {
+		TileEntity tile = world.getTileEntity(x, y, z);
+
+		if (tile instanceof IDismantleableTile)
+			return ((IDismantleableTile) tile).canDismantle(player, holdingWrench(player), player.isSneaking());
+		else
+			return false;
+	}
+	
+	protected boolean holdingWrench(EntityPlayer player){	
+		return player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IToolWrench;
 	}
 }

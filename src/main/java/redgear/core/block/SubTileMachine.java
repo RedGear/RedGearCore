@@ -4,8 +4,8 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
+import redgear.core.api.tile.IFacedTile;
 import redgear.core.tile.ITileFactory;
-import redgear.core.tile.TileEntityGeneric;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -33,10 +33,10 @@ public class SubTileMachine extends SubTile {
 	 */
 	public IIcon getBlockTexture(IBlockAccess world, int x, int y, int z, int side) {
 		TileEntity tile = world.getTileEntity(x, y, z);
-		int direction = 3; //3 because that's the face when it's in your inventory. I think it's South. (not sure)
+		int direction = 3; //3 because that's the face when it's in your inventory. (South) 
 
-		if (tile instanceof TileEntityGeneric)
-			direction = ((TileEntityGeneric) tile).getDirectionId();
+		if (tile instanceof IFacedTile)
+			direction = ((IFacedTile) tile).getDirectionId();
 
 		return side == direction ? blockIcon : sideIcon;
 	}
@@ -48,6 +48,6 @@ public class SubTileMachine extends SubTile {
 	 */
 	public IIcon getIcon(int side)// called when block is in inventory
 	{
-		return side == 3 ? blockIcon : sideIcon;//3 because that's the face when it's in your inventory. I think it's South. (not sure)
+		return side == 3 ? blockIcon : sideIcon;//3 because that's the face when it's in your inventory. (South) 
 	}
 }

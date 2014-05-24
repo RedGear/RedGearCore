@@ -1,15 +1,10 @@
 package redgear.core.tile;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * TileEntityGeneric handles the basic necessities of TileEntities
@@ -20,43 +15,8 @@ import net.minecraftforge.common.util.ForgeDirection;
  *
  */
 
-public abstract class TileEntityGeneric extends TileEntity implements IFacedTile {
-	private ForgeDirection direction = ForgeDirection.SOUTH; //Default
+public abstract class TileEntityGeneric extends TileEntity {
 	private boolean needsReSync = false;
-
-	@Override
-	public final int getDirectionId() {
-		return getDirection().ordinal();
-	}
-
-	@Override
-	public ForgeDirection getDirection() {
-		return direction;
-	}
-
-	@Override
-	public final boolean setDirection(int id) {
-		return setDirection(ForgeDirection.getOrientation(id));
-	}
-
-	@Override
-	public boolean setDirection(ForgeDirection side) {
-		boolean ans = false;
-
-		if (side != ForgeDirection.UNKNOWN) {
-			ans = direction != side;
-			direction = side;
-		}
-
-		return ans;
-	}
-
-	private static final int[] directionMap = {2, 5, 3, 4 };
-
-	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack stack) {
-		setDirection(directionMap[MathHelper.floor_double(entity.rotationYaw * 4.0F / 360.0F + 0.5D) & 3]);
-	}
 
 	/**
 	 * @return true if this Tile is NOT on the server side (worldObj could be
@@ -93,7 +53,15 @@ public abstract class TileEntityGeneric extends TileEntity implements IFacedTile
 	@Override
 	public void writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
-		tag.setByte("direction", (byte) direction.ordinal());
+	}
+	
+	/**
+	 * Save info here that could be used to create a movable item form of this block. 
+	 * Does not guarantee that this code will be called. 
+	 * @param tag
+	 */
+	public void writeToItemNBT(NBTTagCompound tag){
+		
 	}
 
 	/**
@@ -103,7 +71,15 @@ public abstract class TileEntityGeneric extends TileEntity implements IFacedTile
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
-		direction = ForgeDirection.getOrientation(tag.getByte("direction"));
+	}
+	
+	/**
+	 * Load info here that came from an item form of this block. 
+	 * Does not guarantee that this code will be called. 
+	 * @param tag
+	 */
+	public void loadFromItemNBT(NBTTagCompound read){
+		
 	}
 
 	@Override

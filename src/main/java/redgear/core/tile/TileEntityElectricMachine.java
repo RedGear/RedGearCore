@@ -96,6 +96,14 @@ public abstract class TileEntityElectricMachine extends TileEntityInventory impl
 	 * Returns true if the Handler functions on a given side - if a Tile Entity can receive or send energy on a given side, this should return true.
 	 */
 	@Override
+	public boolean canConnectEnergy(ForgeDirection from) {
+		return true;
+	}
+	
+	/**
+	 * Old CoFH energy connection check. Was updated to canConnectEnergy
+	 */
+	@Deprecated
 	public boolean canInterface(ForgeDirection from) {
 		return true;
 	}
