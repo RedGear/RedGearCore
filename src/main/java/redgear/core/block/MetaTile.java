@@ -10,6 +10,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
@@ -159,19 +160,6 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider,
 	}
 
 	/**
-	 * Called when the block receives a BlockEvent - see World.addBlockEvent. By
-	 * default, passes it on to the tile
-	 * entity at this location. Args: world, x, y, z, blockID, EventID, event
-	 * parameter
-	 */
-	@Override
-	public boolean onBlockEventReceived(World par1World, int par2, int par3, int par4, int par5, int par6) {
-		super.onBlockEventReceived(par1World, par2, par3, par4, par5, par6);
-		TileEntity tileentity = par1World.getTileEntity(par2, par3, par4);
-		return tileentity != null ? tileentity.receiveClientEvent(par5, par6) : false;
-	}
-
-	/**
 	 * Get the rotations that can apply to the block at the specified
 	 * coordinates. Null means no rotations are possible.
 	 * Note, this is up to the block to decide. It may not be accurate or
@@ -228,16 +216,17 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider,
 	@Override
 	public void debugBlock(IBlockAccess world, int x, int y, int z, ForgeDirection side, EntityPlayer player) {
 		TileEntity tile = world.getTileEntity(x, y, z);
-		
-		if(tile instanceof ITileDebug)
+
+		if (tile instanceof ITileDebug)
 			((ITileDebug) tile).debugBlock(side, player);
 	}
 
 	@Override
-	public void getBlockInfo(IBlockAccess world, int x, int y, int z, ForgeDirection side, EntityPlayer player, List<String> info, boolean debug) {
+	public void getBlockInfo(IBlockAccess world, int x, int y, int z, ForgeDirection side, EntityPlayer player,
+			List<String> info, boolean debug) {
 		TileEntity tile = world.getTileEntity(x, y, z);
-		
-		if(tile instanceof ITileInfo)
+
+		if (tile instanceof ITileInfo)
 			((ITileInfo) tile).getBlockInfo(side, player, info, debug);
 	}
 
@@ -245,10 +234,26 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider,
 	public ItemStack dismantleBlock(EntityPlayer player, World world, int x, int y, int z, boolean returnBlock) {
 		TileEntity tile = world.getTileEntity(x, y, z);
 
-		if (tile instanceof IDismantleableTile){
-			return ((IDismantleableTile) tile).dismantleBlock(player, holdingWrench(player), player.isSneaking());
-		}
-		else
+		if (tile instanceof IDismantleableTile) {
+			NBTTagCompound tag = new NBTTagCompound();
+			ItemStack stack = ((IDismantleableTile) tile).dismantleBlock(player, tag, holdingWrench(player),
+					player.isSneaking());
+
+			if (stack == null)
+				stack = new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
+
+			if (!tag.hasNoTags())
+				stack.stackTagCompound = tag;
+
+			if (returnBlock)
+				player.inventory.addItemStackToInventory(stack);
+			else
+				this.dropBlockAsItem(world, x, y, z, stack);
+
+			world.setBlockToAir(x, y, z);
+
+			return stack;
+		} else
 			return null;
 	}
 
@@ -261,8 +266,8 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider,
 		else
 			return false;
 	}
-	
-	protected boolean holdingWrench(EntityPlayer player){	
+
+	protected boolean holdingWrench(EntityPlayer player) {
 		return player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IToolWrench;
 	}
 }

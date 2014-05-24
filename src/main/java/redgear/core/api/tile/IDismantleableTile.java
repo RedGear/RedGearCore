@@ -2,6 +2,7 @@ package redgear.core.api.tile;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * A version of King Lemming's IDismantleable designed for Tiles, namely by not passing the unnecessary world or coords. 
@@ -11,9 +12,9 @@ import net.minecraft.item.ItemStack;
 public interface IDismantleableTile {
 
 	/**
-	 * Dismantles the tile. A return of null will tell the block to drop the default block drop. 
+	 * Dismantles the tile.
 	 */
-	public ItemStack dismantleBlock(EntityPlayer player, boolean holdingWrench, boolean crouching);
+	public ItemStack dismantleBlock(EntityPlayer player, NBTTagCompound tag, boolean holdingWrench, boolean crouching);
 
 	/**
 	 * Return true if the tile can be dismantled.

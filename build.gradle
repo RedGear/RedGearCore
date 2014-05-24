@@ -19,15 +19,13 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "2.1.2"
-ext.mcversion = "1.7.2-10.12.1.1063"
-group= "redgear.core" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "RedGearCore"
+version = mod_version
+group= mod_group // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = mod_name
 
 dependencies {
 	compile "codechicken:CodeChickenLib:1.7.2-1.1.0.74:dev"
 	compile "codechicken:ForgeMultipart:1.7.2-1.1.0.275:dev"
-	//compile(group: 'com.jfrog.bintray.gradle', name: 'gradle-bintray-plugin', version: '0.3')
 	//compile "codechicken:CodeChickenCore:1.7.2-1.0.0:dev"
 	//compile "codechicken:NotEnoughItems:1.7.2-1.0.1:dev"//NotEnoughItems-1.7.2-1.0.1-dev
 
@@ -53,11 +51,11 @@ dependencies {
 }
 
 minecraft {
-	version = "1.7.2-10.12.1.1063"
+	version = "${minecraft_version}-${forge_version}"
 
 	assetDir = "run/assets"
 
-	replace "@CoreVersion@", project.version
+	replace "@ModVersion@", project.version
 }
 
 jar{
@@ -66,8 +64,6 @@ jar{
 		attributes 'FMLCorePlugin': 'redgear.core.asm.CoreLoadingPlugin'
 		attributes 'FMLCorePluginContainsFMLMod': 'true'
 	}
-
-	exclude 'thaumcraft*', 'forestry*', 'buildcraft/api/fuels*', 'buildcraft/api/recipes*', 'ic2*'
 }
 
 
@@ -95,8 +91,6 @@ task sourceJar(type: Jar) {
 		attributes 'FMLCorePlugin': 'redgear.core.asm.CoreLoadingPlugin'
 		attributes 'FMLCorePluginContainsFMLMod': 'true'
 	}
-	
-	exclude 'thaumcraft*', 'forestry*', 'buildcraft/api/fuels*', 'buildcraft/api/recipes*', 'ic2*'
 }
 
 // Add in an mcp named jar, for those who wish to run in a development environment (assuming mcp naming matches)
@@ -109,8 +103,6 @@ task deobfJar(type: Jar) {
 		attributes 'FMLCorePlugin': 'redgear.core.asm.CoreLoadingPlugin'
 		attributes 'FMLCorePluginContainsFMLMod': 'true'
 	}
-	
-	exclude 'thaumcraft*', 'forestry*', 'buildcraft/api/fuels*', 'buildcraft/api/recipes*', 'ic2*'
 }
 
 // Tell the artifact system about our extra jars
@@ -119,10 +111,18 @@ artifacts { archives sourceJar, deobfJar }
 
 
 apply plugin: 'maven'
+
+install {
+    repositories.mavenInstaller {
+        pom.version = "${project.minecraft.version}-${project.version}"
+    }
+}
+
+
 uploadArchives {
 	dependsOn 'reobf'
 	repositories {
-		if (project.hasProperty("repo")) {
+		if (project.hasProperty("repo") && repo) {
 			logger.info('Publishing to files server')
 			mavenDeployer {
 				//configuration = configurations.deployJars
@@ -160,17 +160,13 @@ uploadArchives {
 				}
 			}
 		} else {
-			logger.info('Publishing to repo folder')
+			logger.info('Publishing to local repository')
 			mavenDeployer {
 				pom.version = "${project.minecraft.version}-${project.version}"
-				repository(url: mavenLocal())
+				repository(url: 'file://localhost/' + project.file('repo').getAbsolutePath())
 			}
 		}
 	}
 }
 
-
-/*task brewcraft {
- dependsOn ':Brewcraft:reobf'
- dependsOn reobf
- }*/
+tasks.reobf.dependsOn(repackMinecraft)

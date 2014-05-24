@@ -18,7 +18,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid = "redgear_core", name = "Red Gear Core", version = "@CoreVersion@", dependencies = "")
+@Mod(modid = "redgear_core", name = "Red Gear Core", version = "@ModVersion@", dependencies = "")
 public class RedGearCore extends ModUtils {
 
 	@Instance("redgear_core")
