@@ -1,0 +1,17 @@
+[
+{
+  "modid": "redgear_core",
+  "name": "Red Gear Core",
+  "description": "A Library for Team Red Gear",
+  "version": "${version}",
+  "credits": "Created by Team Red Gear",
+  "logoFile": "",
+  "mcversion": "${minecraft_version}",
+  "url": "http://curse.com/project/59694",
+  "updateUrl": "",
+  "authors": [ "LordBlackHole", "Enosphorous"],
+  "parent":"",
+  "screenshots": [],
+  "dependencies": [""]
+}
+]
