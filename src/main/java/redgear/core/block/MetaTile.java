@@ -104,6 +104,8 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider,
 
 		if (tile instanceof IFacedTile)
 			((IFacedTile) tile).onBlockPlacedBy(world, x, y, z, entity, stack);
+		
+		checkRedstone(world, x, y, z);
 	}
 
 	/**
@@ -184,7 +186,7 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider,
 	 */
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
-		if (!world.isRemote)
+		//if (!world.isRemote)
 			checkRedstone(world, x, y, z);
 	}
 
@@ -192,9 +194,9 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider,
 		TileEntity tile = world.getTileEntity(x, y, z);
 
 		if (tile instanceof IRedstoneCachePrecise)
-			((IRedstoneCachePrecise) tile).setPower(world.getBlockPowerInput(x, y, z));
+			((IRedstoneCachePrecise) tile).setPower(world.getStrongestIndirectPower(x, y, z));
 		else if (tile instanceof IRedstoneCache)
-			((IRedstoneCache) tile).setPowered(world.getBlockPowerInput(x, y, z) > 0);
+			((IRedstoneCache) tile).setPowered(world.isBlockIndirectlyGettingPowered(x, y, z));
 	}
 
 	/**

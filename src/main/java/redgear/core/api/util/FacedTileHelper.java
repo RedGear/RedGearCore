@@ -13,8 +13,8 @@ public class FacedTileHelper {
 	}
 	
 	public static ForgeDirection facePlayer(EntityLivingBase entity){
-		int quadrant = MathHelper.floor_double(entity.rotationPitch * 4.0F / 360.0F + 0.5D) & 0x3;
-		quadrant = entity.rotationYaw < -60.0F ? 5 : entity.rotationYaw > 60.0F ? 4 : quadrant;
+		int quadrant = MathHelper.floor_double(entity.rotationYaw * 4.0F / 360.0F + 0.5D) & 0x3;
+		quadrant = entity.rotationPitch < -60.0F ? 5 : entity.rotationPitch > 60.0F ? 4 : quadrant;
 		
 		return ForgeDirection.getOrientation(directionMap[quadrant]);
 	}

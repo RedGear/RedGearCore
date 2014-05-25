@@ -17,6 +17,10 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 
  */
 public class BlockGeneric extends Block { 
+	
+	protected final String name;
+	protected final String modName;
+	
 	/**
 	 * Use this if your item has a typical icon
 	 * 
@@ -34,9 +38,6 @@ public class BlockGeneric extends Block {
 		GameRegistry.registerBlock(this, item, name);
 	}
 
-	protected final String name;
-	protected final String modName;
-
 	/**
 	 * Override this function if your item has an unusual icon/multiple icons
 	 */
@@ -45,4 +46,12 @@ public class BlockGeneric extends Block {
 	public void registerBlockIcons(IIconRegister par1IconRegister) {
 		blockIcon = par1IconRegister.registerIcon(modName + name);
 	}
+	
+	/**
+     * Returns the unlocalized name of the block with "tile." appended to the front.
+     */
+    public String getUnlocalizedName()
+    {
+        return "tile." + this.name;
+    }
 }
