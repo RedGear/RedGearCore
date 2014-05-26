@@ -7,7 +7,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class SubTile extends SubBlock implements IHasTile {
-	private final ITileFactory factory;
+	public final ITileFactory factory;
 
 	@Override
 	public TileEntity createTile() {
