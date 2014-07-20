@@ -20,7 +20,7 @@ public class FiniteWaterTransformer implements IClassTransformer
 {
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes){
-        if (transformedName.equals("net.minecraft.block.BlockFlowing") && CoreLoadingPlugin.util.getBoolean("FiniteWater", false))
+        if (transformedName.equals("net.minecraft.block.BlockDynamicLiquid") && CoreLoadingPlugin.util.getBoolean("FiniteWater", false))
         {
             ClassReader reader = new ClassReader(bytes);
             ClassNode node = new ClassNode();
@@ -29,10 +29,10 @@ public class FiniteWaterTransformer implements IClassTransformer
 
             getSmallestFlowDecay.add(new VarInsnNode(ALOAD, 0));
             getSmallestFlowDecay.add(new InsnNode(ICONST_0));
-            getSmallestFlowDecay.add(new FieldInsnNode(PUTFIELD , "net/minecraft/block/BlockFlowing", "field_72214_a", "I"));
+            getSmallestFlowDecay.add(new FieldInsnNode(PUTFIELD , "net/minecraft/block/BlockDynamicLiquid", "field_149815_a", "I"));
             
             for(MethodNode method : node.methods)
-            	if("func_72211_e".equals(FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(name, method.name, method.desc)))
+            	if("func_149810_a".equals(FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(name, method.name, method.desc)))
             		method.instructions.insertBefore(method.instructions.getFirst(), getSmallestFlowDecay);
             
             ClassWriter writer = new ClassWriter(0);

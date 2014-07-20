@@ -16,7 +16,7 @@ public class CoreLoadingPlugin implements IFMLLoadingPlugin {
 	@Override
 	public String[] getASMTransformerClass() {
 		return new String[] {"redgear.core.asm.GlassAndIceTransformer", "redgear.core.asm.FiniteWaterTransformer",
-				"redgear.core.asm.ChunkRelightTransformer", "redgear.core.asm.SafeCactusTransformer" };
+				/*"redgear.core.asm.ChunkRelightTransformer",*/ "redgear.core.asm.SafeCactusTransformer" };
 	}
 
 	@Override
