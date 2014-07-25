@@ -34,9 +34,9 @@ public class SubBlockConnected extends SubBlock{
 	 * 
 	 */
 	
-	private IIcon[] icons = new IIcon[16];
+	protected IIcon[] icons = new IIcon[16];
 	
-	private static final byte[][] rotationMatrix = {
+	protected static final byte[][] rotationMatrix = {
 		{2, 4, 5, 3},
 		{2, 4, 5, 3},
 		{1, 5, 4, 0},
