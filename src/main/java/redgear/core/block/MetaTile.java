@@ -148,19 +148,6 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider,
 
 	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	/**
-	 * Retrieves the block texture to use based on the display side. Args: iBlockAccess, x, y, z, side
-	 */
-	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
-		int meta = world.getBlockMetadata(x, y, z);
-		if (indexCheck(meta))
-			return getMetaBlock(meta).getBlockTexture(world, x, y, z, side);
-		else
-			return getMetaBlock(0).getBlockTexture(world, x, y, z, side);
-	}
-
 	/**
 	 * Get the rotations that can apply to the block at the specified
 	 * coordinates. Null means no rotations are possible.

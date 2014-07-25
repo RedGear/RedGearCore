@@ -10,6 +10,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import redgear.core.util.SimpleItem;
 import redgear.core.world.WorldLocation;
@@ -46,6 +47,19 @@ public class MetaBlock<S extends SubBlock> extends BlockGeneric {
 
 	public S getMetaBlock(int meta) {
 		return blocks.get(meta);
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	/**
+	 * Retrieves the block texture to use based on the display side. Args: iBlockAccess, x, y, z, side
+	 */
+	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
+		int meta = world.getBlockMetadata(x, y, z);
+		if (indexCheck(meta))
+			return getMetaBlock(meta).getBlockTexture(world, x, y, z, side);
+		else
+			return getMetaBlock(0).getBlockTexture(world, x, y, z, side);
 	}
 
 	@Override

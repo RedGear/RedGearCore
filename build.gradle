@@ -76,7 +76,7 @@ task sourceJar(type: Jar) {
 
 // Add in an mcp named jar, for those who wish to run in a development environment (assuming mcp naming matches)
 task deobfJar(type: Jar) {
-	//from sourceSets.main.allSource
+	from sourceSets.main.allSource
 	from sourceSets.main.output
 	classifier = 'dev'
 	version = "${project.minecraft.version}-${project.version}"

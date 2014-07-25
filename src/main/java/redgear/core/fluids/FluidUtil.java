@@ -45,7 +45,7 @@ public class FluidUtil {
 
 	public static Fluid createFluid(String fluidName, String iconName) {
 		Fluid fluid = new Fluid(fluidName);
-		fluid.setUnlocalizedName(StringHelper.parseUnLocalName(fluidName));
+		fluid.setUnlocalizedName(fluidName);
 		return createFluid(fluid, iconName);
 	}
 	
