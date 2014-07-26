@@ -5,6 +5,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import redgear.core.world.WorldLocation;
 
 /**
  * TileEntityGeneric handles the basic necessities of TileEntities
@@ -44,6 +45,10 @@ public abstract class TileEntityGeneric extends TileEntity {
 
 	public void forceSync() {
 		needsReSync = true;
+	}
+	
+	public WorldLocation getLocation(){
+		return new WorldLocation(this);
 	}
 
 	/**

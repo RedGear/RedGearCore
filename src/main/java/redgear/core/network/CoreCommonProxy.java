@@ -20,7 +20,7 @@ public class CoreCommonProxy {
 	}
 
 	public void init() {
-		CoreFuelHandler.init();
+		//CoreFuelHandler.init();
 		CoreTradeHandler.init();
 		CoreGuiHandler.init();
 	}

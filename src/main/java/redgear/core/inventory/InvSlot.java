@@ -19,7 +19,7 @@ public class InvSlot extends Slot {
 	private ItemStack contents;
 	private int stackLimit = 64;
 	private boolean playerPressure = false; //True means that the pressure value applied to player action as well as automation
-	private int pressure = 0; //pressure
+	private TransferRule transfer = TransferRule.BOTH; //pressure
 
 	//filter
 	//side
@@ -68,7 +68,7 @@ public class InvSlot extends Slot {
 
 	public boolean canAddStack(ItemStack stack, boolean all, boolean override) {
 		if (contents == null)
-			if (stackAllowed(stack))
+			if ((override || transfer.canInput()) && stackAllowed(stack))
 				return true;
 			else
 				return false;
@@ -78,7 +78,7 @@ public class InvSlot extends Slot {
 
 		return contents.isStackable() && stack.isItemEqual(contents)
 				&& ItemStack.areItemStackTagsEqual(stack, contents) && stackAllowed(stack)
-				&& contents.stackSize < contents.getMaxStackSize() && (override || pressure <= 0)
+				&& contents.stackSize < contents.getMaxStackSize() && (override || transfer.canInput())
 				&& (!all || contents.stackSize + stack.stackSize <= contents.getMaxStackSize());
 	}
 
@@ -93,11 +93,11 @@ public class InvSlot extends Slot {
 	}
 
 	public boolean canExtract() {
-		return pressure >= 0;
+		return transfer.canOutput();
 	}
 
-	public InvSlot setPressure(int pressure) {
-		this.pressure = pressure;
+	public InvSlot setPressure(TransferRule transfer) {
+		this.transfer = transfer;
 		return this;
 	}
 
@@ -112,7 +112,7 @@ public class InvSlot extends Slot {
 	}
 
 	/**
-	 * Helper fnct to get the stack in the slot.
+	 * Helper funct to get the stack in the slot.
 	 */
 	@Override
 	public ItemStack getStack() {
@@ -160,7 +160,7 @@ public class InvSlot extends Slot {
 
 	public ItemStack decrStackSize(int amount, boolean override) {
 		ItemStack temp = contents;
-		if (temp != null && (override || pressure >= 0))
+		if (temp != null && (override || transfer.canOutput()))
 			if (temp.stackSize <= amount)
 				contents = null;
 			else {
@@ -177,7 +177,7 @@ public class InvSlot extends Slot {
 	 */
 	@Override
 	public boolean canTakeStack(EntityPlayer par1EntityPlayer) {
-		return playerPressure ? pressure >= 0 : true;
+		return playerPressure ? transfer.canOutput() : true;
 	}
 
 	/**
@@ -186,6 +186,6 @@ public class InvSlot extends Slot {
 	 */
 	@Override
 	public boolean isItemValid(ItemStack par1ItemStack) {
-		return playerPressure ? pressure <= 0 : true;
+		return playerPressure ? transfer.canInput() : true;
 	}
 }

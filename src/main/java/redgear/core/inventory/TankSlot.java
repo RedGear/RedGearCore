@@ -18,9 +18,9 @@ public class TankSlot extends InvSlot{
 		this(inventory, x, y, fillSlot, false);
 	}
 	
-	public TankSlot(TileEntityInventory inventory, int x, int y, boolean fillSlot, int pressure) { 
+	public TankSlot(TileEntityInventory inventory, int x, int y, boolean fillSlot, TransferRule rule) { 
 		this(inventory, x, y, fillSlot, false);
-		this.setPressure(pressure);
+		this.setPressure(rule);
 	}
 	
 	/**
