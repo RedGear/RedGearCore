@@ -8,11 +8,13 @@ import net.minecraft.nbt.NBTTagCompound;
 /**
  * This class is an interface for the SimpleItem class found in Core.
  * The SimpleItem class is similar to ItemStack, but is designed to be simpler,
- * smaller, and is safe to be used in Hash-based data structures.
+ * smaller, and has lots of helpful features. 
  * 
  * Note: Setting the meta to OreDictionary.WILDCARD_VALUE works for equals(), but NOT hashCode(). 
  * 
  * In other words, you can't use WILDCARD if you intend to use hashing. Using a List instead of a Set seems to work. 
+ * 
+ * Also, equals() and hashCode() are NOT guaranteed between different implementations. In fact it's best to assume they are not. 
  * 
  * 
  * @author BlackHole
@@ -50,12 +52,6 @@ public interface ISimpleItem {
 	ItemStack getStack(int amount);
 
 	/**
-	 * @return The Ore Dictionary name this stack is registered with, or
-	 * "Unknown" if it's not.
-	 */
-	String oreName();
-
-	/**
 	 * @return true if this stack is in the Ore Dictionary, false if it's not.
 	 */
 	boolean isInOreDict();
@@ -65,34 +61,6 @@ public interface ISimpleItem {
 	 * exist.
 	 */
 	String getName();
-
-	/**
-	 * SimpleItem's id and meta are immutable, which ensure that their hashcodes
-	 * will never change,
-	 * and this makes it safe to use SimpleItems inside Hash-based data
-	 * structures, like HashMaps or HashSets.
-	 * 
-	 * Note: This does NOT work with wild card metas. 
-	 * 
-	 * <pre>
-	 * {@code
-	 * new SimpleItem(Blocks.wool, OreDictionary.WILDCARD_VALUE).hashCode() != new SimpleItem(Blocks.wool, 14);
-	 * }
-	 * </pre>
-	 *
-	 * 
-	 * @return Unique HashCode created by the combination of the id and meta.
-	 */
-	@Override
-	int hashCode();
-
-	/**
-	 * @param obj Legal data types are ISimpleItem, ItemStack, Block, and Item
-	 * @return True if the id and meta or oreDict match. Metas also count as
-	 * matching if one is a wild card.
-	 */
-	@Override
-	boolean equals(Object obj);
 
 	/**
 	 * Saves id and meta to root of tag
@@ -110,14 +78,19 @@ public interface ISimpleItem {
 	 */
 	void writeToNBT(NBTTagCompound tag, String name);
 
-	int getOreID();
-
-	int getItemId();
-
-	boolean isItemEqual(ISimpleItem other);
+	/**
+	 * Compares this ISimpleItem with another. 
+	 * If omniDirectional is true then additionally it will return true if the other is equal to this. 
+	 * 
+	 * In other words 
+	 * 
+	 * return this.equals(other) || other.equals(this)
+	 * 
+	 * @param other Other ISimpleItem to compare to
+	 * @param omniDirect If true other.equals(this) will be considered.
+	 * @return this.equals(other) || (omniDirectional && other.equals(this)
+	 */
+	boolean isItemEqual(ISimpleItem other, boolean omniDirect);
 
 	String getDisplayName();
-
-	
-
 }

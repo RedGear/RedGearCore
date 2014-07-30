@@ -1,7 +1,6 @@
 package redgear.core.util;
 
 import java.io.Serializable;
-import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -20,33 +19,30 @@ import redgear.core.world.WorldLocation;
 /**
  * The SimpleItem class is similar to ItemStack, but is designed to be simpler,
  * smaller, and is safe to be used in Hash-based data structures.
- * 
- * Note: Setting the meta to OreDictionary.WILDCARD_VALUE works for equals(), but NOT hashCode(). 
- * 
- * In other words, you can't use WILDCARD if you intend to use hashing. Using a List instead of a Set seems to work. 
- * 
+ *
+ * Note: Setting the meta to OreDictionary.WILDCARD_VALUE works for equals(),
+ * but NOT hashCode().
+ *
+ * In other words, you can't use WILDCARD if you intend to use hashing. Using a
+ * List instead of a Set seems to work.
+ *
  * @author Blackhole
- * 
+ *
  */
 public class SimpleItem implements ISimpleItem, Serializable {
 	private static final long serialVersionUID = -8624739696061804763L;
 	public final Item item;
 	public final int meta;
-	public final int oreID;
 
 	public SimpleItem(ItemStack stack) {
 		if (stack == null)
 			stack = new ItemStack(Blocks.air);
 
 		item = stack.getItem();
-		if(item == null){
+		if (item == null)
 			meta = 0;
-			oreID = -1;
-		}
-		else{
+		else
 			meta = stack.getItemDamage();
-			oreID = OreDictionary.getOreID(stack);
-		}
 
 	}
 
@@ -73,47 +69,32 @@ public class SimpleItem implements ISimpleItem, Serializable {
 	public SimpleItem(IBlockAccess world, Location loc) {
 		this(world, loc.chunkPosX, loc.chunkPosY, loc.chunkPosZ);
 	}
-	
-	public SimpleItem(ChunkPosition loc, IBlockAccess world){
+
+	public SimpleItem(ChunkPosition loc, IBlockAccess world) {
 		this(new Location(loc), world);
 	}
-	
-	public SimpleItem(Location loc, IBlockAccess world){
+
+	public SimpleItem(Location loc, IBlockAccess world) {
 		this(loc.getBlock(world), loc.getBlockMeta(world));
 	}
-	
-	public SimpleItem(WorldLocation loc){
+
+	public SimpleItem(WorldLocation loc) {
 		this(loc.getBlock(), loc.getBlockMeta());
-	}
-
-	public SimpleItem(String oreName) {
-		List<ItemStack> ores = OreDictionary.getOres(oreName);
-		ItemStack stack = ores.isEmpty() ? new ItemStack(Blocks.air) : ores.get(0);
-
-		item = stack.getItem();
-		meta = stack.getItemDamage();
-		oreID = OreDictionary.getOreID(stack);
-
 	}
 
 	@Override
 	public Item getItem() {
 		return item;
 	}
-	
+
 	@Override
-	public Block getBlock(){
+	public Block getBlock() {
 		return Block.getBlockFromItem(getItem());
 	}
 
 	@Override
 	public int getMeta() {
 		return meta;
-	}
-
-	@Override
-	public int getOreID() {
-		return oreID;
 	}
 
 	@Override
@@ -132,17 +113,12 @@ public class SimpleItem implements ISimpleItem, Serializable {
 	}
 
 	@Override
-	public String oreName() {
-		return OreDictionary.getOreName(OreDictionary.getOreID(getStack()));
+	public boolean isInOreDict() {
+		return OreDictionary.getOreIDs(getStack()).length > 0;
 	}
 
 	@Override
-	public boolean isInOreDict() {
-		return oreID != -1;
-	}
-	
-	@Override
-	public String getName(){
+	public String getName() {
 		return Item.itemRegistry.getNameForObject(getItem());
 	}
 
@@ -152,50 +128,53 @@ public class SimpleItem implements ISimpleItem, Serializable {
 	}
 
 	@Override
-	public int getItemId() {
-		return Item.getIdFromItem(item);
-	}
-
-	@Override
 	public String toString() {
 		return getDisplayName();
 	}
 
-	@Override
-	public int hashCode() {//if it's in the ore dict, it'll hash the oreID with 0, 0, otherwise it'll hash -1 with the Id and meta.
-		return HashHelper.hash(oreID, isInOreDict() ? 0 : getItemId(), isInOreDict() ? 0 : meta);
+	public int getItemId() {
+		return Item.getIdFromItem(getItem());
 	}
 
 	@Override
-	public boolean isItemEqual(ISimpleItem other) {
+	public int hashCode() {
+		return HashHelper.hash(getItemId(), meta);
+	}
+
+	@Override
+	public boolean isItemEqual(ISimpleItem other, boolean omniDirect) {
 		if (other == null)
 			return false;
 
-		if (getItem() == other.getItem() && (getMeta() == OreDictionary.WILDCARD_VALUE || other.getMeta() == OreDictionary.WILDCARD_VALUE || getMeta() == other.getMeta()))
+		if (getItem() == other.getItem()
+				&& (getMeta() == OreDictionary.WILDCARD_VALUE || other.getMeta() == OreDictionary.WILDCARD_VALUE || getMeta() == other
+						.getMeta()))
 			return true;
+		else if (omniDirect)
+				return other.isItemEqual(this, false);
 		else
-			return isInOreDict() && other.isInOreDict() && oreID == other.getOreID();
+			return false;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof ISimpleItem)
-			return isItemEqual((ISimpleItem) obj);
+			return isItemEqual((ISimpleItem) obj, false);
 
 		if (obj instanceof ItemStack)
-			return isItemEqual(new SimpleItem((ItemStack) obj));
+			return isItemEqual(new SimpleItem((ItemStack) obj), false);
 
 		if (obj instanceof Block)
-			return isItemEqual(new SimpleItem((Block) obj));
+			return isItemEqual(new SimpleItem((Block) obj), false);
 
 		if (obj instanceof Item)
-			return isItemEqual(new SimpleItem((Item) obj));
-		
-		if(obj instanceof WorldLocation)
-			return isItemEqual(new SimpleItem((WorldLocation) obj));
-		
-		if(obj instanceof BlockLocation)
-			return isItemEqual(((BlockLocation) obj).block);
+			return isItemEqual(new SimpleItem((Item) obj), false);
+
+		if (obj instanceof WorldLocation)
+			return isItemEqual(new SimpleItem((WorldLocation) obj), false);
+
+		if (obj instanceof BlockLocation)
+			return isItemEqual(((BlockLocation) obj).block, false);
 
 		return false;
 	}
@@ -220,5 +199,4 @@ public class SimpleItem implements ISimpleItem, Serializable {
 		this(tag.getCompoundTag(name));
 	}
 
-	
 }

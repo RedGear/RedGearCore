@@ -64,7 +64,7 @@ public class ElementFluidTank extends ElementBase {
 	public void addTooltip(List<String> list) {
 
 		if (tank.getFluid() != null && tank.getFluidAmount() > 0) {
-			list.add(tank.getFluid().getFluid().getLocalizedName());
+			list.add(tank.getFluid().getFluid().getLocalizedName(tank.getFluid()));
 		}
 		list.add("" + tank.getFluidAmount() + " / " + tank.getCapacity() + " mB");
 	}

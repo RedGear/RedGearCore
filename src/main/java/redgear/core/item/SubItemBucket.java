@@ -5,7 +5,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 
 public class SubItemBucket extends SubItem {
 
-	protected final Fluid fluid;
+	public final Fluid fluid;
 
 	public SubItemBucket(String name, Fluid fluid) {
 		super(name);
