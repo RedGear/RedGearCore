@@ -15,6 +15,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import org.apache.logging.log4j.Logger;
 
+import redgear.core.api.item.ISimpleItem;
 import redgear.core.api.util.ReflectionHelper;
 import redgear.core.asm.RedGearCore;
 import redgear.core.util.SimpleItem;
@@ -514,7 +515,7 @@ public abstract class ModUtils {
 		return prop.getBoolean(Default);
 	}
 	
-	public void addSmelting(SimpleItem input, SimpleItem result) {
+	public void addSmelting(ISimpleItem input, ISimpleItem result) {
 		this.addSmelting(input.getStack(), result.getStack());
 	}
 
@@ -534,7 +535,7 @@ public abstract class ModUtils {
 		FurnaceRecipes.smelting().func_151394_a(input, result, exp);
 	}
 
-	public void registerOre(String name, SimpleItem ore) {
+	public void registerOre(String name, ISimpleItem ore) {
 		registerOre(name, ore.getStack());
 	}
 

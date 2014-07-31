@@ -4,25 +4,21 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import redgear.core.tile.TileEntityInventory;
 
 /**
  * Different from <{@link Slot}>, this class is used to store and sort the
  * stored ItemStacks of an inventory, as well as
  * provide rules about ISidedInventory behavior or stack filters.
- * 
+ *
  * @author Blackhole
- * 
+ *
  */
 public class InvSlot extends Slot {
 
 	private ItemStack contents;
 	private int stackLimit = 64;
-	private boolean playerPressure = false; //True means that the pressure value applied to player action as well as automation
-	private TransferRule transfer = TransferRule.BOTH; //pressure
-
-	//filter
-	//side
+	private TransferRule playerRule = TransferRule.BOTH; //Rule defining what players can take or input through the GUI.
+	private TransferRule machineRule = TransferRule.BOTH; //Rule defining what automated machines (hoppers, pipe, itemducts, ect.) can input or output through the block.
 
 	public InvSlot(IInventory inventory, int x, int y) {
 		super(inventory, inventory.getSizeInventory(), x, y);
@@ -68,7 +64,7 @@ public class InvSlot extends Slot {
 
 	public boolean canAddStack(ItemStack stack, boolean all, boolean override) {
 		if (contents == null)
-			if ((override || transfer.canInput()) && stackAllowed(stack))
+			if ((override || machineRule.canInput()) && stackAllowed(stack))
 				return true;
 			else
 				return false;
@@ -78,13 +74,13 @@ public class InvSlot extends Slot {
 
 		return contents.isStackable() && stack.isItemEqual(contents)
 				&& ItemStack.areItemStackTagsEqual(stack, contents) && stackAllowed(stack)
-				&& contents.stackSize < contents.getMaxStackSize() && (override || transfer.canInput())
+				&& contents.stackSize < contents.getMaxStackSize() && (override || machineRule.canInput())
 				&& (!all || contents.stackSize + stack.stackSize <= contents.getMaxStackSize());
 	}
 
 	/**
 	 * Can be used in children to filter the stacks.
-	 * 
+	 *
 	 * @param stack
 	 * @return
 	 */
@@ -93,16 +89,22 @@ public class InvSlot extends Slot {
 	}
 
 	public boolean canExtract() {
-		return transfer.canOutput();
+		return machineRule.canOutput();
 	}
 
-	public InvSlot setPressure(TransferRule transfer) {
-		this.transfer = transfer;
+	public InvSlot setMachineRule(TransferRule machineRule) {
+		this.machineRule = machineRule;
 		return this;
 	}
 
-	public InvSlot setPlayerPressure(boolean playerPressure) {
-		this.playerPressure = playerPressure;
+	public InvSlot setPlayerRule(TransferRule playerRule) {
+		this.playerRule = playerRule;
+		return this;
+	}
+	
+	public InvSlot setRules(TransferRule rule){
+		this.machineRule = rule;
+		this.playerRule = rule;
 		return this;
 	}
 
@@ -160,7 +162,7 @@ public class InvSlot extends Slot {
 
 	public ItemStack decrStackSize(int amount, boolean override) {
 		ItemStack temp = contents;
-		if (temp != null && (override || transfer.canOutput()))
+		if (temp != null && (override || machineRule.canOutput()))
 			if (temp.stackSize <= amount)
 				contents = null;
 			else {
@@ -177,7 +179,7 @@ public class InvSlot extends Slot {
 	 */
 	@Override
 	public boolean canTakeStack(EntityPlayer par1EntityPlayer) {
-		return playerPressure ? transfer.canOutput() : true;
+		return playerRule.canOutput();
 	}
 
 	/**
@@ -186,6 +188,6 @@ public class InvSlot extends Slot {
 	 */
 	@Override
 	public boolean isItemValid(ItemStack par1ItemStack) {
-		return playerPressure ? transfer.canInput() : true;
+		return playerRule.canInput();
 	}
 }

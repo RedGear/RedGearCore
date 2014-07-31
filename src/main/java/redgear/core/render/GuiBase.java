@@ -20,6 +20,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import redgear.core.network.CoreIconRegistry;
 import redgear.core.render.gui.TabTracker;
 import redgear.core.render.gui.element.ElementBase;
 import redgear.core.render.gui.element.TabBase;
@@ -28,6 +29,7 @@ import codechicken.nei.guihook.IContainerTooltipHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.InterfaceList;
+import cpw.mods.fml.common.Optional.Method;
 
 /**
  * Base class for a modular GUIs. Works with Elements {@link ElementBase} and
@@ -196,43 +198,60 @@ public class GuiBase<C extends ContainerBase<? extends TileEntity>> extends GuiC
 			}
 		}
 	}
-	
+
 	/**
-     * Use this to add tooltips for other objects. If the current tip has lines in it after this call, the item tootip will not be handled. GuiContainerManager.shouldShowTooltip is not enforced here. It is recommended that you make this check yourself
-     * @param gui An instance of the currentscreen
-     * @param mousex The x position of the mouse in pixels from left
-     * @param mousey The y position of the mouse in pixels from top
-     * @param currenttip A list of strings, representing each line of the current tooltip as modified by other handlers
-     * @return The modified list. NOTE: Do not return null
-     */
+	 * Use this to add tooltips for other objects. If the current tip has lines
+	 * in it after this call, the item tootip will not be handled.
+	 * GuiContainerManager.shouldShowTooltip is not enforced here. It is
+	 * recommended that you make this check yourself
+	 *
+	 * @param gui An instance of the currentscreen
+	 * @param mousex The x position of the mouse in pixels from left
+	 * @param mousey The y position of the mouse in pixels from top
+	 * @param currenttip A list of strings, representing each line of the
+	 * current tooltip as modified by other handlers
+	 * @return The modified list. NOTE: Do not return null
+	 */
 	@Override
-    public List<String> handleTooltip(GuiContainer gui, int mousex, int mousey, List<String> currenttip){
-		if(GuiContainerManager.shouldShowTooltip(gui));
+	@Method(modid = "NotEnoughItems")
+	public List<String> handleTooltip(GuiContainer gui, int mousex, int mousey, List<String> currenttip) {
+		if (GuiContainerManager.shouldShowTooltip(gui))
 			addTooltips(currenttip);
 		return currenttip;
 	}
 
-    /**
-     * Use this for modifying the multiline display name of an item which may not necessarily be under the mouse. GuiContainerManager.shouldShowTooltip is enforced here.
-     * @param gui An instance of the currentscreen. If only general information about the item is wanted (Eg. potion effects) then this may be null.
-     * @param itemstack The ItemStack under the mouse
-     * @param currenttip A list of strings, representing each line of the current tooltip as modified by other handlers
-     * @return The modified list. NOTE: Do not return null
-     */
+	/**
+	 * Use this for modifying the multiline display name of an item which may
+	 * not necessarily be under the mouse. GuiContainerManager.shouldShowTooltip
+	 * is enforced here.
+	 *
+	 * @param gui An instance of the currentscreen. If only general information
+	 * about the item is wanted (Eg. potion effects) then this may be null.
+	 * @param itemstack The ItemStack under the mouse
+	 * @param currenttip A list of strings, representing each line of the
+	 * current tooltip as modified by other handlers
+	 * @return The modified list. NOTE: Do not return null
+	 */
 	@Override
-    public List<String> handleItemDisplayName(GuiContainer gui, ItemStack itemstack, List<String> currenttip){
+	@Method(modid = "NotEnoughItems")
+	public List<String> handleItemDisplayName(GuiContainer gui, ItemStack itemstack, List<String> currenttip) {
 		return currenttip;
 	}
 
-    /**
-     * Use this for modifying the tooltips of items that are under the mouse. GuiContainerManager.shouldShowTooltip is enforced here.
-     * @param gui An instance of the currentscreen
-     * @param itemstack The ItemStack under the mouse
-     * @param currenttip A list of strings, representing each line of the current tooltip as modified by other handlers
-     * @return The modified list. NOTE: Do not return null
-     */
+	/**
+	 * Use this for modifying the tooltips of items that are under the mouse.
+	 * GuiContainerManager.shouldShowTooltip is enforced here.
+	 *
+	 * @param gui An instance of the currentscreen
+	 * @param itemstack The ItemStack under the mouse
+	 * @param currenttip A list of strings, representing each line of the
+	 * current tooltip as modified by other handlers
+	 * @return The modified list. NOTE: Do not return null
+	 */
 	@Override
-    public List<String> handleItemTooltip(GuiContainer gui, ItemStack itemstack, int mousex, int mousey, List<String> currenttip){
+	@Method(modid = "NotEnoughItems")
+	public List<String> handleItemTooltip(GuiContainer gui, ItemStack itemstack, int mousex, int mousey,
+			List<String> currenttip) {
 		return currenttip;
 	}
 
@@ -362,8 +381,7 @@ public class GuiBase<C extends ContainerBase<? extends TileEntity>> extends GuiC
 	}
 
 	public void drawIcon(String iconName, int x, int y, int spriteSheet) {
-
-		//drawIcon(IconRegistry.getIcon(iconName), x, y, spriteSheet);
+		drawIcon(CoreIconRegistry.getIcon(iconName), x, y, spriteSheet);
 	}
 
 	public void drawSizedTexturedModalRect(int x, int y, int u, int v, int width, int height, float texW, float texH) {
@@ -404,7 +422,7 @@ public class GuiBase<C extends ContainerBase<? extends TileEntity>> extends GuiC
 		tooltip.clear();
 	}
 
-	protected void drawTooltipHoveringText(List list, int x, int y, FontRenderer font) {
+	protected void drawTooltipHoveringText(List<String> list, int x, int y, FontRenderer font) {
 
 		if (list == null || list.isEmpty())
 			return;
@@ -412,10 +430,10 @@ public class GuiBase<C extends ContainerBase<? extends TileEntity>> extends GuiC
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		int k = 0;
-		Iterator iterator = list.iterator();
+		Iterator<String> iterator = list.iterator();
 
 		while (iterator.hasNext()) {
-			String s = (String) iterator.next();
+			String s = iterator.next();
 			int l = font.getStringWidth(s);
 
 			if (l > k)
@@ -447,7 +465,7 @@ public class GuiBase<C extends ContainerBase<? extends TileEntity>> extends GuiC
 		drawGradientRect(i1 - 3, j1 + k1 + 2, i1 + k + 3, j1 + k1 + 3, j2, j2);
 
 		for (int k2 = 0; k2 < list.size(); ++k2) {
-			String s1 = (String) list.get(k2);
+			String s1 = list.get(k2);
 			font.drawStringWithShadow(s1, i1, j1, -1);
 
 			if (k2 == 0)

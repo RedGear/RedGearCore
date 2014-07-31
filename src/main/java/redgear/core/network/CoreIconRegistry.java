@@ -58,15 +58,15 @@ public class CoreIconRegistry {
 	/**
 	 * Add an icon to the registry
 	 *
-	 * @param name The FULL path of the icon, IE:
-	 * assets/mod_name/textures/gui/button
+	 * @param name The path of the icon, IE:
+	 * mod_name:gui/button
 	 */
 	void addIcon(String name) {
 		icons.put(name, null);
 	}
 
-	IIcon getIcon(String name) {
-		return icons.get(name);
+	public static IIcon getIcon(String name) {
+		return instance.icons.get(name);
 	}
 
 	void addFluid(String iconName, Fluid fluid) {

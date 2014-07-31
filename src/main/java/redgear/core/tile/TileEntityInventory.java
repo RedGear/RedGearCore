@@ -20,7 +20,6 @@ import redgear.core.inventory.InvSlot;
 public abstract class TileEntityInventory extends TileEntityMachine implements ISidedInventory {
 	public TileEntityInventory(int idleRate) {
 		super(idleRate);
-		// TODO Auto-generated constructor stub
 	}
 
 	private final ArrayList<InvSlot> slots = new ArrayList<InvSlot>();
@@ -254,5 +253,9 @@ public abstract class TileEntityInventory extends TileEntityMachine implements I
 
 	public ArrayList<InvSlot> getSlots() {
 		return slots;
+	}
+	
+	public InvSlot getSlot(int slot){
+		return validSlot(slot) ? slots.get(slot) : null;
 	}
 }

@@ -8,7 +8,7 @@ public class FuelSlot  extends InvSlot{
 
 	public FuelSlot(TileEntityInventory inventory, int x, int y) {
 		super(inventory, x, y);
-		this.setPressure(TransferRule.INPUT);
+		this.setMachineRule(TransferRule.INPUT);
 	}
 	
 	/**
