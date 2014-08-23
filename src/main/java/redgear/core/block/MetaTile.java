@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -211,8 +212,7 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider,
 	}
 
 	@Override
-	public void getBlockInfo(IBlockAccess world, int x, int y, int z, ForgeDirection side, EntityPlayer player,
-			List<String> info, boolean debug) {
+	public void getBlockInfo(IBlockAccess world, int x, int y, int z, ForgeDirection side, EntityPlayer player, List<IChatComponent> info, boolean debug) {
 		TileEntity tile = world.getTileEntity(x, y, z);
 
 		if (tile instanceof ITileInfo)
@@ -220,10 +220,11 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider,
 	}
 
 	@Override
-	public ItemStack dismantleBlock(EntityPlayer player, World world, int x, int y, int z, boolean returnBlock) {
+	public ArrayList<ItemStack> dismantleBlock(EntityPlayer player, World world, int x, int y, int z, boolean returnBlock) {
 		TileEntity tile = world.getTileEntity(x, y, z);
 
 		if (tile instanceof IDismantleableTile) {
+			ArrayList<ItemStack> ans = new ArrayList<ItemStack>();
 			NBTTagCompound tag = new NBTTagCompound();
 			ItemStack stack = ((IDismantleableTile) tile).dismantleBlock(player, tag, holdingWrench(player),
 					player.isSneaking());
@@ -241,7 +242,8 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider,
 
 			world.setBlockToAir(x, y, z);
 
-			return stack;
+			ans.add(stack);
+			return ans;
 		} else
 			return null;
 	}

@@ -24,8 +24,8 @@ public class ItemStackUtil
             return;
         }
 
-        //if (!world.isRemote && world.getGameRules().getGameRuleBooleanValue("doTileDrops"))
-        //{
+        if (!world.isRemote && world.getGameRules().getGameRuleBooleanValue("doTileDrops"))
+        {
             float f = 0.7F;
             double d0 = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
             double d1 = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
@@ -33,7 +33,7 @@ public class ItemStackUtil
             EntityItem entityitem = new EntityItem(world, (double)x + d0, (double)y + d1, (double)z + d2, stack);
             entityitem.delayBeforeCanPickup = 10;
             world.spawnEntityInWorld(entityitem);
-        //}
+        }
     }
     
     public static boolean areStacksEqualWithSizeAndTags(ItemStack first, ItemStack second){

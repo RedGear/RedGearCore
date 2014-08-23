@@ -1,5 +1,8 @@
 package redgear.core.util;
 
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import redgear.core.asm.RedGearCore;
@@ -36,6 +39,9 @@ public class ItemRegUtil {
 	}
 
 	public static ItemStack findStack(String name) {
+		if(name == null)
+			return null;
+		
 		String mod;
 		String item;
 		int meta;
@@ -58,8 +64,14 @@ public class ItemRegUtil {
 
 			return findStack(mod, item, meta);
 
-		} else
+		} else{
 			return null;
+		}
+	}
+	
+	public static boolean isInOreDict(String name){
+		List<String> ores = Arrays.asList(OreDictionary.getOreNames());
+		return ores.contains(name);
 	}
 
 	public static SimpleItem findItem(Mods mod, String name) {

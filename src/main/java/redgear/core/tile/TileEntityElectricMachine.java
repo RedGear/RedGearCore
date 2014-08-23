@@ -99,14 +99,6 @@ public abstract class TileEntityElectricMachine extends TileEntityInventory impl
 	public boolean canConnectEnergy(ForgeDirection from) {
 		return true;
 	}
-	
-	/**
-	 * Old CoFH energy connection check. Was updated to canConnectEnergy
-	 */
-	@Deprecated
-	public boolean canInterface(ForgeDirection from) {
-		return true;
-	}
 
 	/**
 	 * Returns the amount of energy currently stored.

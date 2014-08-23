@@ -2,6 +2,7 @@ package redgear.core.util;
 
 import java.io.Serializable;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -119,7 +120,10 @@ public class SimpleItem implements ISimpleItem, Serializable {
 
 	@Override
 	public String getName() {
-		return Item.itemRegistry.getNameForObject(getItem());
+		//GameRegistry.findUniqueIdentifierFor(getItem());
+		
+		
+		return Item.itemRegistry.getNameForObject(getItem()) + (meta == OreDictionary.WILDCARD_VALUE ? "" : ("@" + meta));
 	}
 
 	@Override

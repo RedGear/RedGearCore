@@ -3,6 +3,7 @@ package redgear.core.api.tile;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
@@ -19,5 +20,5 @@ public interface ITileInfo {
 	 * @param info The list that the information should be appended to.
 	 * @param debug If true, the Block should return "debug" information.
 	 */
-	public void getBlockInfo(ForgeDirection side, EntityPlayer player, List<String> info, boolean debug);
+	public void getBlockInfo(ForgeDirection side, EntityPlayer player, List<IChatComponent> info, boolean debug);
 }

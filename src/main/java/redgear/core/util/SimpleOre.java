@@ -135,8 +135,7 @@ public class SimpleOre implements ISimpleItem, Serializable {
 
 	@Override
 	public String getName() {
-		ISimpleItem item = getTarget();
-		return item == null ? null : item.getName();
+		return getOreName();
 	}
 
 	@Override
