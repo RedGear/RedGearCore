@@ -55,7 +55,7 @@ public class ChunkCoordinate {
 
 	@Override
 	public int hashCode() {
-		return hash(hash(1, x), z);
+		return hash(hash(7, x), z);
 	}
 
 	protected int hash(int seed, int value) {

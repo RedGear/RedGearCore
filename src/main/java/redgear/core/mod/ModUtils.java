@@ -13,6 +13,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.oredict.OreDictionary;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import redgear.core.api.item.ISimpleItem;
@@ -564,7 +565,8 @@ public abstract class ModUtils {
 
 	public void logWarning(String message, Throwable e) {
 		myLogger.warn(message);
-		e.printStackTrace();
+		myLogger.catching(Level.WARN, e);
+		//e.printStackTrace();
 	}
 
 	public Side getSide() {

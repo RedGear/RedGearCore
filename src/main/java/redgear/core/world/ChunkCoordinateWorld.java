@@ -35,7 +35,7 @@ public class ChunkCoordinateWorld extends ChunkCoordinate {
 	
 	@Override
 	public int hashCode(){
-		return hash(hash(hash(1, x), z), world.provider.dimensionId);
+		return hash(hash(hash(7, x), z), world.provider.dimensionId);
 	}
 	
 	@Override

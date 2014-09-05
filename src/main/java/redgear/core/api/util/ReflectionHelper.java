@@ -49,4 +49,16 @@ public class ReflectionHelper {
 
 		return argTypes;
 	}
+	
+	public static Object invokeMethod(String name, Object obj, Object... args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
+		return invokeMethod(name, obj.getClass(), obj, args);
+	}
+	
+	public static Object invokeMethod(String name, Class<?> clazz, Object... args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
+		return invokeMethod(name, clazz, null, args);
+	}
+	
+	public static Object invokeMethod(String name, Class<?> clazz, Object obj,  Object... args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
+		return clazz.getMethod(name, getTypes(args)).invoke(obj, args);
+	}
 }
