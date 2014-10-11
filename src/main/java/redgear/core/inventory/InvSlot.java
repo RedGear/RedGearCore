@@ -187,7 +187,7 @@ public class InvSlot extends Slot {
 	 * the armor slots.
 	 */
 	@Override
-	public boolean isItemValid(ItemStack par1ItemStack) {
-		return playerRule.canInput();
+	public boolean isItemValid(ItemStack stack) {
+		return playerRule.canInput() && stackAllowed(stack);
 	}
 }
