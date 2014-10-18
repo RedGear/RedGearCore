@@ -83,7 +83,7 @@ public abstract class TileEntityGeneric extends TileEntity {
 	 * Does not guarantee that this code will be called. 
 	 * @param tag
 	 */
-	public void loadFromItemNBT(NBTTagCompound read){
+	public void loadFromItemNBT(NBTTagCompound tag){
 		
 	}
 

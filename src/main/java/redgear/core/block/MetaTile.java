@@ -1,9 +1,10 @@
 package redgear.core.block;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
-
+import buildcraft.api.tools.IToolWrench;
+import cofh.api.block.IBlockDebug;
+import cofh.api.block.IBlockInfo;
+import cofh.api.block.IDismantleable;
+import cofh.api.tileentity.IRedstoneCache;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -13,28 +14,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IChatComponent;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
-import redgear.core.api.tile.IBucketableTank;
-import redgear.core.api.tile.IDismantleableTile;
-import redgear.core.api.tile.IFacedTile;
-import redgear.core.api.tile.IRedstoneCachePrecise;
-import redgear.core.api.tile.IRedstoneEmiter;
-import redgear.core.api.tile.ITileDebug;
-import redgear.core.api.tile.ITileInfo;
-import redgear.core.api.tile.IWrenchableTile;
 import redgear.core.asm.RedGearCore;
+import redgear.core.tile.*;
 import redgear.core.world.WorldLocation;
-import buildcraft.api.tools.IToolWrench;
-import cofh.api.block.IBlockDebug;
-import cofh.api.block.IBlockInfo;
-import cofh.api.block.IDismantleable;
-import cofh.api.tileentity.IRedstoneCache;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
 
 public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider, IBlockDebug, IBlockInfo, IDismantleable {
 
@@ -78,8 +68,8 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider,
 
 				else if (FluidContainerRegistry.isContainer(player.getHeldItem())) {
 					TileEntity tile = world.getTileEntity(x, y, z);
-					if (tile instanceof IBucketableTank
-							&& ((IBucketableTank) tile).bucket(player, player.inventory.currentItem,
+					if (tile instanceof Bucketable
+							&& ((Bucketable) tile).bucket(player, player.inventory.currentItem,
 									player.getHeldItem()))
 						return true;
 
@@ -118,7 +108,7 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider,
 
 		if (tile != null)
 			for (Entry<Integer, SubTile> test : blocks.entrySet())
-				if (test.getValue().createTile().getClass().equals(tile.getClass()))
+				if (test.getValue().getTileClass().equals(tile.getClass()))
 					return test.getKey();
 		return 0;
 	}
@@ -130,7 +120,7 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider,
 	 * @param x X Position
 	 * @param y Y Position
 	 * @param z Z Position
-	 * @param metadata Current metadata
+	 * @param meta Current metadata
 	 * @param fortune Breakers fortune level
 	 * @return A ArrayList containing all items this block drops
 	 */

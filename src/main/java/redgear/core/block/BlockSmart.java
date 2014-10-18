@@ -21,7 +21,7 @@ public class BlockSmart extends BlockGeneric implements ITileEntityProvider {
 	/**
 	 * Use this if your item has a typical icon
 	 * 
-	 * @param Id The typical ItemId
+	 * @param material The typical ItemId
 	 * @param name Name of item's icon
 	 */
 	public BlockSmart(Material material, String name) {
@@ -32,7 +32,7 @@ public class BlockSmart extends BlockGeneric implements ITileEntityProvider {
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack stack) {
 		try {
 			TileEntitySmart myTile = (TileEntitySmart) world.getTileEntity(x, y, z);
-			myTile.ownerName = ((EntityPlayer) entity).getDisplayName(); //TODO: Replace with better ID once I figure that out - Blackhole
+			myTile.ownerName_$eq(((EntityPlayer) entity).getDisplayName()); //TODO: Replace with better ID once I figure that out - Blackhole
 		} catch (Exception e) {
 		} //if the tile or entity don't cast right, just give up.
 	}
@@ -40,7 +40,7 @@ public class BlockSmart extends BlockGeneric implements ITileEntityProvider {
 	public String getOwner(World world, int x, int y, int z) {
 		try {
 			TileEntitySmart myTile = (TileEntitySmart) world.getTileEntity(x, y, z);
-			return myTile.ownerName;
+			return myTile.ownerName();
 		} catch (Exception e)  //is something goes wrong, just return an empty string
 		{
 			return "";

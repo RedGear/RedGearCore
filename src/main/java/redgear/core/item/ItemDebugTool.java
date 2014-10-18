@@ -1,13 +1,15 @@
 package redgear.core.item;
 
-import java.lang.reflect.Field;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import redgear.core.asm.RedGearCore;
 import redgear.core.world.Location;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 public class ItemDebugTool extends ItemGeneric{
 
@@ -31,19 +33,37 @@ public class ItemDebugTool extends ItemGeneric{
     	if(tile != null){ //Use reflection to print out all the values in the tile. 
     		for(Field f : tile.getClass().getDeclaredFields()){
     			try {
-    				print(player, f.getName() + ": " + f.get(tile).toString());
+                    f.setAccessible(true);
+    				print(player, "Field: " + f.getName() + ": " + f.get(tile).toString());
 				} catch (Exception e) {
 					print(player, "Debugger bugged :(");
 					RedGearCore.inst.logDebug("", e);
 				}
     		}
     		
-    		
+    		for(Method m : tile.getClass().getMethods()){
+                try {
+                    m.setAccessible(true);
+                    print(player, "Method: " + m.getName() + " " + m.toString());
+                } catch (Exception e) {
+                    print(player, "Debugger bugged :(");
+                    RedGearCore.inst.logDebug("", e);
+                }
+            }
+
+            for(Type i : tile.getClass().getGenericInterfaces()){
+                try {
+                    print(player, i.toString());
+                } catch (Exception e) {
+                    print(player, "Debugger bugged :(");
+                    RedGearCore.inst.logDebug("", e);
+                }
+            }
     	}
     	
     	}
     	catch(Exception e){ //This try is just a paranoid double-check.
-			print(player, "Debugger bugged :(");
+			print(player, "Debugger REALLY bugged! :0");
 			RedGearCore.inst.logDebug("", e);
 		}
     	

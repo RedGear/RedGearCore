@@ -1,4 +1,4 @@
-package redgear.core.api.tile;
+package redgear.core.tile;
 
 import net.minecraftforge.common.util.ForgeDirection;
 

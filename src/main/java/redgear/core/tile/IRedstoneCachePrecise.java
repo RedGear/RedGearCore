@@ -1,4 +1,4 @@
-package redgear.core.api.tile;
+package redgear.core.tile;
 
 /**
  * Unlike {@link IRedstoneCache} IRedstoneCachePrecise can accept and retrieve the strength of the redstone signal. 

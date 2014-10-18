@@ -8,11 +8,19 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class SubTile extends SubBlock implements IHasTile {
 	public final ITileFactory factory;
+    private Class<? extends TileEntity> tileClass;
 
 	@Override
 	public TileEntity createTile() {
 		return factory.createTile();
 	}
+
+    public Class<? extends TileEntity> getTileClass(){
+        if(tileClass == null)
+            tileClass = createTile().getClass();
+
+        return tileClass;
+    }
 
 	@Override
 	public boolean hasGui() {

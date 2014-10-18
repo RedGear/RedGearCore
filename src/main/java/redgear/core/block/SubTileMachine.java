@@ -1,13 +1,13 @@
 package redgear.core.block;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
-import redgear.core.api.tile.IFacedTile;
+import redgear.core.tile.IFacedTile;
 import redgear.core.tile.ITileFactory;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class SubTileMachine extends SubTile {
 
@@ -36,7 +36,7 @@ public class SubTileMachine extends SubTile {
 		int direction = 3; //3 because that's the face when it's in your inventory. (South) 
 
 		if (tile instanceof IFacedTile)
-			direction = ((IFacedTile) tile).getDirectionId();
+			direction = ((IFacedTile) tile).getDirection().ordinal();
 
 		return side == direction ? blockIcon : sideIcon;
 	}

@@ -21,6 +21,7 @@ repositories {
     }
 }
 
+apply plugin: 'scala'
 apply plugin: 'forge'
 
 version = mod_version
@@ -34,6 +35,9 @@ dependencies {
 	compile "codechicken:CodeChickenCore:1.7.10-1.0.2.11:dev"
 	compile "codechicken:NotEnoughItems:1.7.10-1.0.2.26:dev"
 }
+
+sourceSets.main.scala.srcDir "src/main/java"
+sourceSets.main.java.srcDirs = []
 
 minecraft {
 	version = "${minecraft_version}-${forge_version}"
