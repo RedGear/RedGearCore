@@ -1,7 +1,5 @@
 package redgear.core.world;
 
-import java.util.Collection;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
@@ -15,6 +13,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import redgear.core.api.item.ISimpleItem;
 import redgear.core.util.SimpleItem;
+
+import java.util.Collection;
 
 public class Location extends ChunkPosition {
 
@@ -98,7 +98,8 @@ public class Location extends ChunkPosition {
 	}
 
 	public void placeBlock(World world, ISimpleItem block) {
-		world.setBlock(chunkPosX, chunkPosY, chunkPosZ, block.getBlock(), block.getMeta(), 3);
+        if(block != null)
+    		world.setBlock(chunkPosX, chunkPosY, chunkPosZ, block.getBlock(), block.getMeta(), 3);
 	}
 
 	public void placeBlock(World world, ISimpleItem block, ChunkPosition relative) {

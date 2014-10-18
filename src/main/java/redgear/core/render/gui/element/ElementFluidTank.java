@@ -1,11 +1,12 @@
 package redgear.core.render.gui.element;
 
-import java.util.List;
-
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fluids.IFluidTank;
 import redgear.core.render.GuiBase;
 import redgear.core.render.RenderHelper;
+
+import java.util.List;
 
 public class ElementFluidTank extends ElementBase {
 
@@ -64,7 +65,10 @@ public class ElementFluidTank extends ElementBase {
 	public void addTooltip(List<String> list) {
 
 		if (tank.getFluid() != null && tank.getFluidAmount() > 0) {
-			list.add(tank.getFluid().getFluid().getLocalizedName(tank.getFluid()));
+            if(ForgeVersion.getBuildVersion() >= 1162)
+			    list.add(tank.getFluid().getFluid().getLocalizedName(tank.getFluid()));
+            else
+                list.add(tank.getFluid().getFluid().getLocalizedName());
 		}
 		list.add("" + tank.getFluidAmount() + " / " + tank.getCapacity() + " mB");
 	}
