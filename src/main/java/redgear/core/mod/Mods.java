@@ -45,7 +45,14 @@ public enum Mods
 	
 	BiomesOPlenty("BiomesOPlenty", "Biomes O' Plenty"),
 	
-	NetherOres("NetherOres", "Nether Ores");
+	NetherOres("NetherOres", "Nether Ores"),
+
+    ForgeMulitPart("ForgeMultipart"),
+    ForgeMicroBlock("ForgeMicroblock"),
+
+    AE2("appliedenergistics2", "Applied Energistics 2"),
+	TSteelworks("TSteelworks", "Tinker's Steelworks"),
+	NEI("NotEnoughItems");
 
     private String ModId; //System Mod ID
     private String ModName; //User readable name

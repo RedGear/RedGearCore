@@ -1,9 +1,8 @@
 package redgear.core.network;
 
-import redgear.core.util.CoreFuelHandler;
-import redgear.core.util.CoreTradeHandler;
-import net.minecraftforge.fluids.Fluid;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraftforge.fluids.Fluid;
+import redgear.core.util.CoreTradeHandler;
 
 public class CoreCommonProxy {
 
@@ -19,9 +18,8 @@ public class CoreCommonProxy {
 
 	}
 
-	public void init() {
-		//CoreFuelHandler.init();
-		CoreTradeHandler.init();
-		CoreGuiHandler.init();
-	}
+    public void init(){
+        CoreTradeHandler.init();
+        CoreGuiHandler.init();
+    }
 }

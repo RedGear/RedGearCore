@@ -1,14 +1,17 @@
 package redgear.core.util;
 
-import java.util.Arrays;
-import java.util.List;
-
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
-import redgear.core.asm.RedGearCore;
-import redgear.core.mod.Mods;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
+import redgear.core.api.item.ISimpleItem;
+import redgear.core.asm.RedGearCore;
+import redgear.core.mod.Mods;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class ItemRegUtil {
 
@@ -93,4 +96,32 @@ public class ItemRegUtil {
 	public static SimpleItem findItem(String name) {
 		return new SimpleItem(findStack(name));
 	}
+
+
+    public static ISimpleItem wrap(ItemStack stack){
+        return new SimpleItem(stack);
+    }
+
+
+    public static ISimpleItem parse(Object obj){
+        if(obj instanceof ISimpleItem)
+            return (ISimpleItem) obj;
+
+        if(obj instanceof Block)
+            return new SimpleItem((Block) obj);
+
+        if(obj instanceof Item)
+            return new SimpleItem((Item) obj);
+
+        if(obj instanceof ItemStack)
+            return ItemRegUtil.wrap((ItemStack) obj);
+
+        if(obj instanceof String){
+            SimpleItem item = findItem((String) obj);
+            if(item != null)
+                return item;
+        }
+
+        return null;
+    }
 }

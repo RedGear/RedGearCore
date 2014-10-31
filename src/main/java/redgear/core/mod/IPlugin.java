@@ -8,7 +8,7 @@ public interface IPlugin {
 	 * @return A human-readable name for this plugin. Used for crash logs if the
 	 * plugin throws an exception.
 	 */
-	public String getName();
+	String getName();
 
 	/**
 	 * @param state The current FML loader state.
@@ -17,7 +17,7 @@ public interface IPlugin {
 	 * for states that are unusued. The calling mod is provided in case this 
 	 * plugin needs access to the config.
 	 */
-	public boolean shouldRun(ModUtils mod, ModState state);
+	boolean shouldRun(ModUtils mod, ModState state);
 
 	/**
 	 * Is the plugin required for this mod to function?
@@ -28,24 +28,26 @@ public interface IPlugin {
 	 * designed for mod compatibility should return false and will allow the
 	 * game to load even if something fails.
 	 */
-	public boolean isRequired();
+	boolean isRequired();
 
 	/**
 	 * The preinit phase for this plugin. Runs after the mods own preinit phase. 
-	 * @param inst
+	 * @param mod
 	 */
-	public void preInit(ModUtils mod);
+	void preInit(ModUtils mod);
 
 	/**
 	 * The init phase for this plugin. Runs after the mods own init phase. 
-	 * @param inst
+	 * @param mod
 	 */
-	public void Init(ModUtils mod);
+	void Init(ModUtils mod);
 
 	/**
 	 * The postinit phase for this plugin. Runs after the mods own postinit phase. 
-	 * @param inst
+	 * @param mod
 	 */
-	public void postInit(ModUtils mod);
+	void postInit(ModUtils mod);
+
+
 
 }

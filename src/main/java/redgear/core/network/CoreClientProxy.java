@@ -1,8 +1,8 @@
 package redgear.core.network;
 
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.Fluid;
-import cpw.mods.fml.relauncher.Side;
 
 public class CoreClientProxy extends CoreCommonProxy {
 	
@@ -27,9 +27,9 @@ public class CoreClientProxy extends CoreCommonProxy {
 		icoReg.addFluid(iconName, fluid);
 	}
 
-	@Override
-	public void init() {
-		super.init();
-		icoReg = CoreIconRegistry.init();
-	}
+    @Override
+    public void init() {
+        super.init();
+        icoReg = CoreIconRegistry.init();
+    }
 }
