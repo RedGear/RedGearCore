@@ -47,7 +47,7 @@ trait IFacedTile {
 }
 
 object IFacedTile{
-  private val directionMap: Array[Int] = Array(2, 5, 3, 4, 1, 0)
+  private val directionMap = Array(2, 5, 3, 4, 1, 0)
 
    def setDirection(self: IFacedTile, side: ForgeDirection) = {
 
