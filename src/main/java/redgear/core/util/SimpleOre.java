@@ -105,7 +105,7 @@ public class SimpleOre implements ISimpleItem, Serializable {
 	public int getMeta() {
 		ISimpleItem stack = getTarget();
 
-		return stack == null ? null : stack.getMeta();
+		return stack == null ? 0 : stack.getMeta();
 	}
 
 	@Override

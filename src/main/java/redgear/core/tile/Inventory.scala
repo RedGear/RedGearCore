@@ -1,13 +1,14 @@
 package redgear.core.tile
 
+import scala.collection.JavaConversions.bufferAsJavaList
+import scala.collection.mutable.ArrayBuffer
+
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.ISidedInventory
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.{NBTTagCompound, NBTTagList}
+import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.nbt.NBTTagList
 import redgear.core.inventory.InvSlot
-import scala.collection.JavaConversions._
-
-import scala.collection.mutable.ArrayBuffer
 
 trait Inventory extends ISidedInventory with Savable{
 
@@ -15,10 +16,14 @@ trait Inventory extends ISidedInventory with Savable{
 
   def getInventory = this
 
-  def addSlot(slot: InvSlot) : Int = {
+  def addSlot(slot: InvSlot) = {
     slots += slot
-    slot.getSlotIndex
+    slot
   }
+  
+  def addSlot(x: Int, y: Int): InvSlot = addSlot(new InvSlot(this, x, y))
+  
+  def getSlot(x: Int) = slots(x)
 
   def addStack(stack: ItemStack): ItemStack = {
     for (slot <- slots) {
@@ -172,7 +177,7 @@ trait Inventory extends ISidedInventory with Savable{
   abstract override def writeToNBT(tag: NBTTagCompound) {
     super.writeToNBT(tag)
     val itemList: NBTTagList = new NBTTagList
-    for (i <- 0 to slots.size) {
+    for (i <- 0 until slots.size) {
       val stack: ItemStack = getStackInSlot(i)
       if (stack != null) {
         val invTag: NBTTagCompound = new NBTTagCompound
@@ -187,7 +192,7 @@ trait Inventory extends ISidedInventory with Savable{
   abstract override def readFromNBT(tag: NBTTagCompound) {
     super.readFromNBT(tag)
     val tagList: NBTTagList = tag.getTagList("Inventory", 10)
-    for (i <- 0 to tagList.tagCount) {
+    for (i <- 0 until tagList.tagCount) {
       val invTag: NBTTagCompound = tagList.getCompoundTagAt(i)
       val slot: Byte = invTag.getByte("Slot")
       if (slot >= 0 && slot < slots.size) slots(slot).putStack(ItemStack.loadItemStackFromNBT(invTag))

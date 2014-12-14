@@ -98,7 +98,7 @@ public class Location extends ChunkPosition {
 	}
 
 	public void placeBlock(World world, ISimpleItem block) {
-        if(block != null)
+        if(block != null && block.getBlock() != null)
     		world.setBlock(chunkPosX, chunkPosY, chunkPosZ, block.getBlock(), block.getMeta(), 3);
 	}
 

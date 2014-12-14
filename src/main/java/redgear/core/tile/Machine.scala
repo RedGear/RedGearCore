@@ -1,16 +1,23 @@
 package redgear.core.tile
 
 import net.minecraft.nbt.NBTTagCompound
+import scala.beans.BeanProperty
 
 /**
  * Created by Blackhole on 10/11/2014.
  */
-trait Machine extends Savable with Updateable{
+trait Machine extends Savable with Updateable with TryEnergy{
+  @BeanProperty
   val idleRate: Int = 20
+  @BeanProperty
   var idle: Int = 0
+  @BeanProperty
   var energyRate: Int = 0
+  @BeanProperty
   var standby: Int = 0
+  @BeanProperty
   var workTotal: Int = 0
+  @BeanProperty
   var work: Int = 0
 
   var tile: TileEntityGeneric
@@ -80,7 +87,7 @@ trait Machine extends Savable with Updateable{
    * @param energy Amount of energy needed to work
    * @return true if there is enough power, false if there is not
    */
-  protected def tryUseEnergy(energy: Int): Boolean
+  abstract override protected def tryUseEnergy(energy: Int): Boolean = true
 
   /**
    * Called when work is done.

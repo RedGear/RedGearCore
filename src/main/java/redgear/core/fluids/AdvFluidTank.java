@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import redgear.core.asm.RedGearCore;
 import redgear.core.inventory.TransferRule;
 
 public class AdvFluidTank extends FluidTank {

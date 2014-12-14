@@ -93,8 +93,8 @@ public class MetaTile extends MetaBlock<SubTile> implements ITileEntityProvider,
 
 		TileEntity tile = world.getTileEntity(x, y, z);
 
-		if (tile instanceof IFacedTile)
-			((IFacedTile) tile).onBlockPlacedBy(world, x, y, z, entity, stack);
+		if (tile instanceof Faced)
+			((Faced) tile).onBlockPlacedBy(world, x, y, z, entity, stack);
 		
 		checkRedstone(world, x, y, z);
 	}

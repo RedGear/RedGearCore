@@ -7,7 +7,7 @@ import net.minecraft.nbt.NBTTagCompound
  * @author Blackhole
  *         Created on 10/12/2014.
  */
-abstract class TileEntityElectricMachine(idleRate: Int, storage: EnergyStorage) extends TileEntityGeneric with Machine with Inventory with Electric{
+abstract class TileEntityElectricMachine(idleRate: Int, storage: EnergyStorage) extends TileEntityGeneric with Machine with Inventory with ElectricReceiver{
 
   def this(idleRate: Int, powerCapacity: Int) = this(idleRate, new EnergyStorage(powerCapacity))
 

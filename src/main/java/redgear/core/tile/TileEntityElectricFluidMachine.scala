@@ -1,8 +1,17 @@
 package redgear.core.tile
 
 import net.minecraft.nbt.NBTTagCompound
+import cofh.api.energy.EnergyStorage
+import redgear.core.asm.RedGearCore
 
-abstract class TileEntityInventory(idleRate: Int) extends TileEntityGeneric with Inventory with Machine {
+abstract class TileEntityElectricFluidMachine(idleRate: Int, storage: EnergyStorage) extends TileEntityGeneric with Machine with Inventory with Tank with ElectricReceiver with Faced {
+  
+  def this(idleRate: Int, powerCapacity: Int) = this(idleRate, new EnergyStorage(powerCapacity))
+
+  def this(idleRate: Int) = this(idleRate, 32000)
+
+  def this() = this(4)
+  
   override var tile: TileEntityGeneric = this
 
   override def updateEntity: Unit = {
@@ -24,4 +33,5 @@ abstract class TileEntityInventory(idleRate: Int) extends TileEntityGeneric with
   override def readFromNBT(tag: NBTTagCompound) {
     super.readFromNBT(tag)
   }
+  
 }

@@ -11,6 +11,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
+import org.apache.commons.lang3.ClassUtils;
+
 public class ItemDebugTool extends ItemGeneric{
 
 	public ItemDebugTool() {
@@ -34,7 +36,7 @@ public class ItemDebugTool extends ItemGeneric{
     		for(Field f : tile.getClass().getDeclaredFields()){
     			try {
                     f.setAccessible(true);
-    				print(player, "Field: " + f.getName() + ": " + f.get(tile).toString());
+    				print(player, "Field: ", f.getName(), ": ", f.get(tile));
 				} catch (Exception e) {
 					print(player, "Debugger bugged :(");
 					RedGearCore.inst.logDebug("", e);
@@ -44,16 +46,18 @@ public class ItemDebugTool extends ItemGeneric{
     		for(Method m : tile.getClass().getMethods()){
                 try {
                     m.setAccessible(true);
-                    print(player, "Method: " + m.getName() + " " + m.toString());
+                    print(player, "Method: ", m.getName() + " ", m);
                 } catch (Exception e) {
                     print(player, "Debugger bugged :(");
                     RedGearCore.inst.logDebug("", e);
                 }
             }
 
-            for(Type i : tile.getClass().getGenericInterfaces()){
+    		
+    		
+            for(Type i : ClassUtils.getAllInterfaces(tile.getClass())){
                 try {
-                    print(player, i.toString());
+                    print(player, i);
                 } catch (Exception e) {
                     print(player, "Debugger bugged :(");
                     RedGearCore.inst.logDebug("", e);
@@ -76,7 +80,7 @@ public class ItemDebugTool extends ItemGeneric{
      * @param player
      * @param message
      */
-    private void print(EntityPlayer player, String message){
+    private void print(EntityPlayer player, Object... message){
     	//player.addChatMessage(message);
     	RedGearCore.inst.logDebug(message);
     }

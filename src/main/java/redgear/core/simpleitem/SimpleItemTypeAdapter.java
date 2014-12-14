@@ -20,6 +20,8 @@ public class SimpleItemTypeAdapter implements JsonSerializer<ISimpleItem>, JsonD
 
 	@Override
 	public ISimpleItem deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-		return context.deserialize(json, SimpleItemData.class);
+		SimpleItemData item = context.deserialize(json, SimpleItemData.class);
+		
+		return item.parse();
 	}
 }

@@ -6,6 +6,7 @@ import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 import redgear.core.api.item.ISimpleItem;
+import redgear.core.asm.RedGearCore;
 import redgear.core.util.NBTItem;
 import redgear.core.util.SimpleItem;
 import redgear.core.util.SimpleOre;
@@ -42,6 +43,8 @@ class SimpleItemData {
 
 		if (meta == OreDictionary.WILDCARD_VALUE)
 			meta = -1;
+		
+		RedGearCore.inst.logDebug("Saving item: ", item.getDisplayName(), " Saved: ", modName, ":", itemName);
 	}
 
 	private SimpleItemData(SimpleOre item) {
@@ -73,6 +76,7 @@ class SimpleItemData {
 			} catch (NBTException e) {
 			}
 
+		RedGearCore.inst.logDebug("Loading item: ", modName, ":", itemName, " Loaded:  ", stack == null ? "null" : stack.getDisplayName());
 		return ans;
 	}
 }

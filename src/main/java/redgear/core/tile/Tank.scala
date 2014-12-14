@@ -5,8 +5,8 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraftforge.common.util.ForgeDirection
 import net.minecraftforge.fluids._
 import redgear.core.fluids.AdvFluidTank
-
 import scala.collection.mutable.ArrayBuffer
+import redgear.core.asm.RedGearCore
 
 /**
  * Created by Blackhole on 10/11/2014.

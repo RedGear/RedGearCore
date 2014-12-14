@@ -1,13 +1,15 @@
 package redgear.core.tile
 
-import cofh.api.energy.{EnergyStorage, IEnergyHandler}
+import cofh.api.energy.EnergyStorage
+import cofh.api.energy.IEnergyHandler
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.common.util.ForgeDirection
+import cofh.api.energy.IEnergyReceiver
 
 /**
  * Created by Blackhole on 10/11/2014.
  */
-trait Electric extends IEnergyHandler with Savable{
+trait ElectricReceiver extends IEnergyReceiver with Savable with TryEnergy{
   protected var storage: EnergyStorage = new EnergyStorage(32000)
 
   /**
@@ -18,7 +20,7 @@ trait Electric extends IEnergyHandler with Savable{
    * @param energyUse amount of power requested
    * @return true if there is enough power, false if there is not
    */
-  protected final def tryUseEnergy(energyUse: Int): Boolean = {
+  abstract override protected def tryUseEnergy(energyUse: Int): Boolean = {
     if (storage.getEnergyStored > energyUse) {
       storage.extractEnergy(energyUse, false)
       return true
@@ -57,21 +59,6 @@ trait Electric extends IEnergyHandler with Savable{
    */
   def receiveEnergy(from: ForgeDirection, maxReceive: Int, simulate: Boolean): Int = {
     return storage.receiveEnergy(maxReceive, simulate)
-  }
-
-  /**
-   * Remove energy from an IEnergyHandler, internal distribution is left entirely to the IEnergyHandler.
-   *
-   * @param from
-	 * Orientation the energy is extracted from.
-   * @param maxExtract
-	 * Maximum amount of energy to extract.
-   * @param simulate
-	 * If TRUE, the extraction will only be simulated.
-   * @return Amount of energy that was (or would have been, if simulated) extracted.
-   */
-  def extractEnergy(from: ForgeDirection, maxExtract: Int, simulate: Boolean): Int = {
-    return storage.extractEnergy(maxExtract, simulate)
   }
 
   /**

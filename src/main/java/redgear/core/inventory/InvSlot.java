@@ -77,6 +77,14 @@ public class InvSlot extends Slot {
 				&& contents.stackSize < contents.getMaxStackSize() && (override || machineRule.canInput())
 				&& (!all || contents.stackSize + stack.stackSize <= contents.getMaxStackSize());
 	}
+	
+	public boolean isEmpty(){
+		return !this.getHasStack();
+	}
+	
+	public boolean isFull(){
+		return contents != null && contents.stackSize >= contents.getMaxStackSize();
+	}
 
 	/**
 	 * Can be used in children to filter the stacks.
