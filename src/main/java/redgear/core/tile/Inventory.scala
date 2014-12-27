@@ -1,41 +1,46 @@
 package redgear.core.tile
 
-import scala.collection.JavaConversions.bufferAsJavaList
+import scala.collection.JavaConversions._
 import scala.collection.mutable.ArrayBuffer
-
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.inventory.ISidedInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
 import redgear.core.inventory.InvSlot
+import scala.annotation.tailrec
 
-trait Inventory extends ISidedInventory with Savable{
+trait Inventory extends ISidedInventory with Savable {
 
-  var slots = new ArrayBuffer[InvSlot]()
+  var slots = List[InvSlot]()
 
-  def getInventory = this
+  //def getInventory = this
 
   def addSlot(slot: InvSlot) = {
-    slots += slot
+    slots = slots :+ slot
     slot
   }
-  
+
   def addSlot(x: Int, y: Int): InvSlot = addSlot(new InvSlot(this, x, y))
-  
+
   def getSlot(x: Int) = slots(x)
 
   def addStack(stack: ItemStack): ItemStack = {
-    for (slot <- slots) {
-      slot.addStack(stack, false)
-      if (stack == null) return null
+    @tailrec
+    def addStackTail(stack: ItemStack, slots: List[InvSlot]): ItemStack = {
+      if (stack == null || slots.isEmpty)
+        return null;
+      else
+        addStackTail(slots.head.addStack(stack), slots.tail)
     }
-    stack
+
+    addStackTail(stack, slots)
+
   }
 
   def addStack(stack: ItemStack, possibleSlots: Array[Int]): ItemStack = {
     for (i <- possibleSlots) {
-      if(validSlot(i))
+      if (validSlot(i))
         slots(i).addStack(stack, false)
       if (stack == null) return null
     }
@@ -43,21 +48,21 @@ trait Inventory extends ISidedInventory with Savable{
   }
 
   def addStack(slot: Int, stack: ItemStack): ItemStack = {
-    if(validSlot(slot))
+    if (validSlot(slot))
       slots(slot).addStack(stack)
     else
       stack
   }
 
   def addStack(slot: Int, stack: ItemStack, all: Boolean): ItemStack = {
-    if(validSlot(slot))
+    if (validSlot(slot))
       slots(slot).addStack(stack, all)
     else
       stack
   }
 
   def addStack(slot: Int, stack: ItemStack, all: Boolean, `override`: Boolean): ItemStack = {
-    if(validSlot(slot))
+    if (validSlot(slot))
       slots(slot).addStack(stack, all, `override`)
     else
       stack
@@ -75,7 +80,7 @@ trait Inventory extends ISidedInventory with Savable{
   def canAddStack(stack: ItemStack, possibleSlots: Array[Int]): Boolean = {
     var test: Boolean = false
     for (i <- possibleSlots) {
-      if(validSlot(i))
+      if (validSlot(i))
         test = slots(i).canAddStack(stack, false)
       if (test) return test
     }
@@ -83,28 +88,28 @@ trait Inventory extends ISidedInventory with Savable{
   }
 
   def canAddStack(slot: Int, stack: ItemStack): Boolean = {
-    if(validSlot(slot))
+    if (validSlot(slot))
       slots(slot).canAddStack(stack)
     else
       false
   }
 
   def canAddStack(slot: Int, stack: ItemStack, all: Boolean): Boolean = {
-    if(validSlot(slot))
+    if (validSlot(slot))
       slots(slot).canAddStack(stack, all)
     else
       false
   }
 
   def canAddStack(slot: Int, stack: ItemStack, all: Boolean, `override`: Boolean): Boolean = {
-    if(validSlot(slot))
+    if (validSlot(slot))
       slots(slot).canAddStack(stack, all, `override`)
     else
       false
   }
 
   def stackAllowed(slot: Int, stack: ItemStack): Boolean = {
-    if(validSlot(slot))
+    if (validSlot(slot))
       slots(slot).stackAllowed(stack)
     else
       false
@@ -119,14 +124,14 @@ trait Inventory extends ISidedInventory with Savable{
   }
 
   override def getStackInSlot(index: Int): ItemStack = {
-    if(validSlot(index))
+    if (validSlot(index))
       slots(index).getStack
     else
       null
   }
 
   override def decrStackSize(index: Int, amount: Int): ItemStack = {
-    if(validSlot(index))
+    if (validSlot(index))
       slots(index).decrStackSize(amount)
     else
       null
@@ -139,8 +144,8 @@ trait Inventory extends ISidedInventory with Savable{
   }
 
   override def setInventorySlotContents(index: Int, stack: ItemStack) {
-    if(validSlot(index))
-     slots(index).putStack(stack)
+    if (validSlot(index))
+      slots(index).putStack(stack)
   }
 
   override def getInventoryName: String = ""
@@ -155,7 +160,7 @@ trait Inventory extends ISidedInventory with Savable{
    * NOTE: This does not control what users can put in slots, only automation.
    */
   override def isItemValidForSlot(index: Int, itemstack: ItemStack): Boolean = {
-    if(validSlot(index))
+    if (validSlot(index))
       slots(index).canAddStack(itemstack, false, false)
     else
       false
@@ -202,18 +207,18 @@ trait Inventory extends ISidedInventory with Savable{
   override def getAccessibleSlotsFromSide(var1: Int) = (0 to slots.size).toArray
 
   override def canInsertItem(index: Int, itemstack: ItemStack, j: Int): Boolean = {
-    if(validSlot(index))
-     slots(index).canAddStack(itemstack, false, false)
+    if (validSlot(index))
+      slots(index).canAddStack(itemstack, false, false)
     else
       false
   }
 
   override def canExtractItem(index: Int, itemstack: ItemStack, side: Int): Boolean = {
-    if(validSlot(index))
+    if (validSlot(index))
       slots(index).canExtract
     else
       false
   }
 
-  def getSlots: java.util.List[InvSlot] = slots
+  def getSlots: java.util.List[InvSlot] = slots.toSeq
 }

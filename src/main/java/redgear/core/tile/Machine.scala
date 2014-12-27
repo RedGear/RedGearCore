@@ -7,6 +7,9 @@ import scala.beans.BeanProperty
  * Created by Blackhole on 10/11/2014.
  */
 trait Machine extends Savable with Updateable with TryEnergy{
+  
+  self: TileEntityGeneric =>
+  
   @BeanProperty
   val idleRate: Int = 20
   @BeanProperty
@@ -20,11 +23,9 @@ trait Machine extends Savable with Updateable with TryEnergy{
   @BeanProperty
   var work: Int = 0
 
-  var tile: TileEntityGeneric
-
   abstract override def updateEntity {
     super.updateEntity
-    if (tile isClient) return
+    if (isClient) return
     if (standby > 0) {
       standby -= 1
       return
@@ -53,7 +54,7 @@ trait Machine extends Savable with Updateable with TryEnergy{
         check |= doPostWork
       }
     }
-    if (check) tile forceSync
+    if (check) forceSync
   }
 
   def addWork(work: Int) {

@@ -15,8 +15,6 @@ abstract class TileEntityElectricMachine(idleRate: Int, storage: EnergyStorage) 
 
   def this() = this(4)
 
-  override var tile: TileEntityGeneric = this
-
   override def updateEntity: Unit = {
 
   }

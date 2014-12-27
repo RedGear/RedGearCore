@@ -11,7 +11,9 @@ import redgear.core.util.ItemStackUtil
  * @author Blackhole
  *         Created on 10/12/2014.
  */
-trait Bucketable extends Tank {
+trait Bucketable {
+  self: Tank =>
+  
   def bucket(player: EntityPlayer, index: Int, container: ItemStack): Boolean = {
     if (FluidContainerRegistry.isFilledContainer(container))
       fill(player, index, container)

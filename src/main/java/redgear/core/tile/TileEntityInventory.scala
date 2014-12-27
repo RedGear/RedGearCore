@@ -3,7 +3,6 @@ package redgear.core.tile
 import net.minecraft.nbt.NBTTagCompound
 
 abstract class TileEntityInventory(idleRate: Int) extends TileEntityGeneric with Inventory with Machine {
-  override var tile: TileEntityGeneric = this
 
   override def updateEntity: Unit = {
     super.updateEntity

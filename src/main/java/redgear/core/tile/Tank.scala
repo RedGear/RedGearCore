@@ -12,10 +12,11 @@ import redgear.core.asm.RedGearCore
  * Created by Blackhole on 10/11/2014.
  */
 trait Tank extends IFluidHandler with Savable{
+  
+  self: TileEntityGeneric =>
 
-  var tanks = new ArrayBuffer[AdvFluidTank]
+  var tanks = List[AdvFluidTank]()
   var currMode = ejectMode.MACHINE
-  var tile: TileEntityGeneric
 
   object ejectMode extends Enumeration{
     type ejectMode = Value
@@ -40,7 +41,7 @@ trait Tank extends IFluidHandler with Savable{
    * @return index of the new tank used for adding side mappings
    */
   def addTank(newTank: AdvFluidTank): Int = {
-    tanks += newTank
+    tanks = tanks :+ newTank
     tanks.size - 1
   }
 
@@ -56,7 +57,7 @@ trait Tank extends IFluidHandler with Savable{
     for (tank <- tanks) {
       filled = tank.fillWithMap(resource, doFill)
       if (filled > 0) {
-        if (doFill) tile.forceSync()
+        if (doFill) forceSync()
         return filled
       }
     }
@@ -68,7 +69,7 @@ trait Tank extends IFluidHandler with Savable{
     for (tank <- tanks) {
       removed = tank.drainWithMap(resource, doDrain)
       if (removed != null && removed.amount > 0) {
-        if (doDrain) tile.forceSync()
+        if (doDrain) forceSync()
         return removed
       }
     }
@@ -80,7 +81,7 @@ trait Tank extends IFluidHandler with Savable{
     for (tank <- tanks) {
       removed = tank.drainWithMap(maxDrain, doDrain)
       if (removed != null && removed.amount > 0) {
-        if (doDrain) tile.forceSync()
+        if (doDrain) forceSync()
         return removed
       }
     }
@@ -142,7 +143,7 @@ trait Tank extends IFluidHandler with Savable{
 
   protected def ejectFluid(side: ForgeDirection, tank: AdvFluidTank, maxDrain: Int): Boolean = {
     if (tank == null || tank.getFluid == null || (currMode eq ejectMode.OFF)) return false
-    val otherTile: TileEntity = tile.getWorldObj.getTileEntity(tile.xCoord + side.offsetX, tile.yCoord + side.offsetY, tile.zCoord + side.offsetZ)
+    val otherTile: TileEntity = getWorldObj.getTileEntity(xCoord + side.offsetX, yCoord + side.offsetY, zCoord + side.offsetZ)
     if (otherTile != null && otherTile.isInstanceOf[IFluidHandler] && ((currMode eq ejectMode.ALL) || otherTile.isInstanceOf[Tank] || otherTile.isInstanceOf[TileEntityGeneric])) {
       val drain: FluidStack = tank.drainWithMap(maxDrain, false)
       if (drain == null) return false

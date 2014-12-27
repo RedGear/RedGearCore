@@ -2,8 +2,7 @@ package redgear.core.tile
 
 import net.minecraft.nbt.NBTTagCompound
 
-abstract class TileEntityTank(override val idleRate: Int) extends TileEntityGeneric with Inventory with Bucketable with Machine with Faced {
-  override var tile: TileEntityGeneric = this
+abstract class TileEntityTank(override val idleRate: Int) extends TileEntityGeneric with Inventory with Tank with Bucketable with Machine with Faced {
 
   override def updateEntity: Unit = {
     super.updateEntity

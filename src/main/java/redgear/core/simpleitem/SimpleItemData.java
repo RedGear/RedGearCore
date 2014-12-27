@@ -61,7 +61,7 @@ class SimpleItemData {
 	ISimpleItem parse() {
 		ISimpleItem ans;
 
-		ItemStack stack = SimpleItemHelper.helper.findStack(modName, itemName);
+		ItemStack stack = SimpleItemHelper.helper.findStack(modName, itemName, meta);
 
 		if (meta < 0 || meta == OreDictionary.WILDCARD_VALUE)
 			ans = new WildcardItem(stack);
