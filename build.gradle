@@ -29,11 +29,11 @@ group= mod_group // http://maven.apache.org/guides/mini/guide-naming-conventions
 archivesBaseName = mod_name
 
 dependencies {
-	compile "codechicken:CodeChickenLib:1.7.10-1.1.1.93:dev"
-	compile "codechicken:ForgeMultipart:1.7.10-1.1.0.299:dev"
+	compile "codechicken:CodeChickenLib:1.7.10-1.1.1.106:dev"
+	compile "codechicken:ForgeMultipart:1.7.10-1.1.0.314:dev"
 	
-	compile "codechicken:CodeChickenCore:1.7.10-1.0.2.11:dev"
-	compile "codechicken:NotEnoughItems:1.7.10-1.0.2.26:dev"
+	compile "codechicken:CodeChickenCore:1.7.10-1.0.4.29:dev"
+	compile "codechicken:NotEnoughItems:1.7.10-1.0.3.74:dev"
 }
 
 sourceSets.main.scala.srcDir "src/main/java"
