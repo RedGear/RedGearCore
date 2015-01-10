@@ -10,6 +10,8 @@ import cofh.api.energy.IEnergyReceiver
  * Created by Blackhole on 10/11/2014.
  */
 trait ElectricReceiver extends IEnergyReceiver with Savable with TryEnergy{
+  self: TileEntityGeneric => 
+  
   protected var storage: EnergyStorage = new EnergyStorage(32000)
 
   /**
@@ -58,6 +60,7 @@ trait ElectricReceiver extends IEnergyReceiver with Savable with TryEnergy{
    * @return Amount of energy that was (or would have been, if simulated) received.
    */
   def receiveEnergy(from: ForgeDirection, maxReceive: Int, simulate: Boolean): Int = {
+    forceSync
     return storage.receiveEnergy(maxReceive, simulate)
   }
 

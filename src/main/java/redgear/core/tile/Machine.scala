@@ -66,6 +66,8 @@ trait Machine extends Savable with Updateable with TryEnergy{
     workTotal = 0
     work = 0
   }
+  
+  def getScaledWork(total: Int) = if(work <= 0 || workTotal <= 0) 0 else (work.asInstanceOf[Float] / workTotal * total).asInstanceOf[Int]
 
   /**
    * Called every time the idle timer ticks. Use this for free things like

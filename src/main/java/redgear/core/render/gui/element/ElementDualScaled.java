@@ -1,33 +1,31 @@
 package redgear.core.render.gui.element;
 
+import net.minecraft.tileentity.TileEntity;
+import redgear.core.render.ContainerBase;
 import redgear.core.render.GuiBase;
 import redgear.core.render.RenderHelper;
 
-public class ElementDualScaled extends ElementBase {
+public class ElementDualScaled<T extends TileEntity, C extends ContainerBase<T>, G extends GuiBase<C>> extends ElementBase<T, C, G> {
 
 	public int quantity;
 	public int mode;
 	public boolean background = true;
 
-	public ElementDualScaled(GuiBase gui, int posX, int posY) {
-
+	public ElementDualScaled(G gui, int posX, int posY) {
 		super(gui, posX, posY);
 	}
 
-	public ElementDualScaled setMode(int mode) {
-
+	public ElementDualScaled<T, C, G> setMode(int mode) {
 		this.mode = mode;
 		return this;
 	}
 
-	public ElementDualScaled setQuantity(int quantity) {
-
+	public ElementDualScaled<T, C, G> setQuantity(int quantity) {
 		this.quantity = quantity;
 		return this;
 	}
 
-	public ElementDualScaled setBackground(boolean background) {
-
+	public ElementDualScaled<T, C, G> setBackground(boolean background) {
 		this.background = background;
 		return this;
 	}

@@ -1,14 +1,16 @@
 package redgear.core.render.gui.element;
 
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fluids.IFluidTank;
+import redgear.core.render.ContainerBase;
 import redgear.core.render.GuiBase;
 import redgear.core.render.RenderHelper;
 
 import java.util.List;
 
-public class ElementFluidTank extends ElementBase {
+public class ElementFluidTank<T extends TileEntity, C extends ContainerBase<T>, G extends GuiBase<C>> extends ElementBase<T, C, G> {
 
 	public static final ResourceLocation DEFAULT_TEXTURE = new ResourceLocation("redgear_core:textures/gui/elements/FluidTank.png");
 	public static final int DEFAULT_SCALE = 60;
@@ -16,8 +18,7 @@ public class ElementFluidTank extends ElementBase {
 	protected IFluidTank tank;
 	protected int gaugeType;
 
-	public ElementFluidTank(GuiBase gui, int posX, int posY, IFluidTank tank) {
-
+	public ElementFluidTank(G gui, int posX, int posY, IFluidTank tank) {
 		super(gui, posX, posY);
 		this.tank = tank;
 
@@ -29,8 +30,7 @@ public class ElementFluidTank extends ElementBase {
 		this.sizeY = DEFAULT_SCALE;
 	}
 
-	public ElementFluidTank(GuiBase gui, int posX, int posY, IFluidTank tank, String texture) {
-
+	public ElementFluidTank(G gui, int posX, int posY, IFluidTank tank, String texture) {
 		super(gui, posX, posY);
 		this.tank = tank;
 
@@ -42,8 +42,7 @@ public class ElementFluidTank extends ElementBase {
 		this.sizeY = DEFAULT_SCALE;
 	}
 
-	public ElementFluidTank setGauge(int gaugeType) {
-
+	public ElementFluidTank<T, C, G> setGauge(int gaugeType) {
 		this.gaugeType = gaugeType;
 		return this;
 	}
@@ -63,7 +62,6 @@ public class ElementFluidTank extends ElementBase {
 
 	@Override
 	public void addTooltip(List<String> list) {
-
 		if (tank.getFluid() != null && tank.getFluidAmount() > 0) {
             if(ForgeVersion.getBuildVersion() >= 1162)
 			    list.add(tank.getFluid().getFluid().getLocalizedName(tank.getFluid()));

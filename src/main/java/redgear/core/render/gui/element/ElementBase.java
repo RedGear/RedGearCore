@@ -3,7 +3,9 @@ package redgear.core.render.gui.element;
 import java.util.List;
 
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import redgear.core.render.ContainerBase;
 import redgear.core.render.GuiBase;
 import cpw.mods.fml.client.FMLClientHandler;
 
@@ -13,12 +15,12 @@ import cpw.mods.fml.client.FMLClientHandler;
  * @author King Lemming
  * 
  */
-public abstract class ElementBase {
+public abstract class ElementBase<T extends TileEntity, C extends ContainerBase<T>, G extends GuiBase<C>> {
 
 //	public static final SoundManager elementSoundManager = FMLClientHandler.instance().getClient().sndManager;
 	public static final FontRenderer elementFontRenderer = FMLClientHandler.instance().getClient().fontRenderer;
 
-	protected GuiBase gui;
+	protected G gui;
 	protected ResourceLocation texture;
 
 	protected int posX;
@@ -34,14 +36,14 @@ public abstract class ElementBase {
 
 	protected boolean visible = true;
 
-	public ElementBase(GuiBase gui, int posX, int posY) {
+	public ElementBase(G gui, int posX, int posY) {
 
 		this.gui = gui;
 		this.posX = gui.getGuiLeft() + posX;
 		this.posY = gui.getGuiTop() + posY;
 	}
 
-	public ElementBase setTexture(String texture, int texW, int texH) {
+	public ElementBase<T, C, G> setTexture(String texture, int texW, int texH) {
 
 		this.texture = new ResourceLocation(texture);
 		this.texW = texW;
@@ -49,27 +51,27 @@ public abstract class ElementBase {
 		return this;
 	}
 
-	public ElementBase setPosition(int posX, int posY) {
+	public ElementBase<T, C, G> setPosition(int posX, int posY) {
 
 		this.posX = gui.getGuiLeft() + posX;
 		this.posY = gui.getGuiTop() + posY;
 		return this;
 	}
 
-	public ElementBase setSize(int sizeX, int sizeY) {
+	public ElementBase<T, C, G> setSize(int sizeX, int sizeY) {
 
 		this.sizeX = sizeX;
 		this.sizeY = sizeY;
 		return this;
 	}
 
-	public ElementBase setVisible(boolean visible) {
+	public ElementBase<T, C, G> setVisible(boolean visible) {
 
 		this.visible = visible;
 		return this;
 	}
 
-	public ElementBase setName(String name) {
+	public ElementBase<T, C, G> setName(String name) {
 
 		this.name = name;
 		return this;
@@ -121,6 +123,18 @@ public abstract class ElementBase {
 	public String getName() {
 
 		return name;
+	}
+	
+	public G getGui(){
+		return gui;
+	}
+	
+	public C getContainer(){
+		return getGui().myContainer;
+	}
+	
+	public T getTile(){
+		return getContainer().myTile;
 	}
 
 }

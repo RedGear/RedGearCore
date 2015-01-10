@@ -2,11 +2,13 @@ package redgear.core.render.gui.element;
 
 import java.util.List;
 
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
+import redgear.core.render.ContainerBase;
 import redgear.core.render.GuiBase;
 import redgear.core.render.RenderHelper;
 
-public class ElementButton extends ElementBase {
+public class ElementButton<T extends TileEntity, C extends ContainerBase<T>, G extends GuiBase<C>> extends ElementBase<T, C, G> {
 
 	int sheetX;
 	int sheetY;
@@ -18,8 +20,7 @@ public class ElementButton extends ElementBase {
 	boolean tooltipLocalized = false;
 	String tooltip;
 
-	public ElementButton(GuiBase gui, int posX, int posY, String name, int sheetX, int sheetY, int hoverX, int hoverY, int sizeX, int sizeY, String texture) {
-
+	public ElementButton(G gui, int posX, int posY, String name, int sheetX, int sheetY, int hoverX, int hoverY, int sizeX, int sizeY, String texture) {
 		super(gui, posX, posY);
 		setName(name);
 		setSize(sizeX, sizeY);
@@ -30,9 +31,7 @@ public class ElementButton extends ElementBase {
 		this.hoverY = hoverY;
 	}
 
-	public ElementButton(GuiBase gui, int posX, int posY, String name, int sheetX, int sheetY, int hoverX, int hoverY, int disabledX, int disabledY, int sizeX,
-			int sizeY, String texture) {
-
+	public ElementButton(G gui, int posX, int posY, String name, int sheetX, int sheetY, int hoverX, int hoverY, int disabledX, int disabledY, int sizeX, int sizeY, String texture) {
 		super(gui, posX, posY);
 		setName(name);
 		setSize(sizeX, sizeY);
@@ -75,19 +74,19 @@ public class ElementButton extends ElementBase {
 		}
 	}
 
-	public ElementButton setToolTip(String tooltip) {
+	public ElementButton<T, C, G> setToolTip(String tooltip) {
 
 		this.tooltip = tooltip;
 		return this;
 	}
 
-	public ElementButton setToolTipLocalized(boolean localized) {
+	public ElementButton<T, C, G> setToolTipLocalized(boolean localized) {
 
 		this.tooltipLocalized = localized;
 		return this;
 	}
 
-	public ElementButton clearToolTip() {
+	public ElementButton<T, C, G> clearToolTip() {
 
 		this.tooltip = null;
 		return this;

@@ -47,11 +47,11 @@ public class GuiBase<C extends ContainerBase<? extends TileEntity>> extends GuiC
 
 	protected int lastIndex = -1;
 
-	protected final C myContainer;
+	public final C myContainer;
 	protected String name;
 	protected ResourceLocation texture;
 	public ArrayList<TabBase> tabs = new ArrayList<TabBase>();
-	protected ArrayList<ElementBase> elements = new ArrayList<ElementBase>();
+	protected ArrayList<ElementBase<?, ?, ?>> elements = new ArrayList<ElementBase<?, ?, ?>>();
 	protected List<String> tooltip = new LinkedList<String>();
 
 	public GuiBase(C container) {
