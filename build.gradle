@@ -40,7 +40,7 @@ sourceSets.main.scala.srcDir "src/main/java"
 sourceSets.main.java.srcDirs = []
 
 minecraft {
-	version = "${minecraft_version}-${forge_version}"
+	version = "${forge_version}-${minecraft_version}"
 
 	replace "@ModVersion@", project.version
 }

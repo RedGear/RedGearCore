@@ -63,22 +63,17 @@ public class ElementFluidTank<T extends TileEntity, C extends ContainerBase<T>, 
 	@Override
 	public void addTooltip(List<String> list) {
 		if (tank.getFluid() != null && tank.getFluidAmount() > 0) {
-            if(ForgeVersion.getBuildVersion() >= 1162)
-			    list.add(tank.getFluid().getFluid().getLocalizedName(tank.getFluid()));
-            else
-                list.add(tank.getFluid().getFluid().getLocalizedName());
+			list.add(tank.getFluid().getLocalizedName());
 		}
 		list.add("" + tank.getFluidAmount() + " / " + tank.getCapacity() + " mB");
 	}
 
 	@Override
 	public boolean handleMouseClicked(int x, int y, int mouseButton) {
-
 		return false;
 	}
 
 	int getScaled() {
-
 		return tank.getFluidAmount() * sizeY / tank.getCapacity();
 	}
 
