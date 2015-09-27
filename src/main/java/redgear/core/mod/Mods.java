@@ -21,6 +21,8 @@ public enum Mods
     MetallurgyBase("Metallurgy3Base", "Metallurgy Base"),
     MetallurgyPrecious("MetallurgyPrecious", "Metallurgy Precious"),
     MetallurgyUtility("MetallurgyUtility", "Metallurgy Utility"),
+
+    UndergroundBiomes("UndergroundBiomes", "Underground Biomes Constructs"),
     
     ComputerCraft("ComputerCraft"),
     
