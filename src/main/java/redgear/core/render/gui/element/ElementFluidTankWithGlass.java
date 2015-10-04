@@ -1,17 +1,25 @@
 package redgear.core.render.gui.element;
 
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
+import redgear.core.asm.RedGearCore;
+import redgear.core.render.ContainerBase;
 import redgear.core.render.GuiBase;
 import redgear.core.render.RenderHelper;
 
-public class ElementFluidTankWithGlass extends ElementFluidTank{
+public class ElementFluidTankWithGlass<T extends TileEntity, C extends ContainerBase<T>, G extends GuiBase<C>> extends ElementFluidTank<T, C, G>{
 
-	public ElementFluidTankWithGlass(GuiBase gui, int posX, int posY, IFluidTank tank) {
+	public ElementFluidTankWithGlass(G gui, int posX, int posY, IFluidTank tank) {
 		super(gui, posX, posY, tank);
 	}
 
 	@Override
 	public void draw() {
+
+//		FluidStack fluid = tank.getFluid();
+
+//		RedGearCore.inst.logDebug("Drawing tank filled with: " + (fluid == null ? "null" : fluid.getLocalizedName()));
 
 		if (!visible) {
 			return;

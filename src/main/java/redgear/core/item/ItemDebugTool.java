@@ -33,7 +33,7 @@ public class ItemDebugTool extends ItemGeneric{
     	
     	TileEntity tile = loc.getTile(world);
     	if(tile != null){ //Use reflection to print out all the values in the tile. 
-    		for(Field f : tile.getClass().getDeclaredFields()){
+    		for(Field f : tile.getClass().getFields()){
     			try {
                     f.setAccessible(true);
     				print(player, "Field: ", f.getName(), ": ", f.get(tile));

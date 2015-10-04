@@ -72,8 +72,8 @@ public class AdvFluidTank extends FluidTank {
 
 	/**
 	 * Maps a collection of fluid IDs to one transfer rule.
-	 * 
-	 * @param fluids Fluids to give this rule.
+	 *
+	 * @param fluidIds Fluids to give this rule.
 	 * @param direct Direction these fluids are allowed to move.
 	 * @return this object.
 	 */
@@ -85,8 +85,8 @@ public class AdvFluidTank extends FluidTank {
 
 	/**
 	 * Maps a fluid id to a transfer rule.
-	 * 
-	 * @param addFluid ID of the fluid to give this rule. (-1 to refer to all
+	 *
+	 * @param addFluidId ID of the fluid to give this rule. (-1 to refer to all
 	 * fluids with no explicit mapping).
 	 * @param direct Direction this fluid is allowed to move.
 	 * @return this object.
@@ -130,7 +130,7 @@ public class AdvFluidTank extends FluidTank {
 	 * method.
 	 */
 	public boolean canFill(FluidStack other, boolean fully) {
-		return other != null && isEmpty() ? true : fluid.isFluidEqual(other) && (!fully || canFill(other.amount));
+		return other == null || isEmpty() || fluid.isFluidEqual(other) && (!fully || canFill(other.amount));
 	}
 
 	/**
@@ -139,7 +139,7 @@ public class AdvFluidTank extends FluidTank {
 	 * tank is full.
 	 */
 	public boolean canFill(Fluid other) {
-		return other == null || isEmpty() ? true : fluid.fluidID == other.getID();
+		return other == null || isEmpty() || fluid.getFluidID() == other.getID();
 	}
 
 	/**
@@ -157,7 +157,7 @@ public class AdvFluidTank extends FluidTank {
 	 * method.
 	 */
 	public boolean canDrain(FluidStack other, boolean fully) {
-		return other != null && isEmpty() ? false : fully ? fluid.containsFluid(other) : fluid.isFluidEqual(other);
+		return !(other != null && isEmpty()) && (fully ? fluid.containsFluid(other) : fluid.isFluidEqual(other));
 	}
 
 	/**
@@ -166,7 +166,7 @@ public class AdvFluidTank extends FluidTank {
 	 * some of this fluid.
 	 */
 	public boolean canDrain(Fluid other) {
-		return other == null || isEmpty() ? false : fluid.fluidID == other.getID();
+		return !(other == null || isEmpty()) && fluid.getFluidID() == other.getID();
 	}
 
 	/**
@@ -204,7 +204,7 @@ public class AdvFluidTank extends FluidTank {
 	 * method.
 	 */
 	public boolean canFillWithMap(FluidStack other, boolean fully) {
-		return other == null || canAccept(other.fluidID) && canFill(other, fully);
+		return other == null || canAccept(other.getFluidID()) && canFill(other, fully);
 	}
 
 	/**
@@ -213,7 +213,7 @@ public class AdvFluidTank extends FluidTank {
 	 * method.
 	 */
 	public boolean canDrainWithMap(FluidStack other, boolean fully) {
-		return other != null && canEject(other.fluidID) && canDrain(other, fully);
+		return other != null && canEject(other.getFluidID()) && canDrain(other, fully);
 	}
 
 	/**
@@ -221,7 +221,7 @@ public class AdvFluidTank extends FluidTank {
 	 * @return true if this tank contains at least this much fluid.
 	 */
 	public boolean canDrainWithMap(int amount) {
-		return canEject(fluid.fluidID) && canDrain(amount);
+		return canEject(fluid.getFluidID()) && canDrain(amount);
 	}
 
 	/**
@@ -278,7 +278,7 @@ public class AdvFluidTank extends FluidTank {
 	 * Drains this tank with up to the amount in maxDrain, using the
 	 * fluidMappings
 	 * 
-	 * @param maxDrain Maximum amount of fluid to try and drain
+	 * @param resource Maximum amount of fluid to try and drain
 	 * @param doDrain if true fluid will be removed, false means it will only be
 	 * simulated
 	 * @return FluidStack representing the fluid drained or would have been
@@ -297,4 +297,11 @@ public class AdvFluidTank extends FluidTank {
 		
 		return super.readFromNBT(nbt);
 	}
+
+	@Override
+	public String toString(){
+		return "AdvFluidTank[fluid: " + (fluid == null ? "null" : fluid.getLocalizedName()) + ", amount: " + getAmount() + "]";
+	}
+
+
 }

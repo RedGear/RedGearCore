@@ -12,7 +12,7 @@ import redgear.core.asm.RedGearCore
  * Created by Blackhole on 10/11/2014.
  */
 trait Tank extends IFluidHandler with Savable{
-  
+
   self: TileEntityGeneric =>
 
   var tanks = List[AdvFluidTank]()
@@ -93,15 +93,16 @@ trait Tank extends IFluidHandler with Savable{
    * vars!
    */
   abstract override def writeToNBT(tag: NBTTagCompound) {
+//    RedGearCore.inst.logDebug("Writing tank list: ", tanks)
+
     super.writeToNBT(tag)
     val tankList: NBTTagList = new NBTTagList
-      for (i <- 0 to tanks.size) {
-        val tank: AdvFluidTank = getTank(i)
-        if (tank != null) {
-          val invTag: NBTTagCompound = new NBTTagCompound
-          invTag.setByte("tank", i.asInstanceOf[Byte])
-          tankList.appendTag(tank.writeToNBT(invTag))
-        }
+
+    tanks.zipWithIndex.foreach{pair =>
+      val (tank, i) = pair
+      val invTag: NBTTagCompound = new NBTTagCompound
+      invTag.setByte("tank", i.asInstanceOf[Byte])
+      tankList.appendTag(tank.writeToNBT(invTag))
     }
     tag.setTag("Tanks", tankList)
     tag.setInteger("ejectMode", currMode.id)
@@ -114,12 +115,14 @@ trait Tank extends IFluidHandler with Savable{
   abstract override def readFromNBT(tag: NBTTagCompound) {
     super.readFromNBT(tag)
     val tagList: NBTTagList = tag.getTagList("Tanks", 10)
-      for (i <- 0 to tagList.tagCount) {
+
+      for (i <- 0 until tagList.tagCount) {
         val invTag: NBTTagCompound = tagList.getCompoundTagAt(i)
         val slot: Byte = invTag.getByte("tank")
         val tank: AdvFluidTank = getTank(slot)
         if (tank != null) tank.readFromNBT(invTag)
       }
+
     currMode = ejectMode.valueOf(tag.getInteger("ejectMode"))
   }
 
